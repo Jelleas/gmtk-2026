@@ -27,16 +27,18 @@ Make the workday clock reach home time as fast as possible by secretly distracti
      - Play a game on the CRT monitor.
      - Spin the fidget spinner.
      - Use your phone under the desk.
-   - Each distraction:
+   - You’re not limited by hands — any combination of CRT Game, Fidget Spinner, and Phone can be active **at the same time**, stacking their time-speed bonus.
+   - Each active distraction:
      - Makes the clock tick faster (day passes quicker).
      - Increases your “risk” of being caught.
+   - Each distraction is toggled independently, and each must be individually cancelled before a peek catches you slacking.
 
 3. **Boss/Co‑worker Peeks**
    - At random intervals, a head pops up above the cubicle wall.
    - You have a short reaction window to:
-     - Hide all distractions.
+     - Cancel every active distraction (phone and/or fidget spinner, and/or the CRT game).
      - Switch back to “work” view on the monitor.
-     - Stop phone/fidget spinner.
+   - Because any distraction can run alongside the others, a peek means you may need to cancel several at once, not just one.
 
 4. **Caught vs Safe**
    - If you’re still visibly slacking when someone peeks:
@@ -58,18 +60,21 @@ Make the workday clock reach home time as fast as possible by secretly distracti
 #### 3.1 Time & Activities
 
 - **States:**
-  - Working (default, slow time).
-  - CRT Game.
-  - Fidget Spinner.
-  - Phone Under Desk.
+  - Working (default, slow time) — the baseline whenever no distraction is active.
+  - CRT Game (toggle).
+  - Fidget Spinner (toggle).
+  - Phone Under Desk (toggle).
+
+  All three distractions can be toggled on independently and run simultaneously — you’re not limited to one hand or one activity at a time.
 
 - **Time Flow:**
   - Working: normal speed.
   - CRT Game: very fast.
   - Phone: fast.
   - Fidget Spinner: moderate.
+  - Any combination stacks: the more distractions running at once, the faster time flies — but the more you have to cancel in a hurry when someone peeks.
 
-You’re constantly swapping between these to make hours fly.
+You’re constantly toggling these on and off to make hours fly, while keeping track of everything you’d need to shut off in a hurry.
 
 #### 3.2 Boss/Co‑worker Checks
 
@@ -80,8 +85,8 @@ You’re constantly swapping between these to make hours fly.
 - Each peek:
   - Plays a short warning cue (sound or subtle screen flash).
   - After 1 second, they “look”:
-    - If any distraction is active → caught.
-    - If you’re working → okay.
+    - If any distraction is still active (phone, fidget spinner, and/or CRT game) → caught.
+    - If you’re working (all distractions cancelled) → okay.
 
 Penalties (pick one simple rule for jam):
 
@@ -97,14 +102,12 @@ Penalties (pick one simple rule for jam):
 
 (Example keyboard layout):
 
-- **Number keys to change activity:**
-  - 1 – Work (turns monitor to boring work screen, hands on keyboard).
-  - 2 – CRT Game.
-  - 3 – Fidget Spinner.
-  - 4 – Phone under desk.
+- **Number keys to toggle activity:**
+  - 1 – Work (turns monitor to boring work screen, hands on keyboard; cancels CRT Game).
+  - 2 – CRT Game (toggle on/off, can be combined with the others).
+  - 3 – Fidget Spinner (toggle on/off, can be combined with the others).
+  - 4 – Phone under desk (toggle on/off, can be combined with the others).
 
-- **Space / Right Mouse:**
-  - “Panic” button – instantly switch back to Work (safe mode).
 
 #### Visual Feedback
 
@@ -133,8 +136,8 @@ Penalties (pick one simple rule for jam):
 **Day 1 – Core Screen & Loop**
 - Draw static cubicle scene (monitor, desk, wall).
 - Implement:
-  - Clock that moves faster/slower based on current activity.
-  - Activity switching (Work / CRT / Spinner / Phone).
+  - Clock that moves faster/slower based on active distractions, stacking when multiple run together.
+  - Activity toggling: CRT, Spinner, and Phone can all be combined freely.
 
 **Day 2 – Peeks & Detection**
 - Add boss/co‑worker heads that:
@@ -142,7 +145,6 @@ Penalties (pick one simple rule for jam):
   - Check your current activity after a short delay.
 - Implement:
   - Strike system and simple game over.
-  - Panic button to quickly go back to Work.
 
 **Day 3 – Juice & Balance**
 - Make simple CRT mini-game (e.g., click-to-avoid blocks).
