@@ -1,0 +1,24 @@
+[gd_scene format=3 uid="uid://qu7neb5oc0up"]
+
+[ext_resource type="Script" uid="uid://cefnk8bvjcibg" path="res://src/fidget_spinner/fidget_spinner.gd" id="1_tsi7e"]
+[ext_resource type="Texture2D" uid="uid://ciuxyaoktugh5" path="res://icon.svg" id="2_h7mvs"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_x2p3e"]
+radius = 64.0
+
+[node name="FidgetSpinner" type="Node2D" unique_id=1074957713]
+script = ExtResource("1_tsi7e")
+
+[node name="Spinner" type="Sprite2D" parent="." unique_id=1686839328]
+texture = ExtResource("2_h7mvs")
+
+[node name="SpinTimer" type="Timer" parent="." unique_id=1827216203]
+one_shot = true
+
+[node name="ClickArea" type="Area2D" parent="." unique_id=1768960208]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="ClickArea" unique_id=1680911037]
+shape = SubResource("CircleShape2D_x2p3e")
+
+[connection signal="timeout" from="SpinTimer" to="." method="_on_spin_timer_timeout"]
+[connection signal="input_event" from="ClickArea" to="." method="_on_click_area_input_event"]
