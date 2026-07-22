@@ -1,3 +1,8 @@
 [gd_scene format=3 uid="uid://pnkt02rak0tl"]
 
+[ext_resource type="PackedScene" uid="uid://3sjwwynn3cgc" path="res://src/computer/video_distraction/video_distraction.tscn" id="1_bjt8x"]
+
 [node name="Computer" type="Node2D" unique_id=545264087]
+
+[node name="VideoDistraction" parent="." unique_id=1538641647 instance=ExtResource("1_bjt8x")]
+position = Vector2(676, 408)
