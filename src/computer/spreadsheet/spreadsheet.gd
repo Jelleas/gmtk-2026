@@ -1,10 +1,10 @@
-extends Node2D
+extends Control
 
 const COLS := 8
 const ROWS := 12
-const CELL_WIDTH := 90
-const CELL_HEIGHT := 24
-const TOP_BAR_HEIGHT := 24
+const CELL_WIDTH := 1280 / COLS
+const CELL_HEIGHT := 600 / ROWS
+const TOP_BAR_HEIGHT := 600 / ROWS
 
 var cell_edits: Array = []
 var top_bar_label: Label

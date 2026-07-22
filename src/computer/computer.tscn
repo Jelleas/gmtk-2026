@@ -1,42 +1,144 @@
-[gd_scene load_steps=4 format=3 uid="uid://pnkt02rak0tl"]
+[gd_scene format=3 uid="uid://pnkt02rak0tl"]
 
 [ext_resource type="PackedScene" uid="uid://3sjwwynn3cgc" path="res://src/computer/video_distraction/video_distraction.tscn" id="1_bjt8x"]
-[ext_resource type="Script" path="res://src/computer/computer.gd" id="2_computer"]
+[ext_resource type="Script" uid="uid://j0wqy6uatgq7" path="res://src/computer/computer.gd" id="2_computer"]
 [ext_resource type="PackedScene" uid="uid://cdk3d2phm1nem" path="res://src/computer/spreadsheet/spreadsheet.tscn" id="3_spreadsheet"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_button98_normal"]
+bg_color = Color(0.75, 0.75, 0.75, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0, 0, 0, 1)
+anti_aliasing = false
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_button98_pressed"]
+border_width_left = 1
+border_width_top = 1
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0, 0, 0, 1)
+anti_aliasing = false
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_button98_hover"]
+bg_color = Color(0.82, 0.82, 0.82, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0, 0, 0, 1)
+anti_aliasing = false
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_panel98"]
+bg_color = Color(0.75, 0.75, 0.75, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0, 0, 0, 1)
+anti_aliasing = false
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_tab_unselected98"]
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0, 0, 0, 1)
+anti_aliasing = false
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_tab_selected98"]
+bg_color = Color(0.78, 0.78, 0.78, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_color = Color(0, 0, 0, 1)
+anti_aliasing = false
 
 [node name="Computer" type="Node2D" unique_id=545264087]
 script = ExtResource("2_computer")
 
-[node name="HomeBackground" type="ColorRect" parent="." unique_id=284968035]
-offset_right = 1280.0
-offset_bottom = 720.0
-mouse_filter = 2
-color = Color(0.075, 0.13, 0.21, 1)
+[node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=1813503278]
 
-[node name="Spreadsheet" parent="." unique_id=1980257439 instance=ExtResource("3_spreadsheet")]
-position = Vector2(280, 180)
+[node name="PanelContainer" type="PanelContainer" parent="CanvasLayer" unique_id=249487431]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 
-[node name="VideoDistraction" parent="." unique_id=1538641647 instance=ExtResource("1_bjt8x")]
-position = Vector2(676, 408)
+[node name="MarginContainer" type="MarginContainer" parent="CanvasLayer/PanelContainer" unique_id=1254119487]
+layout_mode = 2
 
-[node name="TaskbarBackground" type="ColorRect" parent="." unique_id=596488171]
-offset_top = 656.0
-offset_right = 1280.0
-offset_bottom = 720.0
-mouse_filter = 2
-color = Color(0.035, 0.055, 0.09, 1)
+[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/PanelContainer/MarginContainer" unique_id=784940274]
+layout_mode = 2
 
-[node name="Taskbar" type="TabContainer" parent="." unique_id=309735144]
-offset_top = 656.0
-offset_right = 1280.0
-offset_bottom = 720.0
+[node name="TitleButtons" type="HBoxContainer" parent="CanvasLayer/PanelContainer/MarginContainer/VBoxContainer" unique_id=740193582]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/separation = 3
+alignment = 2
+
+[node name="MinimizeButton" type="Button" parent="CanvasLayer/PanelContainer/MarginContainer/VBoxContainer/TitleButtons" unique_id=740193583]
+custom_minimum_size = Vector2(20, 20)
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_styles/normal = SubResource("StyleBoxFlat_button98_normal")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_button98_pressed")
+theme_override_styles/hover = SubResource("StyleBoxFlat_button98_hover")
+theme_override_styles/focus = SubResource("StyleBoxFlat_button98_normal")
+text = "_"
+
+[node name="MaximizeButton" type="Button" parent="CanvasLayer/PanelContainer/MarginContainer/VBoxContainer/TitleButtons" unique_id=740193584]
+custom_minimum_size = Vector2(20, 20)
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 10
+theme_override_styles/normal = SubResource("StyleBoxFlat_button98_normal")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_button98_pressed")
+theme_override_styles/hover = SubResource("StyleBoxFlat_button98_hover")
+theme_override_styles/focus = SubResource("StyleBoxFlat_button98_normal")
+text = "□"
+
+[node name="CloseButton" type="Button" parent="CanvasLayer/PanelContainer/MarginContainer/VBoxContainer/TitleButtons" unique_id=740193585]
+custom_minimum_size = Vector2(20, 20)
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_styles/normal = SubResource("StyleBoxFlat_button98_normal")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_button98_pressed")
+theme_override_styles/hover = SubResource("StyleBoxFlat_button98_hover")
+theme_override_styles/focus = SubResource("StyleBoxFlat_button98_normal")
+text = "X"
+
+[node name="Taskbar" type="TabContainer" parent="CanvasLayer/PanelContainer/MarginContainer/VBoxContainer" unique_id=309735144]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_colors/font_selected_color = Color(0, 0, 0, 1)
+theme_override_colors/font_unselected_color = Color(0.15, 0.15, 0.15, 1)
+theme_override_styles/panel = SubResource("StyleBoxFlat_panel98")
+theme_override_styles/tab_unselected = SubResource("StyleBoxFlat_tab_unselected98")
+theme_override_styles/tab_selected = SubResource("StyleBoxFlat_tab_selected98")
 current_tab = 1
-tab_alignment = 0
+tabs_position = 1
 
-[node name="Spreadsheet" type="Control" parent="Taskbar" unique_id=2029577498]
+[node name="Spreadsheet" parent="CanvasLayer/PanelContainer/MarginContainer/VBoxContainer/Taskbar" unique_id=1980257439 instance=ExtResource("3_spreadsheet")]
+unique_name_in_owner = true
+visible = false
 layout_mode = 2
-mouse_filter = 2
+metadata/_tab_index = 0
 
-[node name="Video Distraction" type="Control" parent="Taskbar" unique_id=902326437]
+[node name="DistractionRunner" type="SubViewportContainer" parent="CanvasLayer/PanelContainer/MarginContainer/VBoxContainer/Taskbar" unique_id=1877385393]
 layout_mode = 2
-mouse_filter = 2
+stretch = true
+metadata/_tab_index = 1
+
+[node name="SubViewport" type="SubViewport" parent="CanvasLayer/PanelContainer/MarginContainer/VBoxContainer/Taskbar/DistractionRunner" unique_id=865400021]
+transparent_bg = true
+handle_input_locally = false
+size = Vector2i(1276, 655)
+render_target_update_mode = 4
+
+[node name="VideoDistraction" parent="CanvasLayer/PanelContainer/MarginContainer/VBoxContainer/Taskbar/DistractionRunner/SubViewport" unique_id=1538641647 instance=ExtResource("1_bjt8x")]
+unique_name_in_owner = true
+position = Vector2(640, 360)

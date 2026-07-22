@@ -2,5 +2,7 @@
 
 [ext_resource type="Script" uid="uid://cypfqsll1sp03" path="res://src/computer/spreadsheet/spreadsheet.gd" id="1_spreadsheet"]
 
-[node name="Spreadsheet" type="Node2D" unique_id=1980257439]
+[node name="Spreadsheet" type="Control" unique_id=1285301903]
+layout_mode = 3
+anchors_preset = 0
 script = ExtResource("1_spreadsheet")

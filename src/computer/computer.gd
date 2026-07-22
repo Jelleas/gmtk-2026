@@ -1,12 +1,14 @@
 extends Node2D
 
-@onready var spreadsheet: Node2D = $Spreadsheet
-@onready var video_distraction: Node2D = $VideoDistraction
-@onready var taskbar: TabContainer = $Taskbar
+@onready var spreadsheet: Control = %Spreadsheet
+@onready var video_distraction: Node2D = %VideoDistraction
+@onready var taskbar: TabContainer = %Taskbar
+@onready var close_button: Button = %TitleButtons/CloseButton
 
 func _ready() -> void:
 	taskbar.tab_changed.connect(_on_taskbar_tab_changed)
 	_on_taskbar_tab_changed(taskbar.current_tab)
+	close_button.pressed.connect(hide)
 
 func _on_taskbar_tab_changed(tab: int) -> void:
 	if tab == 0:
