@@ -40,8 +40,8 @@ Make the workday clock reach home time as fast as possible by secretly distracti
 
 4. **Caught vs Safe**
    - If you’re still visibly slacking when someone peeks:
-     - You gain a strike (or lose progress / slow the clock).
-   - After a few strikes: fired → game over.
+     - You get a time penalty or extra task instead of a strike.
+   - Penalties add up and can still lead to being fired or game over.
    - If you’re “working” when they peek:
      - You’re safe, no penalty.
 
@@ -86,7 +86,7 @@ You’re constantly swapping between these to make hours fly.
 Penalties (pick one simple rule for jam):
 
 - Each caught:
-  - Add 1 “strike” (3 strikes = fired), and/or
+  - Add extra real-time penalty or force a small extra task before you can resume distractions, and/or
   - Slow the clock for a few seconds (punishment phase).
 
 ---
