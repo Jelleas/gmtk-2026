@@ -1,3 +1,62 @@
 [gd_resource type="Theme" format=3 uid="uid://4n71a6jddvam"]
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_3doyt"]
+bg_color = Color(0.7647059, 0.7647059, 0.7647059, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xah2a"]
+bg_color = Color(0.7647059, 0.7647059, 0.7647059, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1ecgp"]
+bg_color = Color(0, 0, 0.50980395, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_rjbnf"]
+bg_color = Color(0.7647059, 0.7647059, 0.7647059, 1)
+border_width_left = 1
+border_width_top = 1
+border_color = Color(0.9275334, 0.92753345, 0.9275333, 1)
+corner_radius_top_left = 1
+corner_radius_top_right = 1
+corner_radius_bottom_right = 1
+corner_radius_bottom_left = 1
+shadow_size = 2
+shadow_offset = Vector2(1, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_d2t2c"]
+bg_color = Color(0.7647059, 0.7647059, 0.7647059, 1)
+border_width_left = 1
+border_width_top = 1
+border_color = Color(0.91011494, 0.9101149, 0.9101148, 1)
+corner_radius_top_left = 1
+corner_radius_top_right = 1
+corner_radius_bottom_right = 1
+corner_radius_bottom_left = 1
+shadow_size = 2
+shadow_offset = Vector2(1, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_jtt15"]
+bg_color = Color(0.7647059, 0.7647059, 0.7647059, 1)
+border_width_left = 1
+border_width_top = 1
+border_color = Color(0.19255564, 0.1925557, 0.19255555, 1)
+corner_radius_top_left = 1
+corner_radius_top_right = 1
+corner_radius_bottom_right = 1
+corner_radius_bottom_left = 1
+shadow_color = Color(0.8111275, 0.8111274, 0.8111274, 0.6)
+shadow_size = 2
+shadow_offset = Vector2(1, 1)
+
 [resource]
+ComputerPanel/base_type = &"PanelContainer"
+ComputerPanel/styles/panel = SubResource("StyleBoxFlat_3doyt")
+ComputerTabContainer/base_type = &"TabContainer"
+ComputerTabContainer/styles/panel = SubResource("StyleBoxFlat_xah2a")
+TopBarContainer/base_type = &"PanelContainer"
+TopBarContainer/styles/panel = SubResource("StyleBoxFlat_1ecgp")
+WindowsButton/base_type = &"Button"
+WindowsButton/colors/font_color = Color(0, 0, 0, 1)
+WindowsButton/colors/font_hover_color = Color(0, 0, 0, 1)
+WindowsButton/colors/font_pressed_color = Color(0, 0, 0, 1)
+WindowsButton/styles/hover = SubResource("StyleBoxFlat_rjbnf")
+WindowsButton/styles/normal = SubResource("StyleBoxFlat_d2t2c")
+WindowsButton/styles/pressed = SubResource("StyleBoxFlat_jtt15")
