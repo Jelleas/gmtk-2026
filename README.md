@@ -27,7 +27,7 @@ Make the workday clock reach home time as fast as possible by secretly distracti
      - Play a game on the CRT monitor.
      - Spin the fidget spinner.
      - Use your phone under the desk.
-   - You’re not limited by hands — any combination of CRT Game, Fidget Spinner, and Phone can be active **at the same time**, stacking their time-speed bonus.
+   - The keyboard drives the CRT monitor (Work screen or Game), while the mouse independently drives the fidget spinner and phone — so any combination of CRT Game, Fidget Spinner, and Phone can be active **at the same time**, stacking their time-speed bonus.
    - Each active distraction:
      - Makes the clock tick faster (day passes quicker).
      - Increases your “risk” of being caught.
@@ -100,13 +100,19 @@ Penalties (pick one simple rule for jam):
 
 #### Controls
 
-(Example keyboard layout):
+Input is split by device, matching what your hands are actually doing:
 
-- **Number keys to toggle activity:**
-  - 1 – Work (turns monitor to boring work screen, hands on keyboard; cancels CRT Game).
-  - 2 – CRT Game (toggle on/off, can be combined with the others).
-  - 3 – Fidget Spinner (toggle on/off, can be combined with the others).
-  - 4 – Phone under desk (toggle on/off, can be combined with the others).
+- **Keyboard → CRT monitor:**
+  - Typing/keys drive whatever is on screen: the boring work window, or the CRT game once it’s toggled on.
+  - A dedicated key (e.g. Tab) toggles the monitor between Work and Game.
+
+- **Mouse → everything else on the desk:**
+  - Click the fidget spinner on the desk to toggle spinning it.
+  - Click the phone under the desk to toggle using it.
+  - Both are independent toggles and can run alongside the CRT, since they use the mouse instead of the keyboard.
+
+- **Space / Right Mouse:**
+  - “Panic” button – instantly cancel every active distraction and switch back to Work (safe mode).
 
 
 #### Visual Feedback
