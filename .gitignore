@@ -1,0 +1,75 @@
+# ---------- Godot 4+ ----------
+# Imported assets cache (regenerated on open)
+.godot/
+
+# Legacy Godot 3 import cache — harmless to keep
+.import/
+
+# System/editor files that shouldn't be committed
+*.translation
+
+# Export output (adjust if you commit builds elsewhere)
+/build/
+/export/
+/exports/
+/bin/
+
+# Keep export_presets.cfg in the repo, but ignore the credentials file
+export_credentials.cfg
+
+# ---------- Godot Mono / C# ----------
+.mono/
+data_*/
+mono_crash.*.json
+
+# .NET build artifacts (if using C#)
+[Bb]in/
+[Oo]bj/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# NuGet
+*.nupkg
+.nuget/
+packages/
+!packages/build/
+
+# ---------- JetBrains (Rider, IntelliJ, WebStorm, etc.) ----------
+.idea/
+*.iml
+*.iws
+*.ipr
+
+# Rider-specific caches
+.idea.*/
+*.sln.iml
+
+# If you'd rather share code style / inspection profiles with the team,
+# comment out `.idea/` above and uncomment these instead:
+# .idea/**/workspace.xml
+# .idea/**/tasks.xml
+# .idea/**/usage.statistics.xml
+# .idea/**/dictionaries
+# .idea/**/shelf
+# .idea/**/contentModel.xml
+# .idea/**/dataSources/
+# .idea/**/dataSources.ids
+# .idea/**/dataSources.local.xml
+# .idea/**/dbnavigator.xml
+# .idea/httpRequests/
+
+# ---------- OS junk ----------
+.DS_Store
+Thumbs.db
+desktop.ini
+$RECYCLE.BIN/
+ehthumbs.db
+
+# ---------- Editor swap / backup ----------
+*.swp
+*.swo
+*~
+*.bak
+*.tmp
