@@ -1,3 +1,6 @@
 [gd_scene format=3 uid="uid://cdk3d2phm1nem"]
 
+[ext_resource type="Script" uid="uid://cypfqsll1sp03" path="res://src/computer/spreadsheet/spreadsheet.gd" id="1_spreadsheet"]
+
 [node name="Spreadsheet" type="Node2D" unique_id=1980257439]
+script = ExtResource("1_spreadsheet")
