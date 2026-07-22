@@ -126,9 +126,6 @@ Penalties (pick one simple rule for jam):
   - Boss head: distinct, maybe with angry eyebrows.
   - Co‑worker head: more casual.
 
-- Strikes:
-  - Small icons (e.g. red X) near top corner.
-
 ---
 
 ### 5. Jam Scope Plan (2–4 Days)
