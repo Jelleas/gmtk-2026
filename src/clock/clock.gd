@@ -1,15 +1,33 @@
 extends Node2D
 
-var time = 0.0
+var is_running = true
+
+var realtime = 0.0
+var time = 10 * 3600
 
 func _ready() -> void:
-	%TimeLabel.text = _format_time(time)
+	EventBus.day_started.connect(on_day_start)
+	
+	%TimeLabel.text = format_time(time)
 
 func _process(delta: float) -> void:
-	time += delta
-	%TimeLabel.text = _format_time(time)
+	if not is_running:
+		return
+	
+	realtime += delta
+	time -= delta * 60
+	
+	if time <= 0:
+		EventBus.day_ended.emit(realtime)
+		is_running = false
+		time = 0
+	
+	%TimeLabel.text = format_time(time)
 
-func _format_time(seconds: float) -> String:
+func on_day_start():
+	is_running = true
+
+func format_time(seconds: float) -> String:
 	var total := int(seconds)
 	var hours := total / 3600
 	var minutes := (total / 60) % 60
