@@ -1,7 +1,6 @@
 [gd_scene format=3 uid="uid://dolb7fbje0brd"]
 
 [ext_resource type="Script" uid="uid://c4mb3twtqamqu" path="res://src/clock/clock.gd" id="1_d4ub5"]
-[ext_resource type="Texture2D" uid="uid://ciuxyaoktugh5" path="res://icon.svg" id="2_2h20p"]
 [ext_resource type="Theme" path="res://resources/fonts/DSEG7ClassicMini-Bold.tres" id="3_iwbyt"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_digital"]
@@ -13,12 +12,17 @@ outline_color = Color(0.3, 0, 0, 1)
 [node name="Clock" type="Node2D" unique_id=861975606]
 script = ExtResource("1_d4ub5")
 
-[node name="ClockImage" type="Sprite2D" parent="." unique_id=1156596642]
-texture = ExtResource("2_2h20p")
+[node name="TimeLabelBackground" type="ColorRect" parent="." unique_id=1877368253]
+offset_left = -20.0
+offset_right = 200.0
+offset_bottom = 40.0
+color = Color(0, 0, 0, 1)
 
-[node name="TimeLabel" type="Label" parent="." unique_id=1877368252]
+[node name="TimeLabel" type="Label" parent="TimeLabelBackground" unique_id=1877368252]
 unique_name_in_owner = true
-offset_right = 160.0
+layout_mode = 0
+offset_left = 20.0
+offset_right = 220.0
 offset_bottom = 40.0
 theme = ExtResource("3_iwbyt")
 theme_type_variation = &"HeaderLarge"
