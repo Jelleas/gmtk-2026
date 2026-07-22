@@ -1,0 +1,25 @@
+[gd_scene format=3 uid="uid://dolb7fbje0brd"]
+
+[ext_resource type="Script" uid="uid://c4mb3twtqamqu" path="res://src/clock/clock.gd" id="1_d4ub5"]
+[ext_resource type="Texture2D" uid="uid://ciuxyaoktugh5" path="res://icon.svg" id="2_2h20p"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_digital"]
+font_size = 32
+font_color = Color(1, 0.1, 0.1, 1)
+outline_size = 2
+outline_color = Color(0.3, 0, 0, 1)
+
+[node name="Clock" type="Node2D" unique_id=861975606]
+script = ExtResource("1_d4ub5")
+
+[node name="ClockImage" type="Sprite2D" parent="." unique_id=1156596642]
+texture = ExtResource("2_2h20p")
+
+[node name="TimeLabel" type="Label" parent="." unique_id=1877368252]
+unique_name_in_owner = true
+offset_right = 160.0
+offset_bottom = 40.0
+theme_type_variation = &"HeaderLarge"
+label_settings = SubResource("LabelSettings_digital")
+horizontal_alignment = 1
+vertical_alignment = 1
