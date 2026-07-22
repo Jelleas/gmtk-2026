@@ -32,6 +32,10 @@ folder_colors={
 "res://resources/": "pink"
 }
 
+[gui]
+
+theme/custom="uid://4n71a6jddvam"
+
 [physics]
 
 3d/physics_engine="Jolt Physics"
