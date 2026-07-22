@@ -15,7 +15,7 @@ func _process(delta: float) -> void:
 		return
 	
 	realtime += delta
-	time -= delta * 60
+	time -= delta * 60 * negative_multiplier()
 	
 	if time <= 0:
 		EventBus.day_ended.emit(realtime)
@@ -33,3 +33,7 @@ func format_time(seconds: float) -> String:
 	var minutes := (total / 60) % 60
 	var secs := total % 60
 	return "%02d:%02d:%02d" % [hours, minutes, secs]
+
+func negative_multiplier():
+	var hours = 8 - (time / 3600)
+	return 1 / exp(hours / (10 - hours))
