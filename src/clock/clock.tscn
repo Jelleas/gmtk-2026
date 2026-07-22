@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" uid="uid://c4mb3twtqamqu" path="res://src/clock/clock.gd" id="1_d4ub5"]
 [ext_resource type="Texture2D" uid="uid://ciuxyaoktugh5" path="res://icon.svg" id="2_2h20p"]
+[ext_resource type="Theme" path="res://resources/fonts/DSEG7ClassicMini-Bold.tres" id="3_iwbyt"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_digital"]
 font_size = 32
@@ -19,6 +20,7 @@ texture = ExtResource("2_2h20p")
 unique_name_in_owner = true
 offset_right = 160.0
 offset_bottom = 40.0
+theme = ExtResource("3_iwbyt")
 theme_type_variation = &"HeaderLarge"
 label_settings = SubResource("LabelSettings_digital")
 horizontal_alignment = 1
