@@ -29,6 +29,7 @@ func _ready() -> void:
 			edit.add_theme_stylebox_override("normal", _make_stylebox(Color(1, 1, 1, 1)))
 			edit.add_theme_stylebox_override("focus", _make_stylebox(Color(0.7, 0.85, 1, 1)))
 			edit.focus_entered.connect(_on_cell_focus_entered.bind(row, col))
+			edit.text_changed.connect(_on_cell_text_changed.bind(row, col))
 			add_child(edit)
 
 			cell_edits[row][col] = edit
@@ -66,6 +67,10 @@ func _on_cell_focus_entered(row: int, col: int) -> void:
 	current_col = col
 	_update_top_bar()
 
+func _on_cell_text_changed(_new_text: String, row: int, col: int) -> void:
+	if row == current_row and col == current_col:
+		_update_top_bar()
+
 func _update_top_bar() -> void:
 	top_bar_label.text = cell_edits[current_row][current_col].text
 
@@ -73,7 +78,11 @@ func _input(event: InputEvent) -> void:
 	if not (event is InputEventKey) or not event.pressed:
 		return
 
-	var current_edit: LineEdit = cell_edits[current_row][current_col]
+	# Only intercept plain (unmodified) arrow keys to move the selected cell.
+	# Everything else - typing, backspace, and shortcuts like Ctrl/Cmd+C/V/A/Z -
+	# is left to fall through to the focused LineEdit's own native GUI input.
+	if event.is_command_or_control_pressed() or event.shift_pressed or event.alt_pressed:
+		return
 
 	if event.keycode == KEY_LEFT:
 		_move(0, -1)
@@ -83,23 +92,17 @@ func _input(event: InputEvent) -> void:
 		_move(-1, 0)
 	elif event.keycode == KEY_DOWN:
 		_move(1, 0)
-	elif event.keycode == KEY_BACKSPACE:
-		var text := current_edit.text
-		if text.length() > 0:
-			current_edit.text = text.substr(0, text.length() - 1)
-			current_edit.caret_column = current_edit.text.length()
-			_update_top_bar()
-	elif event.unicode >= 32:
-		current_edit.text += char(event.unicode)
-		current_edit.caret_column = current_edit.text.length()
-		_update_top_bar()
 	else:
 		return
 
 	get_viewport().set_input_as_handled()
 
 func _move(row_delta: int, col_delta: int) -> void:
-	cell_edits[current_row][current_col].release_focus()
 	current_row = clampi(current_row + row_delta, 0, ROWS - 1)
 	current_col = clampi(current_col + col_delta, 0, COLS - 1)
+	# Deferred: grabbing focus synchronously from within the _input() call that
+	# triggered it leaves the viewport's GUI key-focus dispatch in a broken
+	# state (has_focus() reports true, but subsequent keystrokes silently
+	# never reach the control). Deferring avoids this Godot quirk.
 	cell_edits[current_row][current_col].grab_focus()
+	cell_edits[current_row][current_col].edit()
