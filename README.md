@@ -24,34 +24,34 @@ Make the workday clock reach home time as fast as possible by secretly distracti
 
 2. **Choose Distractions**
    - At any time you can:
-     - Play a game on the CRT monitor.
-     - Spin the fidget spinner.
-     - Use your phone under the desk.
+	 - Play a game on the CRT monitor.
+	 - Spin the fidget spinner.
+	 - Use your phone under the desk.
    - The keyboard drives the CRT monitor (Work screen or Game), while the mouse independently drives the fidget spinner and phone — so any combination of CRT Game, Fidget Spinner, and Phone can be active **at the same time**, stacking their time-speed bonus.
    - Each active distraction:
-     - Makes the clock tick faster (day passes quicker).
-     - Increases your “risk” of being caught.
+	 - Makes the clock tick faster (day passes quicker).
+	 - Increases your “risk” of being caught.
    - Each distraction is toggled independently, and each must be individually cancelled before a peek catches you slacking.
 
 3. **Boss/Co‑worker Peeks**
    - At random intervals, a head pops up above the cubicle wall.
    - You have a short reaction window to:
-     - Cancel every active distraction (phone and/or fidget spinner, and/or the CRT game).
-     - Switch back to “work” view on the monitor.
+	 - Cancel every active distraction (phone and/or fidget spinner, and/or the CRT game).
+	 - Switch back to “work” view on the monitor.
    - Because any distraction can run alongside the others, a peek means you may need to cancel several at once, not just one.
 
 4. **Caught vs Safe**
    - If you’re still visibly slacking when someone peeks:
-     - You get a time penalty or extra task instead of a strike.
+	 - You get a time penalty or extra task instead of a strike.
    - Penalties add up and can still lead to being fired or game over.
    - If you’re “working” when they peek:
-     - You’re safe, no penalty.
+	 - You’re safe, no penalty.
 
 5. **Day Ends**
    - Once the clock reaches end time:
-     - Show how fast you finished the day in real time.
-     - Show how many times you were caught.
-     - Option to retry for a better score.
+	 - Show how fast you finished the day in real time.
+	 - Show how many times you were caught.
+	 - Option to retry for a better score.
 
 ---
 
@@ -85,8 +85,8 @@ You’re constantly toggling these on and off to make hours fly, while keeping t
 - Each peek:
   - Plays a short warning cue (sound or subtle screen flash).
   - After 1 second, they “look”:
-    - If any distraction is still active (phone, fidget spinner, and/or CRT game) → caught.
-    - If you’re working (all distractions cancelled) → okay.
+	- If any distraction is still active (phone, fidget spinner, and/or CRT game) → caught.
+	- If you’re working (all distractions cancelled) → okay.
 
 Penalties (pick one simple rule for jam):
 
@@ -121,12 +121,12 @@ Input is split by device, matching what your hands are actually doing:
 - Simple indicator of current activity (small icon/text).
 - Visual cues:
   - CRT shows either:
-    - Work window (spreadsheets etc.)  
-    - Game screen (bright colors).
+	- Work window (spreadsheets etc.)  
+	- Game screen (bright colors).
   - Hands position:
-    - On keyboard (working).
-    - On spinner.
-    - Under desk (phone).
+	- On keyboard (working).
+	- On spinner.
+	- Under desk (phone).
 
 - Heads popping up:
   - Boss head: distinct, maybe with angry eyebrows.
