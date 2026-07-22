@@ -1,8 +1,42 @@
-[gd_scene format=3 uid="uid://pnkt02rak0tl"]
+[gd_scene load_steps=4 format=3 uid="uid://pnkt02rak0tl"]
 
 [ext_resource type="PackedScene" uid="uid://3sjwwynn3cgc" path="res://src/computer/video_distraction/video_distraction.tscn" id="1_bjt8x"]
+[ext_resource type="Script" path="res://src/computer/computer.gd" id="2_computer"]
+[ext_resource type="PackedScene" uid="uid://cdk3d2phm1nem" path="res://src/computer/spreadsheet/spreadsheet.tscn" id="3_spreadsheet"]
 
 [node name="Computer" type="Node2D" unique_id=545264087]
+script = ExtResource("2_computer")
+
+[node name="HomeBackground" type="ColorRect" parent="." unique_id=284968035]
+offset_right = 1280.0
+offset_bottom = 720.0
+mouse_filter = 2
+color = Color(0.075, 0.13, 0.21, 1)
+
+[node name="Spreadsheet" parent="." unique_id=1980257439 instance=ExtResource("3_spreadsheet")]
+position = Vector2(280, 180)
 
 [node name="VideoDistraction" parent="." unique_id=1538641647 instance=ExtResource("1_bjt8x")]
 position = Vector2(676, 408)
+
+[node name="TaskbarBackground" type="ColorRect" parent="." unique_id=596488171]
+offset_top = 656.0
+offset_right = 1280.0
+offset_bottom = 720.0
+mouse_filter = 2
+color = Color(0.035, 0.055, 0.09, 1)
+
+[node name="Taskbar" type="TabContainer" parent="." unique_id=309735144]
+offset_top = 656.0
+offset_right = 1280.0
+offset_bottom = 720.0
+current_tab = 1
+tab_alignment = 0
+
+[node name="Spreadsheet" type="Control" parent="Taskbar" unique_id=2029577498]
+layout_mode = 2
+mouse_filter = 2
+
+[node name="Video Distraction" type="Control" parent="Taskbar" unique_id=902326437]
+layout_mode = 2
+mouse_filter = 2

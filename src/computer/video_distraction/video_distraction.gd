@@ -18,10 +18,6 @@ var lane_index := CENTER_LANE
 var center_position := Vector2.ZERO
 var lane_tween: Tween
 
-func _ready() -> void:
-	center_position = skateboarder.position
-	start()
-
 func start() -> void:
 	if is_running:
 		return
