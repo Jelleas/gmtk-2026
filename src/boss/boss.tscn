@@ -1,0 +1,10 @@
+[gd_scene format=3 uid="uid://drnwmmcdl4ifr"]
+
+[ext_resource type="Script" uid="uid://b32kqey3q3acs" path="res://src/boss/boss.gd" id="1_trtgp"]
+[ext_resource type="Texture2D" uid="uid://ciuxyaoktugh5" path="res://icon.svg" id="2_0wgbl"]
+
+[node name="Boss" type="Node2D" unique_id=821479703]
+script = ExtResource("1_trtgp")
+
+[node name="BossFace" type="Sprite2D" parent="." unique_id=1213623086]
+texture = ExtResource("2_0wgbl")
