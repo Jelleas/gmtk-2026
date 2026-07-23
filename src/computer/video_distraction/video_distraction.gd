@@ -14,12 +14,17 @@ var time_multiplier := 10.0
 @onready var lane_timer: Timer = $LaneTimer
 
 var is_running := false
+var is_punishment_active := false
 var lane_index := CENTER_LANE
 var center_position := Vector2.ZERO
 var lane_tween: Tween
 
+func _ready() -> void:
+	EventBus.punish.connect(_on_punish)
+	EventBus.punishment_ended.connect(_on_punishment_ended)
+
 func start() -> void:
-	if is_running:
+	if is_running or is_punishment_active:
 		return
 
 	is_running = true
@@ -58,3 +63,9 @@ func _on_lane_timer_timeout() -> void:
 	lane_tween = create_tween()
 	lane_tween.tween_property(skateboarder, "position", target_position, lane_move_duration).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
 	lane_timer.start(lane_change_interval)
+
+func _on_punish(_weight: float) -> void:
+	is_punishment_active = true
+
+func _on_punishment_ended() -> void:
+	is_punishment_active = false
