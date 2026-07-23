@@ -5,6 +5,7 @@
 [ext_resource type="Texture2D" uid="uid://djq0b6sik4lfi" path="res://resources/images/screen_big.png" id="3_njq1x"]
 [ext_resource type="Texture2D" uid="uid://6id4kgplte8j" path="res://resources/images/drawer.png" id="4_4toum"]
 [ext_resource type="Texture2D" uid="uid://cgs3ql80lfoxx" path="res://resources/images/keyboard.png" id="5_f2vto"]
+[ext_resource type="Texture2D" uid="uid://dqtrmve8qe6co" path="res://resources/images/fidget.png" id="6_w5j7g"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_8664f"]
 atlas = ExtResource("4_4toum")
@@ -56,6 +57,84 @@ animations = [{
 "speed": 12.0
 }]
 
+[sub_resource type="AtlasTexture" id="AtlasTexture_4toum"]
+atlas = ExtResource("6_w5j7g")
+region = Rect2(0, 0, 1280, 720)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_eahjm"]
+atlas = ExtResource("6_w5j7g")
+region = Rect2(1280, 0, 1280, 720)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_qo6pi"]
+atlas = ExtResource("6_w5j7g")
+region = Rect2(2560, 0, 1280, 720)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_1erip"]
+atlas = ExtResource("6_w5j7g")
+region = Rect2(3840, 0, 1280, 720)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_jak34"]
+atlas = ExtResource("6_w5j7g")
+region = Rect2(5120, 0, 1280, 720)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_n1tl4"]
+atlas = ExtResource("6_w5j7g")
+region = Rect2(6400, 0, 1280, 720)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_vwhb2"]
+atlas = ExtResource("6_w5j7g")
+region = Rect2(7680, 0, 1280, 720)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_36bkk"]
+atlas = ExtResource("6_w5j7g")
+region = Rect2(8960, 0, 1280, 720)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_3q6gu"]
+atlas = ExtResource("6_w5j7g")
+region = Rect2(10240, 0, 1280, 720)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_l01pw"]
+atlas = ExtResource("6_w5j7g")
+region = Rect2(11520, 0, 1280, 720)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_t56j7"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_4toum")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_eahjm")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_qo6pi")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_1erip")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_jak34")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_n1tl4")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_vwhb2")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_36bkk")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_3q6gu")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_l01pw")
+}],
+"loop": 1,
+"name": &"default",
+"speed": 10.0
+}]
+
 [node name="OfficeView" type="Node2D" unique_id=1646300841]
 
 [node name="Cubicle" type="Sprite2D" parent="." unique_id=1034416873]
@@ -76,4 +155,9 @@ offset = Vector2(640, 360)
 
 [node name="Keyboard" type="Sprite2D" parent="." unique_id=1051419264]
 texture = ExtResource("5_f2vto")
+offset = Vector2(640, 360)
+
+[node name="Fidget" type="AnimatedSprite2D" parent="." unique_id=420039547]
+sprite_frames = SubResource("SpriteFrames_t56j7")
+frame_progress = 0.9740623
 offset = Vector2(640, 360)
