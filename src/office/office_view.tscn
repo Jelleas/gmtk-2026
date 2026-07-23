@@ -4,6 +4,7 @@
 [ext_resource type="Texture2D" uid="uid://dxjnf4vokq43b" path="res://resources/images/desk.png" id="2_f2vto"]
 [ext_resource type="Texture2D" uid="uid://djq0b6sik4lfi" path="res://resources/images/screen_big.png" id="3_njq1x"]
 [ext_resource type="Texture2D" uid="uid://6id4kgplte8j" path="res://resources/images/drawer.png" id="4_4toum"]
+[ext_resource type="Texture2D" uid="uid://cgs3ql80lfoxx" path="res://resources/images/keyboard.png" id="5_f2vto"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_8664f"]
 atlas = ExtResource("4_4toum")
@@ -71,4 +72,8 @@ offset = Vector2(640, 360)
 
 [node name="Drawer" type="AnimatedSprite2D" parent="." unique_id=558066374]
 sprite_frames = SubResource("SpriteFrames_6y6ft")
+offset = Vector2(640, 360)
+
+[node name="Keyboard" type="Sprite2D" parent="." unique_id=1051419264]
+texture = ExtResource("5_f2vto")
 offset = Vector2(640, 360)
