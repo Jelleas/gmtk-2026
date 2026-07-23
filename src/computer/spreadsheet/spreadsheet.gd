@@ -159,3 +159,5 @@ func _move(row_delta: int, col_delta: int) -> void:
 	# never reach the control). Deferring avoids this Godot quirk.
 	cell_edits[current_row][current_col].grab_focus()
 	cell_edits[current_row][current_col].edit()
+	
+	print("EDIT CALLED", current_col)
