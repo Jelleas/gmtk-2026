@@ -50,6 +50,11 @@ func activate() -> void:
 
 	schedule_next_move()
 
+func _process(_delta: float) -> void:
+	if state == State.VISIBLE and not activity_check_timer.is_stopped():
+		var progress := 1.0 - activity_check_timer.time_left / activity_check_delay
+		EventBus.boss_watch_progress.emit(clampf(progress, 0.0, 1.0))
+
 func on_activity_start(source_id: StringName, _multiplier: float) -> void:
 	activity_states[source_id] = true
 
@@ -91,6 +96,7 @@ func on_punishment_ended() -> void:
 
 func retreat_boss_face() -> void:
 	activity_check_timer.stop()
+	EventBus.boss_watch_progress.emit(0.0)
 	state = State.RETREATING
 	var tween := create_tween()
 	tween.tween_property(boss_face, "position:y", hidden_y, retreat_duration).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)

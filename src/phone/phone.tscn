@@ -3,6 +3,7 @@
 [ext_resource type="Script" uid="uid://biw4vo866lm20" path="res://src/phone/phone.gd" id="1_phone"]
 [ext_resource type="PackedScene" uid="uid://dbdb7j38pxfkb" path="res://src/phone/dating_app/dating_app.tscn" id="2_dating_app"]
 [ext_resource type="PackedScene" uid="uid://d2x1cbdt5jkyc" path="res://src/phone/drawer/drawer.tscn" id="3_drawer"]
+[ext_resource type="Script" path="res://src/boss_watch_halo/boss_watch_halo.gd" id="4_halo"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxPhone"]
 bg_color = Color(0.0901961, 0.0666667, 0.0901961, 1)
@@ -64,6 +65,12 @@ theme_override_styles/panel = SubResource("StyleBoxScreen")
 
 [node name="DatingApp" parent="PhoneBody/Screen" unique_id=835218628 instance=ExtResource("2_dating_app")]
 layout_mode = 0
+
+[node name="BossWatchHalo" type="Node2D" parent="."]
+script = ExtResource("4_halo")
+source_id = &"dating_app"
+target_size = Vector2(900, 940)
+target_offset = Vector2(0, 0)
 
 [node name="Drawer" parent="." unique_id=1943529146 instance=ExtResource("3_drawer")]
 unique_name_in_owner = true

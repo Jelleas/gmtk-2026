@@ -1,6 +1,13 @@
 [gd_scene format=3 uid="uid://3sjwwynn3cgc"]
 
 [ext_resource type="Script" uid="uid://dhw7yatcunt7x" path="res://src/computer/video_distraction/video_distraction.gd" id="1_uxxpw"]
+[ext_resource type="Script" path="res://src/boss_watch_halo/boss_watch_halo.gd" id="2_halo"]
 
 [node name="VideoDistraction" type="Node2D" unique_id=1538641647]
 script = ExtResource("1_uxxpw")
+
+[node name="BossWatchHalo" type="Node2D" parent="."]
+script = ExtResource("2_halo")
+source_id = &"video_distraction"
+target_size = Vector2(1270, 642)
+target_offset = Vector2(-635, -321)

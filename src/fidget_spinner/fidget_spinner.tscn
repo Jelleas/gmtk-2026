@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" uid="uid://cefnk8bvjcibg" path="res://src/fidget_spinner/fidget_spinner.gd" id="1_tsi7e"]
 [ext_resource type="Texture2D" uid="uid://ciuxyaoktugh5" path="res://icon.svg" id="2_h7mvs"]
+[ext_resource type="Script" path="res://src/boss_watch_halo/boss_watch_halo.gd" id="3_halo"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_x2p3e"]
 radius = 64.0
@@ -14,6 +15,12 @@ texture = ExtResource("2_h7mvs")
 
 [node name="SpinTimer" type="Timer" parent="." unique_id=1827216203]
 one_shot = true
+
+[node name="BossWatchHalo" type="Node2D" parent="."]
+script = ExtResource("3_halo")
+source_id = &"fidget_spinner"
+target_size = Vector2(128, 128)
+target_offset = Vector2(-64, -64)
 
 [node name="ClickArea" type="Area2D" parent="." unique_id=1768960208]
 
