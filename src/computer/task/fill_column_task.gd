@@ -1,5 +1,5 @@
 class_name FillColumnTask
-extends Task
+extends SpreadsheetTask
 
 const COLUMN_NUMBERS: Array[String] = [
 	"first",
@@ -23,21 +23,22 @@ func _init(spreadsheet: Spreadsheet, _col_number: int = -1) -> void:
 	else:
 		col_number = _col_number
 
-	spreadsheet.cell_text_changed.connect(_on_cell_text_changed)
-
 	super._init(
 		"Fill column %s" % [col_number],
 		"Fill column %s with numbers" % [col_number],
 		spreadsheet,
 	)
 
+func start_task() -> void:
+	var spreadsheet := get_spreadsheet()
+	spreadsheet.clear_cells()
+	for row in range(spreadsheet.ROWS):
+		spreadsheet.set_cell_placeholder(row, col_number, "0")
+		spreadsheet.set_cell_highlighted(row, col_number, true)
+
 func check_completed() -> bool:
-	var spreadsheet := target as Spreadsheet
+	var spreadsheet := get_spreadsheet()
 	for row in range(spreadsheet.ROWS):
 		if not spreadsheet.get_cell_text(row, col_number).is_valid_float():
 			return false
 	return true
-
-func _on_cell_text_changed(_row: int, _col: int, _text: String) -> void:
-	if check_completed():
-		EventBus.task_completed.emit(self)

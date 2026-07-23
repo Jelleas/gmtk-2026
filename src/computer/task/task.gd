@@ -9,4 +9,5 @@ func _init(p_title: String, p_description: String, p_target: Node) -> void:
 	description = p_description
 	target = p_target
 
+@abstract func start_task() -> void
 @abstract func check_completed() -> bool
