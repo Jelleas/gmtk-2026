@@ -3,6 +3,7 @@ class_name TaskStore
 var TASK_TYPES := [
 	FillRowTask,
 	EmptySpreadsheetTask,
+	FillColumnTask,
 ]
 
 var spreadsheet: Spreadsheet
