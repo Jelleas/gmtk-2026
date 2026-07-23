@@ -103,9 +103,9 @@ func _project_rect(rect: Rect2) -> PackedVector2Array:
 
 
 func _project_point(point: Vector2) -> Vector2:
-	var scale := _perspective_scale(point.y)
+	var perspective_scale := _perspective_scale(point.y)
 	var center_x := keyboard_size.x * 0.5
-	return Vector2(center_x + (point.x - center_x) * scale, point.y * PERSPECTIVE_DEPTH_SCALE)
+	return Vector2(center_x + (point.x - center_x) * perspective_scale, point.y * PERSPECTIVE_DEPTH_SCALE)
 
 
 func _perspective_scale(y: float) -> float:
@@ -141,11 +141,11 @@ func _add_row(labels: Array[String], start_x: float, row: float, widths: Array[f
 
 func _add_key(key_id: String, x_units: float, y_units: float, width_units := 1.0) -> void:
 	var width := KEY_SIZE.x * width_units + KEY_GAP * (width_units - 1.0)
-	var position := Vector2(x_units * (KEY_SIZE.x + KEY_GAP), y_units * (KEY_SIZE.y + KEY_GAP))
+	var key_position := Vector2(x_units * (KEY_SIZE.x + KEY_GAP), y_units * (KEY_SIZE.y + KEY_GAP))
 	keys.append({
 		"id": key_id,
 		"label": _label_for_key(key_id),
-		"rect": Rect2(position, Vector2(width, KEY_SIZE.y)),
+		"rect": Rect2(key_position, Vector2(width, KEY_SIZE.y)),
 	})
 
 
