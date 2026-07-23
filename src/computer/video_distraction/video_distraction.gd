@@ -78,6 +78,7 @@ func _on_lane_timer_timeout() -> void:
 
 func _on_punish(_weight: float) -> void:
 	is_punishment_active = true
+	stop()
 
 func _on_punishment_ended() -> void:
 	is_punishment_active = false
