@@ -1,5 +1,7 @@
 extends Control
 
+class_name Spreadsheet
+
 signal cell_text_changed(row: int, col: int, text: String)
 
 const COLS := 8
