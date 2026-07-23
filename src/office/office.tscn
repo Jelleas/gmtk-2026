@@ -5,6 +5,7 @@
 [ext_resource type="PackedScene" uid="uid://drnwmmcdl4ifr" path="res://src/boss/boss.tscn" id="3_jfxul"]
 [ext_resource type="PackedScene" uid="uid://dolb7fbje0brd" path="res://src/clock/clock.tscn" id="4_yltk5"]
 [ext_resource type="PackedScene" uid="uid://pnkt02rak0tl" path="res://src/computer/computer.tscn" id="5_jfxul"]
+[ext_resource type="PackedScene" uid="uid://do1n2ahu8dm8u" path="res://src/keyboard/keyboard.tscn" id="6_yltk5"]
 
 [node name="Office" type="Node2D" unique_id=1406735297]
 script = ExtResource("1_6infj")
@@ -49,3 +50,7 @@ render_target_update_mode = 4
 
 [node name="Computer" parent="Screen/SubViewport" unique_id=545264087 instance=ExtResource("5_jfxul")]
 position = Vector2(40, -25)
+
+[node name="Keyboard" parent="." unique_id=1045196519 instance=ExtResource("6_yltk5")]
+position = Vector2(441, 549)
+scale = Vector2(0.6, 0.6)
