@@ -23,8 +23,8 @@ func _init(spreadsheet: Spreadsheet, _row_number: int=-1) -> void:
 	else:
 		row_number = _row_number
 
-	spreadsheet.cell_text_changed.connect(check_completed)
-	
+	spreadsheet.cell_text_changed.connect(_on_cell_text_changed)
+
 	super._init(
 		"Fill the first row",
 		"Enter a number in every cell of the spreadsheet's %s row." % [ROW_NUMBERS[row_number]],
@@ -34,6 +34,10 @@ func _init(spreadsheet: Spreadsheet, _row_number: int=-1) -> void:
 func check_completed() -> bool:
 	var spreadsheet := target as Spreadsheet
 	for col in range(spreadsheet.COLS):
-		if not spreadsheet.get_cell_text(0, col).is_valid_float():
+		if not spreadsheet.get_cell_text(row_number, col).is_valid_float():
 			return false
 	return true
+
+func _on_cell_text_changed(_row: int, _col: int, _text: String) -> void:
+	if check_completed():
+		EventBus.task_completed.emit(self)
