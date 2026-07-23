@@ -14,6 +14,7 @@ const PULSE_AMOUNT := 0.15
 var is_active := false
 var progress := 0.0
 var is_noticed := false
+var noticed_frame := -1
 
 func _ready() -> void:
 	EventBus.activity_started.connect(_on_activity_started)
@@ -36,8 +37,15 @@ func _on_activity_ended(id: StringName) -> void:
 	if id != source_id:
 		return
 	is_active = false
-	is_noticed = false
-	progress = 0.0
+	# An activity can stop itself synchronously as a side effect of being
+	# noticed (e.g. video_distraction.gd stops on punish). That cascading
+	# end happens in the same frame as the notice and shouldn't hide the
+	# "you got caught" indicator. A stop in any later frame is a deliberate
+	# player action (e.g. putting the phone away) and should clear it.
+	var is_self_stop_from_notice := is_noticed and Engine.get_process_frames() == noticed_frame
+	if not is_self_stop_from_notice:
+		is_noticed = false
+		progress = 0.0
 	queue_redraw()
 
 func _on_boss_watch_progress(value: float) -> void:
@@ -48,6 +56,7 @@ func _on_punish(_weight: float) -> void:
 	if not is_active:
 		return
 	is_noticed = true
+	noticed_frame = Engine.get_process_frames()
 	queue_redraw()
 
 func _on_punishment_ended() -> void:
