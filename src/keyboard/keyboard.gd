@@ -1,13 +1,13 @@
 extends Node2D
 
-const KEY_SIZE := Vector2(40.0, 38.0)
+const KEY_SIZE := Vector2(32.0, 30.0)
 const KEY_GAP := 4.0
 const KEY_PRESS_OFFSET := 3.0
-const FONT_SIZE := 16
+const FONT_SIZE := 6
 const KEY_CAP_DEPTH := 5.0
-const PERSPECTIVE_TOP_SCALE := 0.85
-const PERSPECTIVE_DEPTH_SCALE := 0.92
-const FRONT_LIP_DEPTH := 8.0
+const PERSPECTIVE_TOP_SCALE := 0.8
+const PERSPECTIVE_DEPTH_SCALE := 0.7
+const FRONT_LIP_DEPTH := 20.0
 
 const BODY_COLOR := Color("b8b4a3")
 const BODY_HIGHLIGHT_COLOR := Color("ebe5d2")
@@ -51,8 +51,8 @@ func _draw() -> void:
 
 	var body_rect := Rect2(Vector2(-16.0, -18.0), keyboard_size + Vector2(32.0, 32.0))
 	var body_quad := _project_rect(body_rect)
-	body_quad[0].x += 8.0 # Top-left inward.
-	body_quad[1].x -= 8.0 # Top-right inward.
+	body_quad[0].x += 9.0 # Top-left inward.
+	body_quad[1].x -= 9.0 # Top-right inward.
 	var front_lip := PackedVector2Array([
 		body_quad[3],
 		body_quad[2],
