@@ -1,0 +1,19 @@
+[gd_scene format=3 uid="uid://dk37h2v0q8mxr"]
+
+[ext_resource type="Script" uid="uid://vpwsd3vonduo" path="res://src/postit/postit.gd" id="1_postit"]
+
+[node name="PostIt" type="Node2D" unique_id=1177477717]
+script = ExtResource("1_postit")
+
+[node name="Background" type="ColorRect" parent="." unique_id=1241816953]
+offset_right = 240.0
+offset_bottom = 240.0
+mouse_filter = 2
+color = Color(1, 0.94, 0.42, 1)
+
+[node name="TodoList" type="VBoxContainer" parent="." unique_id=1809530913]
+offset_left = 16.0
+offset_top = 16.0
+offset_right = 224.0
+offset_bottom = 224.0
+theme_override_constants/separation = 6
