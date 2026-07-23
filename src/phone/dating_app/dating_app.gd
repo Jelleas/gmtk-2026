@@ -83,6 +83,7 @@ func _finish_swipe(card: DatingCard) -> void:
 	var new_profile: Dictionary = PROFILES[(profile_index + STACK_SIZE - 1) % PROFILES.size()]
 	var new_card := _create_card(new_profile)
 	card_stack.add_child(new_card)
+	card_stack.move_child(new_card, 0)
 	stacked_cards.append(new_card)
 	_set_stack_pose(new_card, STACK_SIZE - 1, false)
 	active_card = stacked_cards.front()
@@ -110,7 +111,7 @@ func _create_card(profile: Dictionary) -> DatingCard:
 func _set_stack_pose(card: DatingCard, depth: int, animate: bool) -> void:
 	var target_position := Vector2(0.0, depth * 12.0)
 	var target_scale := Vector2.ONE * (1.0 - depth * 0.04)
-	card.z_index = STACK_SIZE - depth
+	card.z_index = 0
 	if not animate:
 		card.position = target_position
 		card.scale = target_scale

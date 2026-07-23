@@ -2,7 +2,6 @@
 
 [ext_resource type="Script" uid="uid://biw4vo866lm20" path="res://src/phone/phone.gd" id="1_phone"]
 [ext_resource type="PackedScene" uid="uid://dbdb7j38pxfkb" path="res://src/phone/dating_app/dating_app.tscn" id="2_dating_app"]
-[ext_resource type="PackedScene" uid="uid://d2x1cbdt5jkyc" path="res://src/phone/drawer/drawer.tscn" id="3_drawer"]
 [ext_resource type="Script" path="res://src/boss_watch_halo/boss_watch_halo.gd" id="4_halo"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxPhone"]
@@ -33,6 +32,7 @@ layout_mode = 3
 anchors_preset = 0
 offset_right = 900.0
 offset_bottom = 940.0
+mouse_filter = 2
 script = ExtResource("1_phone")
 
 [node name="PhoneBody" type="Panel" parent="." unique_id=100427171]
@@ -71,12 +71,3 @@ script = ExtResource("4_halo")
 source_id = &"dating_app"
 target_size = Vector2(900, 940)
 target_offset = Vector2(0, 0)
-
-[node name="Drawer" parent="." unique_id=1943529146 instance=ExtResource("3_drawer")]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(360, 340)
-layout_mode = 0
-offset_left = 450.0
-offset_top = 565.0
-offset_right = 900.0
-offset_bottom = 940.0
