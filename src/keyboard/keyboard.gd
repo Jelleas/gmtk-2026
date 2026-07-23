@@ -32,7 +32,7 @@ func _ready() -> void:
 	queue_redraw()
 
 
-func _unhandled_key_input(event: InputEvent) -> void:
+func _input(event: InputEvent) -> void:
 	var key_event := event as InputEventKey
 	if key_event == null:
 		return
