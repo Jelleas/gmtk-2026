@@ -5,11 +5,13 @@ const ACTIVITY_MULTIPLIER := 5.0
 const SWIPE_MULTIPLIER_INCREASE := 0.5
 const SWIPE_RESET_DELAY := 3.0
 const HELD_POSITION := Vector2(14.0, 8.0)
-const STOWED_SCALE := Vector2(0.22, 0.22)
+const STOWED_SCALE := Vector2(0.55, 0.55)
 const STOWED_ROTATION := PI * 0.5
 
 @onready var phone_body: Panel = %PhoneBody
-@onready var drawer: PhoneDrawer = %Drawer
+@export var drawer_path: NodePath
+
+@onready var drawer = get_node(drawer_path)
 @onready var dating_app: DatingApp = $PhoneBody/Screen/DatingApp
 
 var is_activity_active := false
@@ -20,6 +22,7 @@ func _ready() -> void:
 	drawer.progress_changed.connect(_on_drawer_progress_changed)
 	drawer.opened.connect(_on_drawer_opened)
 	drawer.closing.connect(_on_drawer_closing)
+	drawer.closed.connect(_on_drawer_closed)
 	dating_app.profile_swiped.connect(_on_profile_swiped)
 	swipe_reset_timer = Timer.new()
 	swipe_reset_timer.one_shot = true
@@ -39,6 +42,11 @@ func _on_drawer_opened() -> void:
 
 func _on_drawer_closing() -> void:
 	_stop_activity()
+
+
+func _on_drawer_closed() -> void:
+	phone_body.hide()
+
 
 func _start_activity() -> void:
 	if is_activity_active:
@@ -72,8 +80,9 @@ func _reset_swipe_multiplier() -> void:
 		EventBus.activity_started.emit(SOURCE_ID, current_activity_multiplier)
 
 func _on_drawer_progress_changed(progress: float) -> void:
-	if progress > 0.0:
-		phone_body.visible = true
+	# The drawer sprite occludes the phone while it is stowed; only hide it once
+	# it has fully cleared the visible drawer area.
+	phone_body.visible = progress > 0.02
 
 	var stow_progress := 1.0 - progress
 	var entry_position := _entry_position()
@@ -85,13 +94,18 @@ func _on_drawer_progress_changed(progress: float) -> void:
 		phone_body.position = entry_position.lerp(_stowed_position(), (stow_progress - 0.5) * 2.0)
 		phone_body.rotation = STOWED_ROTATION
 		phone_body.scale = STOWED_SCALE
-	if is_zero_approx(progress):
-		phone_body.hide()
 
 func _stowed_position() -> Vector2:
-	var drawer_center := drawer.position + Vector2(drawer.size.x * 0.5, 90.0)
+	if drawer.has_method("get_phone_stow_position"):
+		var local_stow_position: Vector2 = get_global_transform().affine_inverse() * drawer.get_phone_stow_position()
+		return local_stow_position - phone_body.pivot_offset
+
+	var drawer_center: Vector2 = drawer.position + Vector2(drawer.size.x * 0.5, 90.0)
 	return drawer_center - phone_body.pivot_offset
 
 func _entry_position() -> Vector2:
-	var entry_center := Vector2(_stowed_position().x + phone_body.pivot_offset.x, drawer.position.y - 80.0)
-	return entry_center - phone_body.pivot_offset
+	if drawer.has_method("get_phone_entry_position"):
+		var local_entry_position: Vector2 = get_global_transform().affine_inverse() * drawer.get_phone_entry_position()
+		return local_entry_position - phone_body.pivot_offset
+
+	return _stowed_position() - Vector2(0.0, 170.0)
