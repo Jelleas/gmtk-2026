@@ -153,11 +153,9 @@ func _input(event: InputEvent) -> void:
 func _move(row_delta: int, col_delta: int) -> void:
 	current_row = clampi(current_row + row_delta, 0, ROWS - 1)
 	current_col = clampi(current_col + col_delta, 0, COLS - 1)
-	# Deferred: grabbing focus synchronously from within the _input() call that
-	# triggered it leaves the viewport's GUI key-focus dispatch in a broken
-	# state (has_focus() reports true, but subsequent keystrokes silently
-	# never reach the control). Deferring avoids this Godot quirk.
+	# select_all() puts the caret/selection over the whole existing value so the
+	# next keystroke (typing or Backspace/Delete) immediately replaces it, matching
+	# what a mouse click into the cell would do.
 	cell_edits[current_row][current_col].grab_focus()
 	cell_edits[current_row][current_col].edit()
-	
-	print("EDIT CALLED", current_col)
+	cell_edits[current_row][current_col].select_all()
