@@ -1,45 +1,6 @@
 [gd_scene format=3 uid="uid://3sjwwynn3cgc"]
 
 [ext_resource type="Script" uid="uid://dhw7yatcunt7x" path="res://src/computer/video_distraction/video_distraction.gd" id="1_uxxpw"]
-[ext_resource type="Texture2D" uid="uid://ciuxyaoktugh5" path="res://icon.svg" id="2_vptas"]
-
-[sub_resource type="Gradient" id="Gradient_speed_trail"]
-offsets = PackedFloat32Array(0, 0.2, 1)
-colors = PackedColorArray(0.35, 0.8, 1, 0, 0.35, 0.8, 1, 0.9, 0.35, 0.8, 1, 0)
-
-[sub_resource type="GradientTexture2D" id="GradientTexture2D_speed_trail"]
-gradient = SubResource("Gradient_speed_trail")
-width = 6
-height = 36
-fill_from = Vector2(0.5, 0)
-fill_to = Vector2(0.5, 1)
-
-[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_speed_trail"]
-particle_flag_align_y = true
-particle_flag_disable_z = true
-direction = Vector3(0, 1, 0)
-spread = 20.0
-initial_velocity_min = 120.0
-initial_velocity_max = 200.0
-gravity = Vector3(0, 0, 0)
-scale_min = 0.5
-color = Color(0.35, 0.8, 1, 0.8)
 
 [node name="VideoDistraction" type="Node2D" unique_id=1538641647]
 script = ExtResource("1_uxxpw")
-
-[node name="Skateboarder" type="Sprite2D" parent="." unique_id=1456136707]
-texture = ExtResource("2_vptas")
-
-[node name="SpeedTrail" type="GPUParticles2D" parent="Skateboarder" unique_id=336377879]
-emitting = false
-amount = 48
-texture = SubResource("GradientTexture2D_speed_trail")
-lifetime = 0.65
-visibility_rect = Rect2(-80, -40, 160, 240)
-process_material = SubResource("ParticleProcessMaterial_speed_trail")
-
-[node name="LaneTimer" type="Timer" parent="." unique_id=1495293069]
-one_shot = true
-
-[connection signal="timeout" from="LaneTimer" to="." method="_on_lane_timer_timeout"]
