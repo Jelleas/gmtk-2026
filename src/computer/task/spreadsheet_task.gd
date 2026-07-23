@@ -9,5 +9,4 @@ func get_spreadsheet() -> Spreadsheet:
 	return target as Spreadsheet
 
 func _on_cell_text_changed(_row: int, _col: int, _text: String) -> void:
-	if check_completed():
-		EventBus.task_completed.emit(self)
+	notify_changed()

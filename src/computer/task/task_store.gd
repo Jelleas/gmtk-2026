@@ -26,11 +26,16 @@ func assign_new_task() -> Task:
 
 	var task_type: Script = available_types[randi() % available_types.size()]
 	var task: Task = task_type.new(spreadsheet)
+	task.changed.connect(_on_task_changed.bind(task))
 	task.start_task()
 	active_tasks.append(task)
 
 	EventBus.task_added.emit(task)
 	return task
+
+func _on_task_changed(task: Task) -> void:
+	if task.check_completed():
+		EventBus.task_completed.emit(task)
 
 func _has_active_task_of_type(task_type: Script) -> bool:
 	for task in active_tasks:
