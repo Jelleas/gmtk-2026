@@ -4,7 +4,7 @@ const SOURCE_ID := &"fidget_spinner"
 const ACTIVITY_MULTIPLIER := 2.0
 
 @export var spin_speed := TAU
-@export var spin_duration := 3.0
+@export var spin_duration := 60.0
 
 @onready var spin_timer: Timer = $SpinTimer
 @onready var spinner: Sprite2D = $Spinner

@@ -3,6 +3,7 @@
 [ext_resource type="PackedScene" uid="uid://3sjwwynn3cgc" path="res://src/computer/video_distraction/video_distraction.tscn" id="1_bjt8x"]
 [ext_resource type="Script" uid="uid://j0wqy6uatgq7" path="res://src/computer/computer.gd" id="2_computer"]
 [ext_resource type="PackedScene" uid="uid://cdk3d2phm1nem" path="res://src/computer/spreadsheet/spreadsheet.tscn" id="3_spreadsheet"]
+[ext_resource type="Script" path="res://src/computer/punishment/punishment_task.gd" id="4_punishment"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_button98_normal"]
 bg_color = Color(0.75, 0.75, 0.75, 1)
@@ -98,3 +99,6 @@ metadata/_tab_index = 1
 
 [node name="VideoRunner" parent="PanelContainer/MarginContainer/VBoxContainer/Taskbar/VideoDistraction" unique_id=1538641647 instance=ExtResource("1_bjt8x")]
 unique_name_in_owner = true
+
+[node name="PunishmentTask" type="Node" parent="." unique_id=1835767381]
+script = ExtResource("4_punishment")

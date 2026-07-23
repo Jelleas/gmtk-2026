@@ -1,11 +1,14 @@
 extends Control
 
+signal cell_text_changed(row: int, col: int, text: String)
+
 const COLS := 8
 const ROWS := 12
 
 var cell_edits: Array = []
 var top_bar_label: Label
 var top_bar_background: ColorRect
+var status_message := ""
 
 var current_row := 0
 var current_col := 0
@@ -81,6 +84,33 @@ func _make_stylebox(color: Color) -> StyleBoxFlat:
 	style.content_margin_bottom = 2
 	return style
 
+func set_cell_text(row: int, col: int, text: String) -> void:
+	cell_edits[row][col].text = text
+
+func get_cell_text(row: int, col: int) -> String:
+	return cell_edits[row][col].text
+
+func set_cell_placeholder(row: int, col: int, text: String) -> void:
+	cell_edits[row][col].placeholder_text = text
+
+func set_cell_highlighted(row: int, col: int, highlighted: bool) -> void:
+	var edit: LineEdit = cell_edits[row][col]
+	var normal_color := Color(1.0, 0.85, 0.55, 1.0) if highlighted else Color(1, 1, 1, 1)
+	var focus_color := Color(1.0, 0.75, 0.35, 1.0) if highlighted else Color(0.7, 0.85, 1, 1)
+	edit.add_theme_stylebox_override("normal", _make_stylebox(normal_color))
+	edit.add_theme_stylebox_override("focus", _make_stylebox(focus_color))
+
+func clear_cells() -> void:
+	for row in range(ROWS):
+		for col in range(COLS):
+			set_cell_text(row, col, "")
+			set_cell_placeholder(row, col, "")
+			set_cell_highlighted(row, col, false)
+
+func set_status_message(message: String) -> void:
+	status_message = message
+	_update_top_bar()
+
 func _on_cell_focus_entered(row: int, col: int) -> void:
 	current_row = row
 	current_col = col
@@ -89,9 +119,10 @@ func _on_cell_focus_entered(row: int, col: int) -> void:
 func _on_cell_text_changed(_new_text: String, row: int, col: int) -> void:
 	if row == current_row and col == current_col:
 		_update_top_bar()
+	cell_text_changed.emit(row, col, _new_text)
 
 func _update_top_bar() -> void:
-	top_bar_label.text = cell_edits[current_row][current_col].text
+	top_bar_label.text = status_message if not status_message.is_empty() else cell_edits[current_row][current_col].text
 
 func _input(event: InputEvent) -> void:
 	if not (event is InputEventKey) or not event.pressed:
