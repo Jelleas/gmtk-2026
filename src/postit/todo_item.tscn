@@ -2,15 +2,18 @@
 
 [ext_resource type="Script" uid="uid://d2kvxokhi6ct2" path="res://src/postit/todo_item.gd" id="1_todo_item"]
 [ext_resource type="FontFile" uid="uid://d0jbox8bmnpvr" path="res://resources/fonts/PatrickHand-Regular.ttf" id="2_font"]
+[ext_resource type="Script" path="res://src/postit/checkbox_box.gd" id="3_checkbox_box"]
 
 [node name="TodoItem" type="HBoxContainer" unique_id=65078106]
 theme_override_constants/separation = 8
 script = ExtResource("1_todo_item")
 
-[node name="CheckBox" type="CheckBox" parent="." unique_id=1254078433]
+[node name="CheckboxBox" type="Control" parent="." unique_id=1254078433]
+custom_minimum_size = Vector2(22, 22)
 layout_mode = 2
-focus_mode = 0
+size_flags_vertical = 4
 mouse_filter = 2
+script = ExtResource("3_checkbox_box")
 
 [node name="Label" type="Label" parent="." unique_id=605910157]
 layout_mode = 2

@@ -10,12 +10,12 @@ extends HBoxContainer
 @export var checked: bool = false:
 	set(value):
 		checked = value
-		if check_box:
-			check_box.button_pressed = value
+		if checkbox_box:
+			checkbox_box.checked = value
 
-@onready var check_box: CheckBox = $CheckBox
+@onready var checkbox_box: CheckboxBox = $CheckboxBox
 @onready var label: Label = $Label
 
 func _ready() -> void:
-	check_box.button_pressed = checked
+	checkbox_box.checked = checked
 	label.text = text
