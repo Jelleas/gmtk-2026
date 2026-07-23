@@ -28,6 +28,7 @@ func _ready() -> void:
 			var edit := LineEdit.new()
 			edit.add_theme_font_size_override("font_size", 14)
 			edit.add_theme_color_override("font_color", Color(0, 0, 0, 1))
+			edit.add_theme_color_override("font_placeholder_color", Color(0.45, 0.45, 0.45, 1))
 			edit.add_theme_stylebox_override("normal", _make_stylebox(Color(1, 1, 1, 1)))
 			edit.add_theme_stylebox_override("focus", _make_stylebox(Color(0.7, 0.85, 1, 1)))
 			edit.focus_entered.connect(_on_cell_focus_entered.bind(row, col))
