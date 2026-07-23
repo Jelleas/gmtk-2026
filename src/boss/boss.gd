@@ -75,7 +75,7 @@ func check_active_activities() -> void:
 	var activity_weight := 0.0
 	for is_active in activity_states.values():
 		if is_active:
-			activity_weight += 1.0
+			activity_weight += 20.0
 
 	has_active_activities = activity_weight > 0.0
 	if has_active_activities:

@@ -1,0 +1,51 @@
+[gd_scene format=3 uid="uid://bkb5etxc4sc31"]
+
+[ext_resource type="Script" uid="uid://5xdd1cuf8ycm" path="res://src/office/office.gd" id="1_6infj"]
+[ext_resource type="PackedScene" uid="uid://qu7neb5oc0up" path="res://src/fidget_spinner/fidget_spinner.tscn" id="2_oeo4l"]
+[ext_resource type="PackedScene" uid="uid://drnwmmcdl4ifr" path="res://src/boss/boss.tscn" id="3_jfxul"]
+[ext_resource type="PackedScene" uid="uid://dolb7fbje0brd" path="res://src/clock/clock.tscn" id="4_yltk5"]
+[ext_resource type="PackedScene" uid="uid://pnkt02rak0tl" path="res://src/computer/computer.tscn" id="5_jfxul"]
+
+[node name="Office" type="Node2D" unique_id=1406735297]
+script = ExtResource("1_6infj")
+
+[node name="Cubicle" type="ColorRect" parent="." unique_id=1458433353]
+process_mode = 4
+offset_left = 204.0
+offset_top = 126.0
+offset_right = 1080.0
+offset_bottom = 561.0
+
+[node name="Desk" type="ColorRect" parent="." unique_id=1577481305]
+process_mode = 4
+offset_left = 202.0
+offset_top = 564.0
+offset_right = 1080.0
+offset_bottom = 648.0
+color = Color(0.75686276, 0.6039216, 0.41960785, 1)
+
+[node name="FidgetSpinner" parent="." unique_id=1074957713 instance=ExtResource("2_oeo4l")]
+z_index = 1
+position = Vector2(297, 546)
+
+[node name="Clock" parent="." unique_id=861975606 instance=ExtResource("4_yltk5")]
+position = Vector2(241, 139)
+
+[node name="Boss" parent="." unique_id=821479703 instance=ExtResource("3_jfxul")]
+z_index = -1
+position = Vector2(713, 383)
+
+[node name="Screen" type="SubViewportContainer" parent="." unique_id=429750863]
+offset_left = 407.0
+offset_top = 186.0
+offset_right = 924.0
+offset_bottom = 529.0
+stretch = true
+
+[node name="SubViewport" type="SubViewport" parent="Screen" unique_id=668423553]
+handle_input_locally = false
+size = Vector2i(517, 343)
+render_target_update_mode = 4
+
+[node name="Computer" parent="Screen/SubViewport" unique_id=545264087 instance=ExtResource("5_jfxul")]
+position = Vector2(40, -25)
