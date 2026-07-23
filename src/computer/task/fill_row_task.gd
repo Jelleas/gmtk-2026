@@ -26,8 +26,8 @@ func _init(spreadsheet: Spreadsheet, _row_number: int=-1) -> void:
 	spreadsheet.cell_text_changed.connect(_on_cell_text_changed)
 
 	super._init(
-		"Fill the first row",
-		"Enter a number in every cell of the spreadsheet's %s row." % [ROW_NUMBERS[row_number]],
+		"Fill row %s" % [row_number],
+		"Fill row %s with numbers" % [row_number],
 		spreadsheet,
 	)
 

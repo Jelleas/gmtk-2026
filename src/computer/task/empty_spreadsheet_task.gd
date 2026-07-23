@@ -3,8 +3,8 @@ extends Task
 
 func _init(spreadsheet: Spreadsheet) -> void:
 	super._init(
+		"Empty",
 		"Empty the spreadsheet",
-		"Delete the contents of every cell in the spreadsheet.",
 		spreadsheet,
 	)
 	spreadsheet.cell_text_changed.connect(_on_cell_text_changed)
