@@ -6,17 +6,24 @@ signal cell_text_changed(row: int, col: int, text: String)
 
 const COLS := 8
 const ROWS := 12
+const ROW_HEADER_WIDTH := 32.0
+const HEADER_COLOR := Color(0.75, 0.75, 0.75, 1)
+const HEADER_BORDER_COLOR := Color(0.4, 0.4, 0.4, 1)
 
 var cell_edits: Array = []
 var top_bar_label: Label
 var top_bar_background: ColorRect
 var status_message := ""
+var col_header_labels: Array = []
+var row_header_labels: Array = []
+var corner_box: Label
 
 var current_row := 0
 var current_col := 0
 
 func _ready() -> void:
 	_build_top_bar()
+	_build_headers()
 
 	cell_edits.resize(ROWS)
 
@@ -54,26 +61,77 @@ func _build_top_bar() -> void:
 	top_bar_label.add_theme_color_override("font_color", Color(0, 0, 0, 1))
 	add_child(top_bar_label)
 
+func _build_headers() -> void:
+	corner_box = _make_header_label("")
+	add_child(corner_box)
+
+	col_header_labels.resize(COLS)
+	for col in range(COLS):
+		var label := _make_header_label(char(65 + col))
+		add_child(label)
+		col_header_labels[col] = label
+
+	row_header_labels.resize(ROWS)
+	for row in range(ROWS):
+		var label := _make_header_label(str(row + 1))
+		add_child(label)
+		row_header_labels[row] = label
+
+func _make_header_label(text: String) -> Label:
+	var label := Label.new()
+	label.text = text
+	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	label.add_theme_font_size_override("font_size", 14)
+	label.add_theme_color_override("font_color", Color(0, 0, 0, 1))
+	label.add_theme_stylebox_override("normal", _make_header_stylebox())
+	return label
+
+func _make_header_stylebox() -> StyleBoxFlat:
+	var style := StyleBoxFlat.new()
+	style.bg_color = HEADER_COLOR
+	style.set_border_width_all(1)
+	style.border_color = HEADER_BORDER_COLOR
+	return style
+
 func _layout_content() -> void:
 	if size.x <= 0.0 or size.y <= 0.0:
 		return
 
 	var cell_size := Vector2(
-		floorf(size.x / COLS),
-		floorf(size.y / (ROWS + 1.0)),
+		floorf((size.x - ROW_HEADER_WIDTH) / COLS),
+		floorf(size.y / (ROWS + 2.0)),
 	)
-	var grid_size := Vector2(cell_size.x * COLS, cell_size.y * (ROWS + 1))
+	var grid_size := Vector2(cell_size.x * COLS + ROW_HEADER_WIDTH, cell_size.y * (ROWS + 2))
 	var grid_offset := (size - grid_size) / 2.0
 	var top_bar_height := cell_size.y
+	var col_header_height := cell_size.y
+	var col_header_y := grid_offset.y + top_bar_height
+	var cells_y := col_header_y + col_header_height
+	var cells_x := grid_offset.x + ROW_HEADER_WIDTH
+
 	top_bar_background.position = grid_offset
 	top_bar_background.size = Vector2(grid_size.x, top_bar_height)
 	top_bar_label.position = grid_offset + Vector2(4.0, 0.0)
 	top_bar_label.size = Vector2(grid_size.x - 8.0, top_bar_height)
 
+	corner_box.position = Vector2(grid_offset.x, col_header_y)
+	corner_box.size = Vector2(ROW_HEADER_WIDTH, col_header_height)
+
+	for col in range(COLS):
+		var label: Label = col_header_labels[col]
+		label.position = Vector2(cells_x + col * cell_size.x, col_header_y)
+		label.size = cell_size + Vector2.ONE
+
+	for row in range(ROWS):
+		var label: Label = row_header_labels[row]
+		label.position = Vector2(grid_offset.x, cells_y + row * cell_size.y)
+		label.size = Vector2(ROW_HEADER_WIDTH, cell_size.y) + Vector2.ONE
+
 	for row in range(ROWS):
 		for col in range(COLS):
 			var edit: LineEdit = cell_edits[row][col]
-			edit.position = grid_offset + Vector2(col * cell_size.x, top_bar_height + row * cell_size.y)
+			edit.position = Vector2(cells_x + col * cell_size.x, cells_y + row * cell_size.y)
 			edit.size = cell_size + Vector2.ONE
 
 func _make_stylebox(color: Color) -> StyleBoxFlat:
