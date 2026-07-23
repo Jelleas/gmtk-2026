@@ -7,6 +7,8 @@ signal cell_text_changed(row: int, col: int, text: String)
 const COLS := 8
 const ROWS := 12
 const ROW_HEADER_WIDTH := 32.0
+const HEADER_HEIGHT := 20.0
+const CELL_FONT_SIZE := 10
 const HEADER_COLOR := Color(0.75, 0.75, 0.75, 1)
 const HEADER_BORDER_COLOR := Color(0.4, 0.4, 0.4, 1)
 
@@ -33,7 +35,7 @@ func _ready() -> void:
 
 		for col in range(COLS):
 			var edit := LineEdit.new()
-			edit.add_theme_font_size_override("font_size", 14)
+			edit.add_theme_font_size_override("font_size", CELL_FONT_SIZE)
 			edit.add_theme_color_override("font_color", Color(0, 0, 0, 1))
 			edit.add_theme_color_override("font_placeholder_color", Color(0.45, 0.45, 0.45, 1))
 			edit.add_theme_stylebox_override("normal", _make_stylebox(Color(1, 1, 1, 1)))
@@ -57,7 +59,7 @@ func _build_top_bar() -> void:
 
 	top_bar_label = Label.new()
 	top_bar_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	top_bar_label.add_theme_font_size_override("font_size", 14)
+	top_bar_label.add_theme_font_size_override("font_size", CELL_FONT_SIZE)
 	top_bar_label.add_theme_color_override("font_color", Color(0, 0, 0, 1))
 	add_child(top_bar_label)
 
@@ -82,7 +84,7 @@ func _make_header_label(text: String) -> Label:
 	label.text = text
 	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	label.add_theme_font_size_override("font_size", 14)
+	label.add_theme_font_size_override("font_size", CELL_FONT_SIZE)
 	label.add_theme_color_override("font_color", Color(0, 0, 0, 1))
 	label.add_theme_stylebox_override("normal", _make_header_stylebox())
 	return label
@@ -100,12 +102,12 @@ func _layout_content() -> void:
 
 	var cell_size := Vector2(
 		floorf((size.x - ROW_HEADER_WIDTH) / COLS),
-		floorf(size.y / (ROWS + 2.0)),
+		floorf((size.y - 2.0 * HEADER_HEIGHT) / ROWS),
 	)
-	var grid_size := Vector2(cell_size.x * COLS + ROW_HEADER_WIDTH, cell_size.y * (ROWS + 2))
+	var grid_size := Vector2(cell_size.x * COLS + ROW_HEADER_WIDTH, cell_size.y * ROWS + 2.0 * HEADER_HEIGHT)
 	var grid_offset := (size - grid_size) / 2.0
-	var top_bar_height := cell_size.y
-	var col_header_height := cell_size.y
+	var top_bar_height := HEADER_HEIGHT
+	var col_header_height := HEADER_HEIGHT
 	var col_header_y := grid_offset.y + top_bar_height
 	var cells_y := col_header_y + col_header_height
 	var cells_x := grid_offset.x + ROW_HEADER_WIDTH
@@ -141,8 +143,8 @@ func _make_stylebox(color: Color) -> StyleBoxFlat:
 	style.border_color = Color(0.6, 0.6, 0.6, 1)
 	style.content_margin_left = 4
 	style.content_margin_right = 4
-	style.content_margin_top = 2
-	style.content_margin_bottom = 2
+	style.content_margin_top = 1
+	style.content_margin_bottom = 1
 	return style
 
 func set_cell_text(row: int, col: int, text: String) -> void:
