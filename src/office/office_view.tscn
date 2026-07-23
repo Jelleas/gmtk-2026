@@ -1,0 +1,74 @@
+[gd_scene format=3 uid="uid://vfw2c4ylf0ob"]
+
+[ext_resource type="Texture2D" uid="uid://dcpjic2k3li7m" path="res://resources/images/cubicle.png" id="1_njq1x"]
+[ext_resource type="Texture2D" uid="uid://dxjnf4vokq43b" path="res://resources/images/desk.png" id="2_f2vto"]
+[ext_resource type="Texture2D" uid="uid://djq0b6sik4lfi" path="res://resources/images/screen_big.png" id="3_njq1x"]
+[ext_resource type="Texture2D" uid="uid://6id4kgplte8j" path="res://resources/images/drawer.png" id="4_4toum"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_8664f"]
+atlas = ExtResource("4_4toum")
+region = Rect2(0, 0, 1280, 720)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_lefqp"]
+atlas = ExtResource("4_4toum")
+region = Rect2(1280, 0, 1280, 720)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ovhle"]
+atlas = ExtResource("4_4toum")
+region = Rect2(2560, 0, 1280, 720)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_via51"]
+atlas = ExtResource("4_4toum")
+region = Rect2(3840, 0, 1280, 720)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_yhiwx"]
+atlas = ExtResource("4_4toum")
+region = Rect2(5120, 0, 1280, 720)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_s6gf3"]
+atlas = ExtResource("4_4toum")
+region = Rect2(6400, 0, 1280, 720)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_6y6ft"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_8664f")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_lefqp")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ovhle")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_via51")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_yhiwx")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_s6gf3")
+}],
+"loop": 0,
+"name": &"default",
+"speed": 12.0
+}]
+
+[node name="OfficeView" type="Node2D" unique_id=1646300841]
+
+[node name="Cubicle" type="Sprite2D" parent="." unique_id=1034416873]
+texture = ExtResource("1_njq1x")
+offset = Vector2(640, 360)
+
+[node name="Desk" type="Sprite2D" parent="." unique_id=1318655799]
+texture = ExtResource("2_f2vto")
+offset = Vector2(640, 360)
+
+[node name="Screen" type="Sprite2D" parent="." unique_id=719139971]
+texture = ExtResource("3_njq1x")
+offset = Vector2(640, 360)
+
+[node name="Drawer" type="AnimatedSprite2D" parent="." unique_id=558066374]
+sprite_frames = SubResource("SpriteFrames_6y6ft")
+offset = Vector2(640, 360)
