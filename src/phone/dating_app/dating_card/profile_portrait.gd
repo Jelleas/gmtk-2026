@@ -39,9 +39,9 @@ func _ready() -> void:
 		rng.randomize()
 		masculine_features = rng.randf() < 0.5
 		if masculine_features:
-			hair_style = [HairStyle.SHORT, HairStyle.CURLY, HairStyle.BUZZ][rng.randi_range(0, 2)]
+			hair_style = [HairStyle.SHORT, HairStyle.CURLY, HairStyle.BUZZ][rng.randi_range(0, 2)] as HairStyle
 		else:
-			hair_style = rng.randi_range(HairStyle.SHORT, HairStyle.CURLY)
+			hair_style = rng.randi_range(HairStyle.SHORT, HairStyle.CURLY) as HairStyle
 		has_glasses = rng.randf() < 0.4
 		skin_color = SKIN_TONES[rng.randi_range(0, SKIN_TONES.size() - 1)]
 		hair_color = HAIR_COLORS[rng.randi_range(0, HAIR_COLORS.size() - 1)]
