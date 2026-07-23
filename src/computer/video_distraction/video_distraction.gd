@@ -1,6 +1,7 @@
 extends Node2D
 
 const SOURCE_ID := &"video_distraction"
+const DESIGN_SIZE := Vector2(1270.0, 642.0)
 const CENTER_LANE := 1
 
 var time_multiplier := 10.0
@@ -12,6 +13,7 @@ var time_multiplier := 10.0
 @onready var skateboarder: Sprite2D = $Skateboarder
 @onready var speed_trail: GPUParticles2D = $Skateboarder/SpeedTrail
 @onready var lane_timer: Timer = $LaneTimer
+@onready var content_area: Control = get_parent() as Control
 
 var is_running := false
 var is_punishment_active := false
@@ -22,6 +24,16 @@ var lane_tween: Tween
 func _ready() -> void:
 	EventBus.punish.connect(_on_punish)
 	EventBus.punishment_ended.connect(_on_punishment_ended)
+	content_area.resized.connect(_resize_to_content_area)
+	_resize_to_content_area()
+
+func _resize_to_content_area() -> void:
+	position = content_area.size / 2.0
+	var scale_factor := minf(
+		content_area.size.x / DESIGN_SIZE.x,
+		content_area.size.y / DESIGN_SIZE.y,
+	)
+	scale = Vector2.ONE * scale_factor
 
 func start() -> void:
 	if is_running or is_punishment_active:

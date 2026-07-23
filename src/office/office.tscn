@@ -36,20 +36,14 @@ position = Vector2(241, 139)
 z_index = -1
 position = Vector2(713, 383)
 
-[node name="Screen" type="SubViewportContainer" parent="." unique_id=429750863]
+[node name="Screen" type="Control" parent="." unique_id=429750863]
 offset_left = 407.0
 offset_top = 186.0
 offset_right = 924.0
 offset_bottom = 529.0
-stretch = true
+clip_contents = true
 
-[node name="SubViewport" type="SubViewport" parent="Screen" unique_id=668423553]
-handle_input_locally = false
-size = Vector2i(517, 343)
-render_target_update_mode = 4
-
-[node name="Computer" parent="Screen/SubViewport" unique_id=545264087 instance=ExtResource("5_jfxul")]
-position = Vector2(40, -25)
+[node name="Computer" parent="Screen" unique_id=545264087 instance=ExtResource("5_jfxul")]
 
 [node name="Keyboard" parent="." unique_id=1045196519 instance=ExtResource("6_yltk5")]
 position = Vector2(442, 571)

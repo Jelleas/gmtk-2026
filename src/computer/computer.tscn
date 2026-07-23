@@ -13,12 +13,16 @@ border_width_bottom = 1
 border_color = Color(0, 0, 0, 1)
 anti_aliasing = false
 
-[node name="Computer" type="Node2D" unique_id=545264087]
+[node name="Computer" type="Control" unique_id=545264087]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 script = ExtResource("2_computer")
 
-[node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=1813503278]
-
-[node name="PanelContainer" type="PanelContainer" parent="CanvasLayer" unique_id=249487431]
+[node name="PanelContainer" type="PanelContainer" parent="." unique_id=249487431]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -26,54 +30,54 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_type_variation = &"ComputerPanel"
 
-[node name="MarginContainer" type="MarginContainer" parent="CanvasLayer/PanelContainer" unique_id=1254119487]
+[node name="MarginContainer" type="MarginContainer" parent="PanelContainer" unique_id=1254119487]
 layout_mode = 2
 theme_override_constants/margin_left = 5
 theme_override_constants/margin_top = 5
 theme_override_constants/margin_right = 5
 theme_override_constants/margin_bottom = 5
 
-[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/PanelContainer/MarginContainer" unique_id=784940274]
+[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/MarginContainer" unique_id=784940274]
 layout_mode = 2
 
-[node name="PanelContainer" type="PanelContainer" parent="CanvasLayer/PanelContainer/MarginContainer/VBoxContainer" unique_id=1420214212]
+[node name="PanelContainer" type="PanelContainer" parent="PanelContainer/MarginContainer/VBoxContainer" unique_id=1420214212]
 layout_mode = 2
 theme_type_variation = &"TopBarContainer"
 
-[node name="MarginContainer" type="MarginContainer" parent="CanvasLayer/PanelContainer/MarginContainer/VBoxContainer/PanelContainer" unique_id=2088030781]
+[node name="MarginContainer" type="MarginContainer" parent="PanelContainer/MarginContainer/VBoxContainer/PanelContainer" unique_id=2088030781]
 layout_mode = 2
 theme_override_constants/margin_left = 4
 theme_override_constants/margin_top = 4
 theme_override_constants/margin_right = 4
 theme_override_constants/margin_bottom = 4
 
-[node name="TitleButtons" type="HBoxContainer" parent="CanvasLayer/PanelContainer/MarginContainer/VBoxContainer/PanelContainer/MarginContainer" unique_id=740193582]
+[node name="TitleButtons" type="HBoxContainer" parent="PanelContainer/MarginContainer/VBoxContainer/PanelContainer/MarginContainer" unique_id=740193582]
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_constants/separation = 3
 alignment = 2
 
-[node name="MinimizeButton" type="Button" parent="CanvasLayer/PanelContainer/MarginContainer/VBoxContainer/PanelContainer/MarginContainer/TitleButtons" unique_id=740193583]
+[node name="MinimizeButton" type="Button" parent="PanelContainer/MarginContainer/VBoxContainer/PanelContainer/MarginContainer/TitleButtons" unique_id=740193583]
 custom_minimum_size = Vector2(25, 25)
 layout_mode = 2
 theme_type_variation = &"WindowsButton"
 text = "_"
 
-[node name="MaximizeButton" type="Button" parent="CanvasLayer/PanelContainer/MarginContainer/VBoxContainer/PanelContainer/MarginContainer/TitleButtons" unique_id=740193584]
+[node name="MaximizeButton" type="Button" parent="PanelContainer/MarginContainer/VBoxContainer/PanelContainer/MarginContainer/TitleButtons" unique_id=740193584]
 custom_minimum_size = Vector2(25, 25)
 layout_mode = 2
 theme_type_variation = &"WindowsButton"
 theme_override_styles/focus = SubResource("StyleBoxFlat_button98_normal")
 text = "□"
 
-[node name="CloseButton" type="Button" parent="CanvasLayer/PanelContainer/MarginContainer/VBoxContainer/PanelContainer/MarginContainer/TitleButtons" unique_id=740193585]
+[node name="CloseButton" type="Button" parent="PanelContainer/MarginContainer/VBoxContainer/PanelContainer/MarginContainer/TitleButtons" unique_id=740193585]
 custom_minimum_size = Vector2(25, 25)
 layout_mode = 2
 theme_type_variation = &"WindowsButton"
 theme_override_styles/focus = SubResource("StyleBoxFlat_button98_normal")
 text = "X"
 
-[node name="Taskbar" type="TabContainer" parent="CanvasLayer/PanelContainer/MarginContainer/VBoxContainer" unique_id=309735144]
+[node name="Taskbar" type="TabContainer" parent="PanelContainer/MarginContainer/VBoxContainer" unique_id=309735144]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 3
@@ -81,23 +85,16 @@ theme_type_variation = &"ComputerTabContainer"
 current_tab = 1
 tabs_position = 1
 
-[node name="Spreadsheet" parent="CanvasLayer/PanelContainer/MarginContainer/VBoxContainer/Taskbar" unique_id=1980257439 instance=ExtResource("3_spreadsheet")]
+[node name="Spreadsheet" parent="PanelContainer/MarginContainer/VBoxContainer/Taskbar" unique_id=1980257439 instance=ExtResource("3_spreadsheet")]
 unique_name_in_owner = true
 visible = false
 layout_mode = 2
 metadata/_tab_index = 0
 
-[node name="DistractionRunner" type="SubViewportContainer" parent="CanvasLayer/PanelContainer/MarginContainer/VBoxContainer/Taskbar" unique_id=1877385393]
+[node name="VideoDistraction" type="Control" parent="PanelContainer/MarginContainer/VBoxContainer/Taskbar" unique_id=1877385393]
+unique_name_in_owner = true
 layout_mode = 2
-stretch = true
 metadata/_tab_index = 1
 
-[node name="SubViewport" type="SubViewport" parent="CanvasLayer/PanelContainer/MarginContainer/VBoxContainer/Taskbar/DistractionRunner" unique_id=865400021]
-transparent_bg = true
-handle_input_locally = false
-size = Vector2i(1270, 642)
-render_target_update_mode = 4
-
-[node name="VideoDistraction" parent="CanvasLayer/PanelContainer/MarginContainer/VBoxContainer/Taskbar/DistractionRunner/SubViewport" unique_id=1538641647 instance=ExtResource("1_bjt8x")]
+[node name="VideoRunner" parent="PanelContainer/MarginContainer/VBoxContainer/Taskbar/VideoDistraction" unique_id=1538641647 instance=ExtResource("1_bjt8x")]
 unique_name_in_owner = true
-position = Vector2(640, 360)

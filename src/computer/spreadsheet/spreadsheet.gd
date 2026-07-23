@@ -2,12 +2,10 @@ extends Control
 
 const COLS := 8
 const ROWS := 12
-const CELL_WIDTH := 1280 / COLS
-const CELL_HEIGHT := 600 / ROWS
-const TOP_BAR_HEIGHT := 600 / ROWS
 
 var cell_edits: Array = []
 var top_bar_label: Label
+var top_bar_background: ColorRect
 
 var current_row := 0
 var current_col := 0
@@ -23,8 +21,7 @@ func _ready() -> void:
 
 		for col in range(COLS):
 			var edit := LineEdit.new()
-			edit.position = Vector2(col * CELL_WIDTH, TOP_BAR_HEIGHT + row * CELL_HEIGHT)
-			edit.size = Vector2(CELL_WIDTH - 1, CELL_HEIGHT - 1)
+			edit.add_theme_font_size_override("font_size", 14)
 			edit.add_theme_color_override("font_color", Color(0, 0, 0, 1))
 			edit.add_theme_stylebox_override("normal", _make_stylebox(Color(1, 1, 1, 1)))
 			edit.add_theme_stylebox_override("focus", _make_stylebox(Color(0.7, 0.85, 1, 1)))
@@ -34,22 +31,44 @@ func _ready() -> void:
 
 			cell_edits[row][col] = edit
 
+	resized.connect(_layout_content)
+	_layout_content()
+	call_deferred(&"_layout_content")
 	cell_edits[current_row][current_col].grab_focus()
 	_update_top_bar()
 
 func _build_top_bar() -> void:
-	var bar_bg := ColorRect.new()
-	bar_bg.position = Vector2(0, 0)
-	bar_bg.size = Vector2(COLS * CELL_WIDTH, TOP_BAR_HEIGHT)
-	bar_bg.color = Color(0.9, 0.9, 0.9, 1)
-	add_child(bar_bg)
+	top_bar_background = ColorRect.new()
+	top_bar_background.color = Color(0.9, 0.9, 0.9, 1)
+	add_child(top_bar_background)
 
 	top_bar_label = Label.new()
-	top_bar_label.position = Vector2(4, 0)
-	top_bar_label.size = Vector2(COLS * CELL_WIDTH - 8, TOP_BAR_HEIGHT)
 	top_bar_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	top_bar_label.add_theme_font_size_override("font_size", 14)
 	top_bar_label.add_theme_color_override("font_color", Color(0, 0, 0, 1))
 	add_child(top_bar_label)
+
+func _layout_content() -> void:
+	if size.x <= 0.0 or size.y <= 0.0:
+		return
+
+	var cell_size := Vector2(
+		floorf(size.x / COLS),
+		floorf(size.y / (ROWS + 1.0)),
+	)
+	var grid_size := Vector2(cell_size.x * COLS, cell_size.y * (ROWS + 1))
+	var grid_offset := (size - grid_size) / 2.0
+	var top_bar_height := cell_size.y
+	top_bar_background.position = grid_offset
+	top_bar_background.size = Vector2(grid_size.x, top_bar_height)
+	top_bar_label.position = grid_offset + Vector2(4.0, 0.0)
+	top_bar_label.size = Vector2(grid_size.x - 8.0, top_bar_height)
+
+	for row in range(ROWS):
+		for col in range(COLS):
+			var edit: LineEdit = cell_edits[row][col]
+			edit.position = grid_offset + Vector2(col * cell_size.x, top_bar_height + row * cell_size.y)
+			edit.size = cell_size + Vector2.ONE
 
 func _make_stylebox(color: Color) -> StyleBoxFlat:
 	var style := StyleBoxFlat.new()

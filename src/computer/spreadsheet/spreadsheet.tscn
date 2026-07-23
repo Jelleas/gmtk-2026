@@ -5,4 +5,5 @@
 [node name="Spreadsheet" type="Control" unique_id=1285301903]
 layout_mode = 3
 anchors_preset = 0
+clip_contents = true
 script = ExtResource("1_spreadsheet")

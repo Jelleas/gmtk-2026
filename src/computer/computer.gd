@@ -1,7 +1,8 @@
-extends Node2D
+extends Control
 
 @onready var spreadsheet: Control = %Spreadsheet
-@onready var video_distraction: Node2D = %VideoDistraction
+@onready var video_distraction: Control = %VideoDistraction
+@onready var video_runner: Node2D = %VideoRunner
 @onready var taskbar: TabContainer = %Taskbar
 @onready var close_button: Button = %TitleButtons/CloseButton
 
@@ -14,11 +15,11 @@ func _on_taskbar_tab_changed(tab: int) -> void:
 	if tab == 0:
 		spreadsheet.show()
 		video_distraction.hide()
-		video_distraction.call(&"stop")
+		video_runner.call(&"stop")
 	else:
 		_show_video_distraction()
 
 func _show_video_distraction() -> void:
 	spreadsheet.hide()
 	video_distraction.show()
-	video_distraction.call(&"start")
+	video_runner.call(&"start")
