@@ -1,3 +1,75 @@
 [gd_scene format=3 uid="uid://dosq7nhbpil77"]
 
-[node name="Phone" type="Node2D" unique_id=1620515731]
+[ext_resource type="Script" uid="uid://biw4vo866lm20" path="res://src/phone/phone.gd" id="1_phone"]
+[ext_resource type="PackedScene" uid="uid://dbdb7j38pxfkb" path="res://src/phone/dating_app/dating_app.tscn" id="2_dating_app"]
+[ext_resource type="PackedScene" uid="uid://d2x1cbdt5jkyc" path="res://src/phone/drawer/drawer.tscn" id="3_drawer"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxPhone"]
+bg_color = Color(0.0901961, 0.0666667, 0.0901961, 1)
+border_width_left = 4
+border_width_top = 4
+border_width_right = 4
+border_width_bottom = 4
+border_color = Color(0.345098, 0.207843, 0.305882, 1)
+corner_radius_top_left = 34
+corner_radius_top_right = 34
+corner_radius_bottom_right = 34
+corner_radius_bottom_left = 34
+shadow_color = Color(0.054902, 0.027451, 0.0470588, 0.5)
+shadow_size = 10
+shadow_offset = Vector2(0, 6)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxScreen"]
+bg_color = Color(0.976471, 0.952941, 0.933333, 1)
+corner_radius_top_left = 22
+corner_radius_top_right = 22
+corner_radius_bottom_right = 22
+corner_radius_bottom_left = 22
+
+[node name="Phone" type="Control" unique_id=1620515731]
+custom_minimum_size = Vector2(900, 940)
+layout_mode = 3
+anchors_preset = 0
+offset_right = 900.0
+offset_bottom = 940.0
+script = ExtResource("1_phone")
+
+[node name="PhoneBody" type="Panel" parent="." unique_id=100427171]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 14.0
+offset_top = 8.0
+offset_right = 406.0
+offset_bottom = 540.0
+theme_override_styles/panel = SubResource("StyleBoxPhone")
+
+[node name="Speaker" type="ColorRect" parent="PhoneBody" unique_id=1883655621]
+layout_mode = 0
+offset_left = 164.0
+offset_top = 9.0
+offset_right = 228.0
+offset_bottom = 14.0
+mouse_filter = 2
+color = Color(0.345098, 0.207843, 0.305882, 1)
+
+[node name="Screen" type="Panel" parent="PhoneBody" unique_id=1887948364]
+clip_contents = true
+layout_mode = 0
+offset_left = 16.0
+offset_top = 16.0
+offset_right = 376.0
+offset_bottom = 516.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxScreen")
+
+[node name="DatingApp" parent="PhoneBody/Screen" unique_id=835218628 instance=ExtResource("2_dating_app")]
+layout_mode = 0
+
+[node name="Drawer" parent="." unique_id=1943529146 instance=ExtResource("3_drawer")]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(360, 340)
+layout_mode = 0
+offset_left = 450.0
+offset_top = 565.0
+offset_right = 900.0
+offset_bottom = 940.0

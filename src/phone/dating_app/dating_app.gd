@@ -1,4 +1,7 @@
+class_name DatingApp
 extends Control
+
+signal profile_swiped
 
 const CARD_SCENE := preload("res://src/phone/dating_app/dating_card/dating_card.tscn")
 const SWIPE_THRESHOLD := 110.0
@@ -69,6 +72,7 @@ func _end_drag() -> void:
 
 
 func _finish_swipe(card: DatingCard) -> void:
+	profile_swiped.emit()
 	stacked_cards.erase(card)
 	card.queue_free()
 	profile_index = (profile_index + 1) % PROFILES.size()
