@@ -36,6 +36,7 @@ func _on_activity_ended(id: StringName) -> void:
 	if id != source_id:
 		return
 	is_active = false
+	is_noticed = false
 	progress = 0.0
 	queue_redraw()
 
