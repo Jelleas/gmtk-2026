@@ -1,0 +1,20 @@
+[gd_scene format=3 uid="uid://dbdb7j38pxfkb"]
+
+[ext_resource type="Script" uid="uid://b8noqcvrvxj7u" path="res://src/phone/dating_app/dating_app.gd" id="1_3ntlb"]
+
+[node name="DatingApp" type="Control" unique_id=56398181]
+custom_minimum_size = Vector2(360, 500)
+layout_mode = 3
+anchors_preset = 0
+offset_right = 360.0
+offset_bottom = 500.0
+script = ExtResource("1_3ntlb")
+
+[node name="CardStack" type="Control" parent="." unique_id=1985923811]
+unique_name_in_owner = true
+anchors_preset = 0
+offset_left = 10.0
+offset_top = 10.0
+offset_right = 350.0
+offset_bottom = 490.0
+mouse_filter = 2

@@ -1,0 +1,195 @@
+[gd_scene format=3 uid="uid://b8285ve265rux"]
+
+[ext_resource type="Script" uid="uid://dn5bvxxra1bxw" path="res://src/phone/dating_app/dating_card/dating_card.gd" id="1_7ftyo"]
+[ext_resource type="Script" path="res://src/phone/dating_app/dating_card/profile_portrait.gd" id="2_portrait"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxCard"]
+bg_color = Color(0.976471, 0.952941, 0.933333, 1)
+corner_radius_top_left = 24
+corner_radius_top_right = 24
+corner_radius_bottom_right = 24
+corner_radius_bottom_left = 24
+shadow_color = Color(0.137255, 0.0901961, 0.12549, 0.22)
+shadow_size = 12
+shadow_offset = Vector2(0, 7)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxNameOverlay"]
+bg_color = Color(0.145098, 0.0823529, 0.133333, 0.88)
+corner_radius_top_left = 14
+corner_radius_top_right = 14
+corner_radius_bottom_right = 16
+corner_radius_bottom_left = 16
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxLike"]
+bg_color = Color(0.0509804, 0.294118, 0.196078, 0.9)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0.345098, 1, 0.701961, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxPass"]
+bg_color = Color(0.352941, 0.0588235, 0.14902, 0.9)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(1, 0.439216, 0.560784, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxPlaceholder"]
+bg_color = Color(0.898039, 0.482353, 0.556863, 1)
+corner_radius_top_left = 16
+corner_radius_top_right = 16
+corner_radius_bottom_right = 16
+corner_radius_bottom_left = 16
+
+[node name="DatingCard" type="Control" unique_id=1779619667]
+custom_minimum_size = Vector2(340, 480)
+layout_mode = 3
+anchors_preset = 0
+offset_right = 340.0
+offset_bottom = 480.0
+mouse_filter = 0
+script = ExtResource("1_7ftyo")
+
+[node name="Card" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxCard")
+
+[node name="Margin" type="MarginContainer" parent="Card"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 12.0
+offset_top = 12.0
+offset_right = -12.0
+offset_bottom = -12.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Content" type="VBoxContainer" parent="Card/Margin"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="PhotoArea" type="Control" parent="Card/Margin/Content"]
+custom_minimum_size = Vector2(0, 456)
+layout_mode = 2
+clip_contents = true
+
+[node name="Placeholder" type="Panel" parent="Card/Margin/Content/PhotoArea"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxPlaceholder")
+
+[node name="Picture" type="TextureRect" parent="Card/Margin/Content/PhotoArea"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+expand_mode = 1
+stretch_mode = 6
+
+[node name="PicturePlaceholder" type="Control" parent="Card/Margin/Content/PhotoArea"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("2_portrait")
+
+[node name="NameOverlay" type="Panel" parent="Card/Margin/Content/PhotoArea"]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -66.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_styles/panel = SubResource("StyleBoxNameOverlay")
+
+[node name="NameLabel" type="Label" parent="Card/Margin/Content/PhotoArea/NameOverlay"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 18.0
+offset_right = -80.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(1, 0.941176, 0.886275, 1)
+theme_override_font_sizes/font_size = 30
+text = "Maya"
+vertical_alignment = 1
+
+[node name="AgeLabel" type="Label" parent="Card/Margin/Content/PhotoArea/NameOverlay"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 13
+anchor_left = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -70.0
+offset_right = -18.0
+grow_horizontal = 0
+grow_vertical = 2
+theme_override_colors/font_color = Color(1, 0.941176, 0.886275, 1)
+theme_override_font_sizes/font_size = 30
+text = "25"
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="LikeBadge" type="Label" parent="."]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 26.0
+offset_top = 28.0
+offset_right = 131.0
+offset_bottom = 70.0
+theme_override_colors/font_color = Color(0.65098, 1, 0.803922, 1)
+theme_override_font_sizes/font_size = 24
+theme_override_styles/normal = SubResource("StyleBoxLike")
+text = "LIKE"
+horizontal_alignment = 1
+vertical_alignment = 1
+modulate = Color(1, 1, 1, 0)
+
+[node name="PassBadge" type="Label" parent="."]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 207.0
+offset_top = 28.0
+offset_right = 314.0
+offset_bottom = 70.0
+theme_override_colors/font_color = Color(1, 0.756863, 0.803922, 1)
+theme_override_font_sizes/font_size = 24
+theme_override_styles/normal = SubResource("StyleBoxPass")
+text = " PASS "
+horizontal_alignment = 1
+vertical_alignment = 1
+modulate = Color(1, 1, 1, 0)

@@ -6,7 +6,8 @@
 [ext_resource type="PackedScene" uid="uid://dolb7fbje0brd" path="res://src/clock/clock.tscn" id="4_yltk5"]
 [ext_resource type="PackedScene" uid="uid://pnkt02rak0tl" path="res://src/computer/computer.tscn" id="5_jfxul"]
 [ext_resource type="PackedScene" uid="uid://do1n2ahu8dm8u" path="res://src/keyboard/keyboard.tscn" id="6_yltk5"]
-[ext_resource type="PackedScene" uid="uid://dk37h2v0q8mxr" path="res://src/postit/postit.tscn" id="7_pcami"]
+[ext_resource type="PackedScene" uid="uid://dosq7nhbpil77" path="res://src/phone/phone.tscn" id="7_pcami"]
+[ext_resource type="PackedScene" uid="uid://dk37h2v0q8mxr" path="res://src/postit/postit.tscn" id="8_yo1l8"]
 
 [node name="Office" type="Node2D" unique_id=1406735297]
 script = ExtResource("1_6infj")
@@ -53,6 +54,22 @@ layout_mode = 1
 position = Vector2(442, 571)
 scale = Vector2(0.7, 0.5)
 
-[node name="PostIt" parent="." unique_id=1177477717 instance=ExtResource("7_pcami")]
-position = Vector2(222, 239)
+[node name="Drawer" type="Control" parent="." unique_id=1208805642]
+layout_mode = 3
+anchors_preset = 0
+offset_left = 202.0
+offset_top = 646.0
+offset_right = 1014.0
+offset_bottom = 721.0
+
+[node name="Phone" parent="Drawer" unique_id=1620515731 instance=ExtResource("7_pcami")]
+layout_mode = 0
+offset_left = 590.0
+offset_top = -177.0
+offset_right = 1490.0
+offset_bottom = 763.0
+scale = Vector2(0.32, 0.32)
+
+[node name="PostIt" parent="." unique_id=1177477717 instance=ExtResource("8_yo1l8")]
+position = Vector2(220.99998, 242)
 scale = Vector2(0.7, 0.7)
