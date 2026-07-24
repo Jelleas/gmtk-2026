@@ -6,7 +6,7 @@
 [ext_resource type="PackedScene" uid="uid://dolb7fbje0brd" path="res://src/clock/clock.tscn" id="4_yltk5"]
 [ext_resource type="PackedScene" uid="uid://pnkt02rak0tl" path="res://src/computer/computer.tscn" id="5_jfxul"]
 [ext_resource type="PackedScene" uid="uid://dosq7nhbpil77" path="res://src/phone/phone.tscn" id="7_pcami"]
-[ext_resource type="PackedScene" uid="uid://cp0st1tstack00" path="res://src/postit/postit_stack.tscn" id="8_yo1l8"]
+[ext_resource type="PackedScene" uid="uid://ct8knnije263x" path="res://src/postit/postit_stack.tscn" id="8_yo1l8"]
 [ext_resource type="PackedScene" uid="uid://vfw2c4ylf0ob" path="res://src/office/office_view.tscn" id="9_office_view"]
 
 [node name="Office" type="Node2D" unique_id=1406735297]
@@ -16,7 +16,7 @@ script = ExtResource("1_6infj")
 
 [node name="FidgetSpinner" parent="." unique_id=1074957713 instance=ExtResource("2_oeo4l")]
 z_index = 1
-position = Vector2(261, 467)
+position = Vector2(261, 534)
 
 [node name="Clock" parent="." unique_id=861975606 instance=ExtResource("4_yltk5")]
 position = Vector2(150, 120)
@@ -41,13 +41,23 @@ offset_right = -107.0
 offset_bottom = -86.0
 
 [node name="Phone" parent="." unique_id=1620515731 instance=ExtResource("7_pcami")]
-offset_left = 792.0
-offset_top = 469.0
-offset_right = 1692.0
-offset_bottom = 1409.0
-scale = Vector2(0.32, 0.32)
+z_index = 3
+offset_left = 905.00006
+offset_top = 502.99994
+offset_right = 1003.00006
+offset_bottom = 655.99994
+scale = Vector2(1.2194625, 1.0871345)
 drawer_path = NodePath("../OfficeView/Drawer")
+
+[node name="PhoneSurface" parent="Phone" index="1" unique_id=762875576]
+texture_filter = 0
+position = Vector2(0.029547663, 0.89883655)
+scale = Vector2(0.2835378, 0.31342578)
+antialiased = false
+polygon = PackedVector2Array(2.7875977, -11.671997, 280.43408, -8.737183, 320.92407, 487.24805, 28.817139, 484.31323)
 
 [node name="PostItStack" parent="." unique_id=1177477717 instance=ExtResource("8_yo1l8")]
 position = Vector2(140, 222)
 scale = Vector2(0.7, 0.7)
+
+[editable path="Phone"]

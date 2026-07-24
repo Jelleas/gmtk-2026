@@ -8,6 +8,7 @@
 [ext_resource type="Texture2D" uid="uid://basl6ue72ljoi" path="res://resources/images/keyboard-28mm.png" id="6_via51"]
 [ext_resource type="Texture2D" uid="uid://d0hdtyhc8xyxn" path="res://resources/images/fidget-28mm.png" id="7_yhiwx"]
 [ext_resource type="Texture2D" uid="uid://dq74c2oa13x1u" path="res://resources/images/phone-28mm-v2.png" id="8_8664f"]
+[ext_resource type="Script" uid="uid://d32mq7typ1jgv" path="res://src/office/office_view.gd" id="9_view"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_s6gf3"]
 atlas = ExtResource("4_ovhle")
@@ -188,6 +189,7 @@ animations = [{
 }]
 
 [node name="OfficeView" type="Node2D" unique_id=1646300841]
+script = ExtResource("9_view")
 
 [node name="Cubicle" type="Sprite2D" parent="." unique_id=1034416873]
 texture = ExtResource("1_4toum")
@@ -206,6 +208,7 @@ z_index = 1
 sprite_frames = SubResource("SpriteFrames_6y6ft")
 offset = Vector2(640, 360)
 script = ExtResource("6_drawer")
+starts_open = false
 
 [node name="DrawerInput" type="Control" parent="Drawer" unique_id=748426114]
 layout_mode = 3

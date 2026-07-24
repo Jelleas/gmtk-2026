@@ -11,6 +11,8 @@ func _ready():
 	task_store = TaskStore.new($Screen/Computer.spreadsheet)
 	EventBus.task_completed.connect(_on_task_completed)
 	EventBus.punishment_ended.connect(_on_punishment_ended)
+	$FidgetSpinner.started.connect($OfficeView.play_fidget_spin)
+	$FidgetSpinner.stopped.connect($OfficeView.stop_fidget_spin)
 
 	refill_timer = Timer.new()
 	refill_timer.one_shot = true

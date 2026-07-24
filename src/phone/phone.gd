@@ -4,48 +4,148 @@ const SOURCE_ID := &"dating_app"
 const ACTIVITY_MULTIPLIER := 5.0
 const SWIPE_MULTIPLIER_INCREASE := 0.5
 const SWIPE_RESET_DELAY := 3.0
-const HELD_POSITION := Vector2(14.0, 8.0)
-const STOWED_SCALE := Vector2(0.55, 0.55)
-const STOWED_ROTATION := PI * 0.5
+const CARDS_VISIBLE_PROGRESS := 0.92
 
-@onready var phone_body: Panel = %PhoneBody
 @export var drawer_path: NodePath
 
-@onready var drawer = get_node(drawer_path)
-@onready var dating_app: DatingApp = $PhoneBody/Screen/DatingApp
+@onready var app_viewport: SubViewport = $AppViewport
+@onready var phone_surface: Polygon2D = $PhoneSurface
+@onready var dating_app: DatingApp = %DatingApp
 
+var drawer: OfficeDrawer
 var is_activity_active := false
 var current_activity_multiplier := ACTIVITY_MULTIPLIER
 var swipe_reset_timer: Timer
 
 func _ready() -> void:
-	drawer.progress_changed.connect(_on_drawer_progress_changed)
-	drawer.opened.connect(_on_drawer_opened)
-	drawer.closing.connect(_on_drawer_closing)
-	drawer.closed.connect(_on_drawer_closed)
+	phone_surface.texture = app_viewport.get_texture()
+	if not drawer_path.is_empty():
+		drawer = get_node_or_null(drawer_path) as OfficeDrawer
+	if drawer:
+		drawer.progress_changed.connect(_on_drawer_progress_changed)
+		drawer.opened.connect(_on_drawer_opened)
+		drawer.closing.connect(_on_drawer_closing)
 	dating_app.profile_swiped.connect(_on_profile_swiped)
 	swipe_reset_timer = Timer.new()
 	swipe_reset_timer.one_shot = true
 	swipe_reset_timer.wait_time = SWIPE_RESET_DELAY
 	swipe_reset_timer.timeout.connect(_reset_swipe_multiplier)
 	add_child(swipe_reset_timer)
-	phone_body.pivot_offset = phone_body.size * 0.5
-	_on_drawer_progress_changed(drawer.open_progress)
-	if drawer.is_open:
-		_start_activity()
+	phone_surface.hide()
+	if drawer == null or drawer.is_open:
+		_show_cards()
 
 func _exit_tree() -> void:
 	_stop_activity()
 
 func _on_drawer_opened() -> void:
-	_start_activity()
+	_show_cards()
 
 func _on_drawer_closing() -> void:
+	_hide_cards()
+
+
+func _on_drawer_progress_changed(progress: float) -> void:
+	if progress >= CARDS_VISIBLE_PROGRESS:
+		_show_cards()
+	else:
+		_hide_cards()
+
+
+func _hide_cards() -> void:
+	phone_surface.hide()
+	mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_stop_activity()
 
 
-func _on_drawer_closed() -> void:
-	phone_body.hide()
+func _show_cards() -> void:
+	phone_surface.show()
+	mouse_filter = Control.MOUSE_FILTER_STOP
+	_start_activity()
+
+
+func _gui_input(event: InputEvent) -> void:
+	if event is InputEventMouse:
+		_forward_input(event, event.position)
+	elif event is InputEventScreenTouch:
+		_forward_input(event, event.position)
+	elif event is InputEventScreenDrag:
+		_forward_input(event, event.position)
+
+
+func _input(event: InputEvent) -> void:
+	if not dating_app.is_dragging:
+		return
+
+	if event is InputEventMouse:
+		_forward_input(event, get_global_transform().affine_inverse() * event.position, true)
+	elif event is InputEventScreenTouch:
+		_forward_input(event, get_global_transform().affine_inverse() * event.position, true)
+	elif event is InputEventScreenDrag:
+		_forward_input(event, get_global_transform().affine_inverse() * event.position, true)
+	else:
+		return
+
+	get_viewport().set_input_as_handled()
+
+
+func _forward_input(event: InputEvent, input_position: Vector2, allow_outside := false) -> void:
+	if not phone_surface.visible:
+		return
+
+	var surface_point: Vector2 = phone_surface.get_global_transform().affine_inverse() * (get_global_transform() * input_position)
+	var app_position = _map_to_app(surface_point, allow_outside)
+	if app_position == null:
+		return
+
+	if event is InputEventMouseButton:
+		var mouse_button := event.duplicate() as InputEventMouseButton
+		mouse_button.position = app_position
+		mouse_button.global_position = app_position
+		dating_app._gui_input(mouse_button)
+	elif event is InputEventMouseMotion:
+		var mouse_motion := event.duplicate() as InputEventMouseMotion
+		mouse_motion.position = app_position
+		mouse_motion.global_position = app_position
+		dating_app._gui_input(mouse_motion)
+	elif event is InputEventScreenTouch:
+		var screen_touch := event.duplicate() as InputEventScreenTouch
+		screen_touch.position = app_position
+		dating_app._gui_input(screen_touch)
+	elif event is InputEventScreenDrag:
+		var screen_drag := event.duplicate() as InputEventScreenDrag
+		screen_drag.position = app_position
+		dating_app._gui_input(screen_drag)
+	else:
+		return
+
+	accept_event()
+
+
+func _map_to_app(point: Vector2, allow_outside: bool):
+	var polygon := phone_surface.polygon
+	var uv := phone_surface.uv
+	if polygon.size() != 4 or uv.size() != 4:
+		return null
+
+	var mapped_position = _map_triangle(point, polygon[0], polygon[1], polygon[2], uv[0], uv[1], uv[2], allow_outside)
+	if mapped_position != null:
+		return mapped_position
+	return _map_triangle(point, polygon[0], polygon[2], polygon[3], uv[0], uv[2], uv[3], allow_outside)
+
+
+func _map_triangle(point: Vector2, first: Vector2, second: Vector2, third: Vector2, first_uv: Vector2, second_uv: Vector2, third_uv: Vector2, allow_outside: bool):
+	var denominator := (second.y - third.y) * (first.x - third.x) + (third.x - second.x) * (first.y - third.y)
+	if is_zero_approx(denominator):
+		return null
+
+	var first_weight := ((second.y - third.y) * (point.x - third.x) + (third.x - second.x) * (point.y - third.y)) / denominator
+	var second_weight := ((third.y - first.y) * (point.x - third.x) + (first.x - third.x) * (point.y - third.y)) / denominator
+	var third_weight := 1.0 - first_weight - second_weight
+	if not allow_outside and (first_weight < 0.0 or second_weight < 0.0 or third_weight < 0.0):
+		return null
+
+	return first_uv * first_weight + second_uv * second_weight + third_uv * third_weight
 
 
 func _start_activity() -> void:
@@ -78,34 +178,3 @@ func _reset_swipe_multiplier() -> void:
 	current_activity_multiplier = ACTIVITY_MULTIPLIER
 	if is_activity_active:
 		EventBus.activity_started.emit(SOURCE_ID, current_activity_multiplier)
-
-func _on_drawer_progress_changed(progress: float) -> void:
-	# The drawer sprite occludes the phone while it is stowed; only hide it once
-	# it has fully cleared the visible drawer area.
-	phone_body.visible = progress > 0.02
-
-	var stow_progress := 1.0 - progress
-	var entry_position := _entry_position()
-	if stow_progress <= 0.5:
-		phone_body.position = HELD_POSITION.lerp(entry_position, stow_progress * 2.0)
-		phone_body.rotation = lerpf(0.0, STOWED_ROTATION, stow_progress * 2.0)
-		phone_body.scale = Vector2.ONE.lerp(STOWED_SCALE, stow_progress * 2.0)
-	else:
-		phone_body.position = entry_position.lerp(_stowed_position(), (stow_progress - 0.5) * 2.0)
-		phone_body.rotation = STOWED_ROTATION
-		phone_body.scale = STOWED_SCALE
-
-func _stowed_position() -> Vector2:
-	if drawer.has_method("get_phone_stow_position"):
-		var local_stow_position: Vector2 = get_global_transform().affine_inverse() * drawer.get_phone_stow_position()
-		return local_stow_position - phone_body.pivot_offset
-
-	var drawer_center: Vector2 = drawer.position + Vector2(drawer.size.x * 0.5, 90.0)
-	return drawer_center - phone_body.pivot_offset
-
-func _entry_position() -> Vector2:
-	if drawer.has_method("get_phone_entry_position"):
-		var local_entry_position: Vector2 = get_global_transform().affine_inverse() * drawer.get_phone_entry_position()
-		return local_entry_position - phone_body.pivot_offset
-
-	return _stowed_position() - Vector2(0.0, 170.0)
