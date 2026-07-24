@@ -5,6 +5,14 @@
 [node name="PostIt" type="Node2D" unique_id=1177477717]
 script = ExtResource("1_postit")
 
+[node name="Shadow" type="ColorRect" parent="."]
+offset_left = -5.0
+offset_top = -5.0
+offset_right = 250.0
+offset_bottom = 252.0
+mouse_filter = 2
+color = Color(0, 0, 0, 0.25)
+
 [node name="Background" type="ColorRect" parent="." unique_id=1241816953]
 offset_right = 240.0
 offset_bottom = 240.0

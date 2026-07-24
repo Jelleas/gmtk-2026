@@ -13,9 +13,16 @@ const PostItScene := preload("res://src/postit/postit.tscn")
 const SEAL_AT_CHECKED := 3
 
 ## Per-depth pose tuning for the layered look.
-const DEPTH_OFFSET := Vector2(6.0, -7.0)
-const ANGLE_STEP := 3.0
+const DEPTH_OFFSET := Vector2(42.0, 46.0)
+## Notes deeper in the pile are tinted slightly darker so layers read clearly.
+const DEPTH_DARKEN := 0.10
 const MAX_VISIBLE_DEPTH := 4
+## Each note gets its own fixed slight tilt (degrees) so the whole pile,
+## including the top note, looks hand-stacked. Adjacent notes lean opposite ways.
+const MIN_TILT := 3.0
+const MAX_TILT := 7.0
+## PostIt is 240x240; rotate notes around their center so corners fan out.
+const NOTE_CENTER := Vector2(120.0, 120.0)
 
 ## Fly-in / restack animation tuning.
 const FLY_IN_HEIGHT := 320.0
@@ -99,6 +106,10 @@ func _spawn_note(animate: bool) -> PostIt:
 	note.connect_events = false
 	note.note_color = note_color
 	notes_root.add_child(note)
+	# Give each note a fixed slight tilt, alternating lean per note, kept for
+	# the note's whole life so it stays visibly angled as it moves back.
+	var lean := 1.0 if notes.size() % 2 == 0 else -1.0
+	note.rotation = deg_to_rad(lean * randf_range(MIN_TILT, MAX_TILT))
 	notes.append(note)
 	active_note = note
 	_restack(animate)
@@ -118,41 +129,34 @@ func _seal_active() -> void:
 		todo_item.reparent(new_note.todo_list)
 
 ## Re-applies the layered pose to every note. depth 0 is the top/newest note;
-## older notes step back and rotate slightly for the stacked look.
+## older notes step further back. Each note keeps its own fixed tilt (set in
+## _spawn_note); only the depth-based position is (re)animated here.
 func _restack(animate_new_note: bool) -> void:
 	var count := notes.size()
 	for i in count:
 		var note := notes[i]
 		var depth := count - 1 - i
-		var target_pos := _pose_position(depth)
-		var target_rot := _pose_rotation(depth)
-		note.z_index = -depth
+		var target_pos := _pose_position(depth, note.rotation)
+		# Draw order comes from child order (newest is the last child, on top);
+		# z_index is left at 0 so notes stay in front of the office background.
+		note.note_color = note_color.darkened(minf(depth, MAX_VISIBLE_DEPTH) * DEPTH_DARKEN)
 
-		if depth == 0:
-			if animate_new_note:
-				note.rotation = target_rot
-				note.position = target_pos + Vector2(0.0, -FLY_IN_HEIGHT)
-				var fly := create_tween()
-				fly.tween_property(note, "position", target_pos, FLY_IN_DURATION) \
-					.set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
-			else:
-				note.position = target_pos
-				note.rotation = target_rot
-			continue
+		if depth == 0 and animate_new_note:
+			note.position = target_pos + Vector2(0.0, -FLY_IN_HEIGHT)
+			var fly := create_tween()
+			fly.tween_property(note, "position", target_pos, FLY_IN_DURATION) \
+				.set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+		elif depth == 0:
+			note.position = target_pos
+		else:
+			var tween := create_tween()
+			tween.tween_property(note, "position", target_pos, POSE_DURATION) \
+				.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
 
-		var tween := create_tween().set_parallel()
-		tween.tween_property(note, "position", target_pos, POSE_DURATION) \
-			.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
-		tween.tween_property(note, "rotation", target_rot, POSE_DURATION) \
-			.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
-
-func _pose_position(depth: int) -> Vector2:
+## Node2D rotates around its origin (the note's top-left corner). To keep a
+## tilted note visually centered on its depth's target point, place its origin
+## so the rotated center lands there.
+func _pose_position(depth: int, tilt: float) -> Vector2:
 	var d := mini(depth, MAX_VISIBLE_DEPTH)
-	return DEPTH_OFFSET * float(d)
-
-func _pose_rotation(depth: int) -> float:
-	var d := mini(depth, MAX_VISIBLE_DEPTH)
-	if d == 0:
-		return 0.0
-	var sign := 1.0 if d % 2 == 1 else -1.0
-	return deg_to_rad(sign * ANGLE_STEP * float(d))
+	var center := NOTE_CENTER + DEPTH_OFFSET * float(d)
+	return center - NOTE_CENTER.rotated(tilt)
