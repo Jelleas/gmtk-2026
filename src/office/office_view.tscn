@@ -226,3 +226,4 @@ offset = Vector2(640, 360)
 
 [node name="Phone" type="AnimatedSprite2D" parent="." unique_id=1586011720]
 sprite_frames = SubResource("SpriteFrames_md7vi")
+offset = Vector2(640, 360)
