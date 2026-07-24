@@ -40,7 +40,7 @@ func on_task_added(task: Task):
 func on_task_completed(task: Task):
 	var i = 0
 	for todo_item: TodoItem in todo_list.get_children():
-		if todo_item.text == task.description:
+		if todo_item.text == task.description and not todo_item.checked:
 			set_item_checked(i, true)
 			return
 		i += 1

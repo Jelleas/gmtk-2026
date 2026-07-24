@@ -10,6 +10,7 @@ var refill_timer: Timer
 func _ready():
 	task_store = TaskStore.new($Screen/Computer.spreadsheet)
 	EventBus.task_completed.connect(_on_task_completed)
+	EventBus.punishment_ended.connect(_on_punishment_ended)
 
 	refill_timer = Timer.new()
 	refill_timer.one_shot = true
@@ -20,6 +21,13 @@ func _ready():
 
 func _on_task_completed(_task: Task) -> void:
 	refill_timer.start(task_refill_delay)
+
+func _on_punishment_ended() -> void:
+	for task in task_store.active_tasks:
+		if task is SpreadsheetTask:
+			task.get_spreadsheet().set_status_message("")
+			task.start_task()
+			return
 
 func _refill_tasks() -> void:
 	while task_store.active_tasks.size() < TARGET_TASK_COUNT:
