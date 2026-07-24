@@ -7,6 +7,7 @@
 [ext_resource type="Script" uid="uid://egprfxwnyopd" path="res://src/office/office_drawer.gd" id="6_drawer"]
 [ext_resource type="Texture2D" uid="uid://basl6ue72ljoi" path="res://resources/images/keyboard-28mm.png" id="6_via51"]
 [ext_resource type="Texture2D" uid="uid://d0hdtyhc8xyxn" path="res://resources/images/fidget-28mm.png" id="7_yhiwx"]
+[ext_resource type="Texture2D" uid="uid://l3urn4a23rk5" path="res://resources/images/phone-28mm.png" id="8_8664f"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_s6gf3"]
 atlas = ExtResource("4_ovhle")
@@ -136,6 +137,56 @@ animations = [{
 "speed": 10.0
 }]
 
+[sub_resource type="AtlasTexture" id="AtlasTexture_lefqp"]
+atlas = ExtResource("8_8664f")
+region = Rect2(0, 0, 1280, 720)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ovhle"]
+atlas = ExtResource("8_8664f")
+region = Rect2(1280, 0, 1280, 720)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_via51"]
+atlas = ExtResource("8_8664f")
+region = Rect2(2560, 0, 1280, 720)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_yhiwx"]
+atlas = ExtResource("8_8664f")
+region = Rect2(3840, 0, 1280, 720)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_aotaj"]
+atlas = ExtResource("8_8664f")
+region = Rect2(5120, 0, 1280, 720)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_i2504"]
+atlas = ExtResource("8_8664f")
+region = Rect2(6400, 0, 1280, 720)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_md7vi"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_lefqp")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ovhle")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_via51")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_yhiwx")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_aotaj")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_i2504")
+}],
+"loop": 1,
+"name": &"default",
+"speed": 12.0
+}]
+
 [node name="OfficeView" type="Node2D" unique_id=1646300841]
 
 [node name="Cubicle" type="Sprite2D" parent="." unique_id=1034416873]
@@ -153,8 +204,6 @@ offset = Vector2(640, 360)
 [node name="Drawer" type="AnimatedSprite2D" parent="." unique_id=558066374]
 z_index = 1
 sprite_frames = SubResource("SpriteFrames_6y6ft")
-frame = 5
-frame_progress = 1.0
 offset = Vector2(640, 360)
 script = ExtResource("6_drawer")
 
@@ -173,5 +222,7 @@ offset = Vector2(640, 360)
 
 [node name="Fidget" type="AnimatedSprite2D" parent="." unique_id=221468437]
 sprite_frames = SubResource("SpriteFrames_t56j7")
-frame_progress = 0.055528905
 offset = Vector2(640, 360)
+
+[node name="Phone" type="AnimatedSprite2D" parent="." unique_id=1586011720]
+sprite_frames = SubResource("SpriteFrames_md7vi")
