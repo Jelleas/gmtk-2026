@@ -19,7 +19,10 @@ z_index = 1
 position = Vector2(261, 534)
 
 [node name="Clock" parent="." unique_id=861975606 instance=ExtResource("4_yltk5")]
-position = Vector2(150, 120)
+position = Vector2(929, 176)
+
+[node name="ClockSurface" parent="Clock" index="1"]
+polygon = PackedVector2Array(-28, -20, 222, -23, 215, 70, -32, 65)
 
 [node name="Boss" parent="." unique_id=821479703 instance=ExtResource("3_jfxul")]
 z_index = -1
@@ -35,10 +38,10 @@ offset_bottom = 529.0
 
 [node name="Computer" parent="Screen" unique_id=545264087 instance=ExtResource("5_jfxul")]
 layout_mode = 1
-offset_left = 53.0
-offset_top = -22.0
-offset_right = -107.0
-offset_bottom = -86.0
+offset_left = 67.0
+offset_top = -16.0
+offset_right = -93.0
+offset_bottom = -80.0
 
 [node name="Phone" parent="." unique_id=1620515731 instance=ExtResource("7_pcami")]
 z_index = 3
@@ -60,4 +63,5 @@ polygon = PackedVector2Array(2.7875977, -11.671997, 280.43408, -8.737183, 320.92
 position = Vector2(140, 222)
 scale = Vector2(0.7, 0.7)
 
+[editable path="Clock"]
 [editable path="Phone"]

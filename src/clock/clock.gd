@@ -1,5 +1,8 @@
 extends Node2D
 
+@onready var clock_viewport: SubViewport = $ClockViewport
+@onready var clock_surface: Polygon2D = $ClockSurface
+
 var active_multipliers: Dictionary[StringName, float] = {}
 var punishment_weight := 0.0
 
@@ -9,6 +12,7 @@ var realtime = 0.0
 var time = 10 * 3600
 
 func _ready() -> void:
+	clock_surface.texture = clock_viewport.get_texture()
 	EventBus.day_started.connect(on_day_start)
 	EventBus.activity_started.connect(on_activity_start)
 	EventBus.activity_ended.connect(on_activity_end)
