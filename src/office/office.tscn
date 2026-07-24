@@ -39,9 +39,9 @@ offset_bottom = 529.0
 [node name="Computer" parent="Screen" unique_id=545264087 instance=ExtResource("5_jfxul")]
 layout_mode = 1
 offset_left = 67.0
-offset_top = -16.0
-offset_right = -93.0
-offset_bottom = -80.0
+offset_top = 4.0
+offset_right = -122.0
+offset_bottom = -82.0
 
 [node name="Phone" parent="." unique_id=1620515731 instance=ExtResource("7_pcami")]
 z_index = 3
