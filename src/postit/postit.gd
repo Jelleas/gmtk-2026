@@ -1,6 +1,11 @@
+class_name PostIt
 extends Node2D
 
 const TodoItemScene := preload("res://src/postit/todo_item.tscn")
+
+## When true, the post-it subscribes to EventBus task signals itself.
+## The PostItStack disables this and drives its child post-its manually.
+@export var connect_events: bool = true
 
 @export var note_color: Color = Color(1.0, 0.94, 0.42):
 	set(value):
@@ -13,10 +18,11 @@ const TodoItemScene := preload("res://src/postit/todo_item.tscn")
 
 func _ready() -> void:
 	background.color = note_color
-	
-	EventBus.task_added.connect(on_task_added)
-	EventBus.task_completed.connect(on_task_completed)
-	
+
+	if connect_events:
+		EventBus.task_added.connect(on_task_added)
+		EventBus.task_completed.connect(on_task_completed)
+
 func add_item(text: String, checked: bool = false) -> TodoItem:
 	var item: TodoItem = TodoItemScene.instantiate()
 	todo_list.add_child(item)
@@ -40,7 +46,17 @@ func on_task_added(task: Task):
 func on_task_completed(task: Task):
 	var i = 0
 	for todo_item: TodoItem in todo_list.get_children():
-		if todo_item.text == task.description:
+		if todo_item.text == task.description and not todo_item.checked:
 			set_item_checked(i, true)
 			return
 		i += 1
+
+func item_count() -> int:
+	return todo_list.get_child_count()
+
+func checked_count() -> int:
+	var count := 0
+	for todo_item: TodoItem in todo_list.get_children():
+		if todo_item.checked:
+			count += 1
+	return count
