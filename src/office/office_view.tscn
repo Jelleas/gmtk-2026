@@ -1,106 +1,43 @@
 [gd_scene format=3 uid="uid://vfw2c4ylf0ob"]
 
-[ext_resource type="Texture2D" uid="uid://dcpjic2k3li7m" path="res://resources/images/cubicle.png" id="1_njq1x"]
-[ext_resource type="Texture2D" uid="uid://dxjnf4vokq43b" path="res://resources/images/desk.png" id="2_f2vto"]
-[ext_resource type="Texture2D" uid="uid://djq0b6sik4lfi" path="res://resources/images/screen_big.png" id="3_njq1x"]
-[ext_resource type="Texture2D" uid="uid://6id4kgplte8j" path="res://resources/images/drawer.png" id="4_4toum"]
-[ext_resource type="Texture2D" uid="uid://cgs3ql80lfoxx" path="res://resources/images/keyboard.png" id="5_f2vto"]
+[ext_resource type="Texture2D" uid="uid://ctonnthnl437k" path="res://resources/images/cubicle-28mm.png" id="1_4toum"]
+[ext_resource type="Texture2D" uid="uid://cj40lc5tqod7i" path="res://resources/images/desk-28mm.png" id="2_8664f"]
+[ext_resource type="Texture2D" uid="uid://bjhrtd4552dsc" path="res://resources/images/screen-28mm.png" id="3_lefqp"]
+[ext_resource type="Texture2D" uid="uid://cj3nogtr4c6c0" path="res://resources/images/drawer-28mm.png" id="4_ovhle"]
 [ext_resource type="Script" uid="uid://egprfxwnyopd" path="res://src/office/office_drawer.gd" id="6_drawer"]
-[ext_resource type="Texture2D" uid="uid://dqtrmve8qe6co" path="res://resources/images/fidget.png" id="7_4toum"]
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_8664f"]
-atlas = ExtResource("4_4toum")
-region = Rect2(0, 0, 1280, 720)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_lefqp"]
-atlas = ExtResource("4_4toum")
-region = Rect2(1280, 0, 1280, 720)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_ovhle"]
-atlas = ExtResource("4_4toum")
-region = Rect2(2560, 0, 1280, 720)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_via51"]
-atlas = ExtResource("4_4toum")
-region = Rect2(3840, 0, 1280, 720)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_yhiwx"]
-atlas = ExtResource("4_4toum")
-region = Rect2(5120, 0, 1280, 720)
+[ext_resource type="Texture2D" uid="uid://basl6ue72ljoi" path="res://resources/images/keyboard-28mm.png" id="6_via51"]
+[ext_resource type="Texture2D" uid="uid://d0hdtyhc8xyxn" path="res://resources/images/fidget-28mm.png" id="7_yhiwx"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_s6gf3"]
-atlas = ExtResource("4_4toum")
+atlas = ExtResource("4_ovhle")
+region = Rect2(0, 0, 1280, 720)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_eahjm"]
+atlas = ExtResource("4_ovhle")
+region = Rect2(1280, 0, 1280, 720)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_qo6pi"]
+atlas = ExtResource("4_ovhle")
+region = Rect2(2560, 0, 1280, 720)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_1erip"]
+atlas = ExtResource("4_ovhle")
+region = Rect2(3840, 0, 1280, 720)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_jak34"]
+atlas = ExtResource("4_ovhle")
+region = Rect2(5120, 0, 1280, 720)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_n1tl4"]
+atlas = ExtResource("4_ovhle")
 region = Rect2(6400, 0, 1280, 720)
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_6y6ft"]
 animations = [{
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_8664f")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_lefqp")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_ovhle")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_via51")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_yhiwx")
-}, {
-"duration": 1.0,
 "texture": SubResource("AtlasTexture_s6gf3")
-}],
-"loop": 0,
-"name": &"default",
-"speed": 12.0
-}]
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_eahjm"]
-atlas = ExtResource("7_4toum")
-region = Rect2(0, 0, 1280, 720)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_qo6pi"]
-atlas = ExtResource("7_4toum")
-region = Rect2(1280, 0, 1280, 720)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_1erip"]
-atlas = ExtResource("7_4toum")
-region = Rect2(2560, 0, 1280, 720)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_jak34"]
-atlas = ExtResource("7_4toum")
-region = Rect2(3840, 0, 1280, 720)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_n1tl4"]
-atlas = ExtResource("7_4toum")
-region = Rect2(5120, 0, 1280, 720)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_vwhb2"]
-atlas = ExtResource("7_4toum")
-region = Rect2(6400, 0, 1280, 720)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_36bkk"]
-atlas = ExtResource("7_4toum")
-region = Rect2(7680, 0, 1280, 720)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_3q6gu"]
-atlas = ExtResource("7_4toum")
-region = Rect2(8960, 0, 1280, 720)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_l01pw"]
-atlas = ExtResource("7_4toum")
-region = Rect2(10240, 0, 1280, 720)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_3iah4"]
-atlas = ExtResource("7_4toum")
-region = Rect2(11520, 0, 1280, 720)
-
-[sub_resource type="SpriteFrames" id="SpriteFrames_t56j7"]
-animations = [{
-"frames": [{
+}, {
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_eahjm")
 }, {
@@ -115,7 +52,55 @@ animations = [{
 }, {
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_n1tl4")
-}, {
+}],
+"loop": 0,
+"name": &"default",
+"speed": 12.0
+}]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_vwhb2"]
+atlas = ExtResource("7_yhiwx")
+region = Rect2(0, 0, 1280, 720)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_36bkk"]
+atlas = ExtResource("7_yhiwx")
+region = Rect2(1280, 0, 1280, 720)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_3q6gu"]
+atlas = ExtResource("7_yhiwx")
+region = Rect2(2560, 0, 1280, 720)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_l01pw"]
+atlas = ExtResource("7_yhiwx")
+region = Rect2(3840, 0, 1280, 720)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_3iah4"]
+atlas = ExtResource("7_yhiwx")
+region = Rect2(5120, 0, 1280, 720)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_v7qbc"]
+atlas = ExtResource("7_yhiwx")
+region = Rect2(6400, 0, 1280, 720)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_07fgq"]
+atlas = ExtResource("7_yhiwx")
+region = Rect2(7680, 0, 1280, 720)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_pp0gs"]
+atlas = ExtResource("7_yhiwx")
+region = Rect2(8960, 0, 1280, 720)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_8db23"]
+atlas = ExtResource("7_yhiwx")
+region = Rect2(10240, 0, 1280, 720)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_vssog"]
+atlas = ExtResource("7_yhiwx")
+region = Rect2(11520, 0, 1280, 720)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_t56j7"]
+animations = [{
+"frames": [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_vwhb2")
 }, {
@@ -130,6 +115,21 @@ animations = [{
 }, {
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_3iah4")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_v7qbc")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_07fgq")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_pp0gs")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_8db23")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_vssog")
 }],
 "loop": 1,
 "name": &"default",
@@ -139,20 +139,22 @@ animations = [{
 [node name="OfficeView" type="Node2D" unique_id=1646300841]
 
 [node name="Cubicle" type="Sprite2D" parent="." unique_id=1034416873]
-texture = ExtResource("1_njq1x")
+texture = ExtResource("1_4toum")
 offset = Vector2(640, 360)
 
 [node name="Desk" type="Sprite2D" parent="." unique_id=1318655799]
-texture = ExtResource("2_f2vto")
+texture = ExtResource("2_8664f")
 offset = Vector2(640, 360)
 
 [node name="Screen" type="Sprite2D" parent="." unique_id=719139971]
-texture = ExtResource("3_njq1x")
+texture = ExtResource("3_lefqp")
 offset = Vector2(640, 360)
 
 [node name="Drawer" type="AnimatedSprite2D" parent="." unique_id=558066374]
 z_index = 1
 sprite_frames = SubResource("SpriteFrames_6y6ft")
+frame = 5
+frame_progress = 1.0
 offset = Vector2(640, 360)
 script = ExtResource("6_drawer")
 
@@ -166,9 +168,10 @@ offset_bottom = 720.0
 mouse_default_cursor_shape = 2
 
 [node name="Keyboard" type="Sprite2D" parent="." unique_id=1051419264]
-texture = ExtResource("5_f2vto")
+texture = ExtResource("6_via51")
 offset = Vector2(640, 360)
 
 [node name="Fidget" type="AnimatedSprite2D" parent="." unique_id=221468437]
 sprite_frames = SubResource("SpriteFrames_t56j7")
+frame_progress = 0.055528905
 offset = Vector2(640, 360)
