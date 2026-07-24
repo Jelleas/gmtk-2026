@@ -7,7 +7,7 @@
 [ext_resource type="Script" uid="uid://egprfxwnyopd" path="res://src/office/office_drawer.gd" id="6_drawer"]
 [ext_resource type="Texture2D" uid="uid://basl6ue72ljoi" path="res://resources/images/keyboard-28mm.png" id="6_via51"]
 [ext_resource type="Texture2D" uid="uid://d0hdtyhc8xyxn" path="res://resources/images/fidget-28mm.png" id="7_yhiwx"]
-[ext_resource type="Texture2D" uid="uid://l3urn4a23rk5" path="res://resources/images/phone-28mm.png" id="8_8664f"]
+[ext_resource type="Texture2D" uid="uid://dq74c2oa13x1u" path="res://resources/images/phone-28mm-v2.png" id="8_8664f"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_s6gf3"]
 atlas = ExtResource("4_ovhle")
@@ -182,7 +182,7 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_i2504")
 }],
-"loop": 1,
+"loop": 0,
 "name": &"default",
 "speed": 12.0
 }]
@@ -225,5 +225,6 @@ sprite_frames = SubResource("SpriteFrames_t56j7")
 offset = Vector2(640, 360)
 
 [node name="Phone" type="AnimatedSprite2D" parent="." unique_id=1586011720]
+z_index = 1
 sprite_frames = SubResource("SpriteFrames_md7vi")
 offset = Vector2(640, 360)
