@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://b8285ve265rux"]
 
 [ext_resource type="Script" uid="uid://dn5bvxxra1bxw" path="res://src/phone/dating_app/dating_card/dating_card.gd" id="1_7ftyo"]
-[ext_resource type="Script" path="res://src/phone/dating_app/dating_card/profile_portrait.gd" id="2_portrait"]
+[ext_resource type="PackedScene" uid="uid://bv2khxftxqgil" path="res://src/phone/dating_app/dating_card/profile_picture.tscn" id="2_fcowt"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxCard"]
 bg_color = Color(0.976471, 0.952941, 0.933333, 1)
@@ -12,6 +12,13 @@ corner_radius_bottom_left = 24
 shadow_color = Color(0.137255, 0.0901961, 0.12549, 0.22)
 shadow_size = 12
 shadow_offset = Vector2(0, 7)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxPlaceholder"]
+bg_color = Color(0.898039, 0.482353, 0.556863, 1)
+corner_radius_top_left = 16
+corner_radius_top_right = 16
+corner_radius_bottom_right = 16
+corner_radius_bottom_left = 16
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxNameOverlay"]
 bg_color = Color(0.145098, 0.0823529, 0.133333, 0.88)
@@ -44,23 +51,15 @@ corner_radius_top_right = 8
 corner_radius_bottom_right = 8
 corner_radius_bottom_left = 8
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxPlaceholder"]
-bg_color = Color(0.898039, 0.482353, 0.556863, 1)
-corner_radius_top_left = 16
-corner_radius_top_right = 16
-corner_radius_bottom_right = 16
-corner_radius_bottom_left = 16
-
 [node name="DatingCard" type="Control" unique_id=1779619667]
 custom_minimum_size = Vector2(340, 480)
 layout_mode = 3
 anchors_preset = 0
 offset_right = 340.0
 offset_bottom = 480.0
-mouse_filter = 0
 script = ExtResource("1_7ftyo")
 
-[node name="Card" type="Panel" parent="."]
+[node name="Card" type="Panel" parent="." unique_id=621244441]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -69,7 +68,7 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxCard")
 
-[node name="Margin" type="MarginContainer" parent="Card"]
+[node name="Margin" type="MarginContainer" parent="Card" unique_id=957505717]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -81,16 +80,12 @@ offset_bottom = -12.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Content" type="VBoxContainer" parent="Card/Margin"]
-layout_mode = 2
-theme_override_constants/separation = 10
-
-[node name="PhotoArea" type="Control" parent="Card/Margin/Content"]
+[node name="PhotoArea" type="Control" parent="Card/Margin" unique_id=1558304887]
 custom_minimum_size = Vector2(0, 456)
-layout_mode = 2
 clip_contents = true
+layout_mode = 2
 
-[node name="Placeholder" type="Panel" parent="Card/Margin/Content/PhotoArea"]
+[node name="Placeholder" type="Panel" parent="Card/Margin/PhotoArea" unique_id=1065766695]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -99,29 +94,16 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxPlaceholder")
 
-[node name="Picture" type="TextureRect" parent="Card/Margin/Content/PhotoArea"]
-unique_name_in_owner = true
+[node name="ProfilePicture" parent="Card/Margin/PhotoArea" unique_id=1029726818 instance=ExtResource("2_fcowt")]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-expand_mode = 1
-stretch_mode = 6
+stretch_mode = 5
 
-[node name="PicturePlaceholder" type="Control" parent="Card/Margin/Content/PhotoArea"]
-unique_name_in_owner = true
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 2
-script = ExtResource("2_portrait")
-
-[node name="NameOverlay" type="Panel" parent="Card/Margin/Content/PhotoArea"]
+[node name="NameOverlay" type="Panel" parent="Card/Margin/PhotoArea" unique_id=1658177811]
 layout_mode = 1
 anchors_preset = 12
 anchor_top = 1.0
@@ -132,7 +114,7 @@ grow_horizontal = 2
 grow_vertical = 0
 theme_override_styles/panel = SubResource("StyleBoxNameOverlay")
 
-[node name="NameLabel" type="Label" parent="Card/Margin/Content/PhotoArea/NameOverlay"]
+[node name="NameLabel" type="Label" parent="Card/Margin/PhotoArea/NameOverlay" unique_id=1936756995]
 unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = 15
@@ -147,10 +129,10 @@ theme_override_font_sizes/font_size = 40
 text = "Maya"
 vertical_alignment = 1
 
-[node name="AgeLabel" type="Label" parent="Card/Margin/Content/PhotoArea/NameOverlay"]
+[node name="AgeLabel" type="Label" parent="Card/Margin/PhotoArea/NameOverlay" unique_id=1224802070]
 unique_name_in_owner = true
 layout_mode = 1
-anchors_preset = 13
+anchors_preset = 11
 anchor_left = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -164,8 +146,9 @@ text = "25"
 horizontal_alignment = 2
 vertical_alignment = 1
 
-[node name="LikeBadge" type="Label" parent="."]
+[node name="LikeBadge" type="Label" parent="." unique_id=1630923930]
 unique_name_in_owner = true
+modulate = Color(1, 1, 1, 0)
 layout_mode = 0
 offset_left = 26.0
 offset_top = 28.0
@@ -177,10 +160,10 @@ theme_override_styles/normal = SubResource("StyleBoxLike")
 text = "LIKE"
 horizontal_alignment = 1
 vertical_alignment = 1
-modulate = Color(1, 1, 1, 0)
 
-[node name="PassBadge" type="Label" parent="."]
+[node name="PassBadge" type="Label" parent="." unique_id=1474213377]
 unique_name_in_owner = true
+modulate = Color(1, 1, 1, 0)
 layout_mode = 0
 offset_left = 207.0
 offset_top = 28.0
@@ -192,4 +175,3 @@ theme_override_styles/normal = SubResource("StyleBoxPass")
 text = " PASS "
 horizontal_alignment = 1
 vertical_alignment = 1
-modulate = Color(1, 1, 1, 0)

@@ -1,0 +1,69 @@
+[gd_scene format=3 uid="uid://bv2khxftxqgil"]
+
+[ext_resource type="Texture2D" uid="uid://cdsmsv84sbp56" path="res://resources/images/dating/base.png" id="1_2n05m"]
+[ext_resource type="Script" uid="uid://bj0rq5elk1ncl" path="res://src/phone/dating_app/dating_card/profile_picture.gd" id="1_u1f0l"]
+[ext_resource type="Texture2D" uid="uid://c7gmrl3qsg4i0" path="res://resources/images/dating/body1.png" id="2_u1f0l"]
+[ext_resource type="Texture2D" uid="uid://cavpri6xsu20q" path="res://resources/images/dating/hair1.png" id="3_v41ei"]
+[ext_resource type="Texture2D" uid="uid://7nr4tlhxfnao" path="res://resources/images/dating/eyes1.png" id="4_xdljv"]
+[ext_resource type="Texture2D" uid="uid://dn78lvk37hb46" path="res://resources/images/dating/nose1.png" id="5_rk40x"]
+[ext_resource type="Texture2D" uid="uid://b6ksvu7e5ijf7" path="res://resources/images/dating/mouth1.png" id="6_ylc84"]
+
+[node name="ProfilePicture" type="TextureRect" unique_id=1761929089]
+texture = ExtResource("1_2n05m")
+expand_mode = 3
+script = ExtResource("1_u1f0l")
+
+[node name="Body" type="TextureRect" parent="." unique_id=351202833]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_u1f0l")
+expand_mode = 3
+stretch_mode = 5
+
+[node name="Hair" type="TextureRect" parent="." unique_id=303953289]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("3_v41ei")
+expand_mode = 3
+stretch_mode = 5
+
+[node name="Eyes" type="TextureRect" parent="." unique_id=998554775]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("4_xdljv")
+expand_mode = 3
+stretch_mode = 5
+
+[node name="Nose" type="TextureRect" parent="." unique_id=1813906851]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("5_rk40x")
+expand_mode = 3
+stretch_mode = 5
+
+[node name="Mouth" type="TextureRect" parent="." unique_id=802702933]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("6_ylc84")
+expand_mode = 3
+stretch_mode = 5

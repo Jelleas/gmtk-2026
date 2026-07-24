@@ -5,10 +5,6 @@ const SWIPE_ROTATION := 0.12
 const SWIPE_FEEDBACK_THRESHOLD := 110.0
 
 @export_group("Profile")
-@export var profile_image: Texture2D:
-	set(value):
-		profile_image = value
-		_refresh_profile()
 @export var profile_name := "Maya":
 	set(value):
 		profile_name = value
@@ -18,8 +14,6 @@ const SWIPE_FEEDBACK_THRESHOLD := 110.0
 		age = value
 		_refresh_profile()
 
-@onready var picture: TextureRect = %Picture
-@onready var picture_placeholder: Control = %PicturePlaceholder
 @onready var name_label: Label = %NameLabel
 @onready var age_label: Label = %AgeLabel
 @onready var like_badge: Label = %LikeBadge
@@ -70,8 +64,6 @@ func _refresh_profile() -> void:
 	if not is_node_ready():
 		return
 
-	picture.texture = profile_image
-	picture_placeholder.visible = profile_image == null
 	name_label.text = profile_name
 	age_label.text = str(age)
 
