@@ -8,7 +8,9 @@
 [ext_resource type="Texture2D" uid="uid://basl6ue72ljoi" path="res://resources/images/keyboard-28mm.png" id="6_via51"]
 [ext_resource type="Texture2D" uid="uid://d0hdtyhc8xyxn" path="res://resources/images/fidget-28mm.png" id="7_yhiwx"]
 [ext_resource type="Texture2D" uid="uid://dq74c2oa13x1u" path="res://resources/images/phone-28mm-v2.png" id="8_8664f"]
+[ext_resource type="Texture2D" uid="uid://cdaeit4mkc11h" path="res://resources/images/clock-28mm.png" id="9_lefqp"]
 [ext_resource type="Script" uid="uid://d32mq7typ1jgv" path="res://src/office/office_view.gd" id="9_view"]
+[ext_resource type="Texture2D" uid="uid://dkjuigxb1dnmg" path="res://resources/images/mouse-28mm.png" id="10_ovhle"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_s6gf3"]
 atlas = ExtResource("4_ovhle")
@@ -230,4 +232,12 @@ offset = Vector2(640, 360)
 [node name="Phone" type="AnimatedSprite2D" parent="." unique_id=1586011720]
 z_index = 1
 sprite_frames = SubResource("SpriteFrames_md7vi")
+offset = Vector2(640, 360)
+
+[node name="Clock" type="Sprite2D" parent="." unique_id=1477465525]
+texture = ExtResource("9_lefqp")
+offset = Vector2(640, 360)
+
+[node name="Mouse" type="Sprite2D" parent="." unique_id=1125022632]
+texture = ExtResource("10_ovhle")
 offset = Vector2(640, 360)
