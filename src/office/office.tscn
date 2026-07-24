@@ -6,7 +6,7 @@
 [ext_resource type="PackedScene" uid="uid://dolb7fbje0brd" path="res://src/clock/clock.tscn" id="4_yltk5"]
 [ext_resource type="PackedScene" uid="uid://pnkt02rak0tl" path="res://src/computer/computer.tscn" id="5_jfxul"]
 [ext_resource type="PackedScene" uid="uid://dosq7nhbpil77" path="res://src/phone/phone.tscn" id="7_pcami"]
-[ext_resource type="PackedScene" uid="uid://dk37h2v0q8mxr" path="res://src/postit/postit.tscn" id="8_yo1l8"]
+[ext_resource type="PackedScene" uid="uid://cp0st1tstack00" path="res://src/postit/postit_stack.tscn" id="8_yo1l8"]
 [ext_resource type="PackedScene" uid="uid://vfw2c4ylf0ob" path="res://src/office/office_view.tscn" id="9_office_view"]
 
 [node name="Office" type="Node2D" unique_id=1406735297]
@@ -48,6 +48,6 @@ offset_bottom = 1409.0
 scale = Vector2(0.32, 0.32)
 drawer_path = NodePath("../OfficeView/Drawer")
 
-[node name="PostIt" parent="." unique_id=1177477717 instance=ExtResource("8_yo1l8")]
+[node name="PostItStack" parent="." unique_id=1177477717 instance=ExtResource("8_yo1l8")]
 position = Vector2(140, 222)
 scale = Vector2(0.7, 0.7)
