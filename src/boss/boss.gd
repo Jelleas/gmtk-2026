@@ -96,6 +96,7 @@ func check_active_activities() -> void:
 	has_active_activities = activity_count > 0
 	if has_active_activities:
 		EventBus.punishment_started.emit(activity_count)
+		shake()
 	else:
 		retreat_boss_face()
 
@@ -108,6 +109,7 @@ func on_punishment_ended() -> void:
 func retreat_boss_face() -> void:
 	activity_check_timer.stop()
 	EventBus.boss_watch_progress.emit(0.0)
+	EventBus.boss_watch_ended.emit()
 	state = State.RETREATING
 	var tween := create_tween()
 	tween.tween_property(boss_face, "position:y", hidden_y, retreat_duration).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
@@ -117,3 +119,18 @@ func on_boss_face_hidden() -> void:
 	state = State.RISING
 	has_active_activities = false
 	schedule_next_move()
+
+func shake() -> void:
+	var original := position
+	var elapsed := 0.0
+	var duration = 1.0
+	var strength = 20.0
+	while elapsed < duration:
+		var t: float = 1.0 - (elapsed / duration)  # decay so it settles instead of cutting
+		position = original + Vector2(
+			randf_range(-strength, strength), 
+			randf_range(-strength, strength)
+		) * t
+		elapsed += get_process_delta_time()
+		await get_tree().process_frame
+	position = original
