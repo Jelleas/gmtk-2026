@@ -18,3 +18,6 @@ signal boss_watch_progress(progress: float)
 
 signal task_added(task: Task)
 signal task_completed(task: Task)
+
+signal zoom_out_requested()
+signal zoom_in_requested()

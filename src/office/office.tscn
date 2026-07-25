@@ -10,6 +10,7 @@
 [ext_resource type="PackedScene" uid="uid://ct8knnije263x" path="res://src/postit/postit_stack.tscn" id="8_yo1l8"]
 [ext_resource type="PackedScene" uid="uid://vfw2c4ylf0ob" path="res://src/office/office_view.tscn" id="9_office_view"]
 [ext_resource type="Script" uid="uid://estm6ana6hbr" path="res://src/computer/punishment/punishment_controller.gd" id="10_punishment"]
+[ext_resource type="Script" uid="uid://bvhrbm6njw3qp" path="res://src/office/camera.gd" id="11_a7e1d"]
 [ext_resource type="Script" uid="uid://c2tegairt0p5y" path="res://src/tutorial/tutorial_controller.gd" id="11_tutorial"]
 
 [node name="Office" type="Node2D" unique_id=1406735297]
@@ -76,6 +77,11 @@ script = ExtResource("10_punishment")
 
 [node name="Tutorial" type="Node" parent="." unique_id=1835767382]
 script = ExtResource("11_tutorial")
+
+[node name="Camera" type="Camera2D" parent="." unique_id=1132415919]
+offset = Vector2(640, 360)
+zoom = Vector2(2.5, 2.5)
+script = ExtResource("11_a7e1d")
 
 [editable path="Clock"]
 [editable path="Phone"]
