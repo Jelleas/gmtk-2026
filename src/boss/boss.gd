@@ -65,6 +65,20 @@ func activate() -> void:
 
 	schedule_next_move()
 
+## Sends the boss home for good. Once the day is over there is nothing left to
+## catch, and a last peek would start a punishment behind the shift report.
+func deactivate() -> void:
+	if not is_activated:
+		return
+
+	is_activated = false
+	scripted_rise_pending = false
+	move_timer.stop()
+	if state == State.VISIBLE:
+		retreat_boss_face()
+	else:
+		activity_check_timer.stop()
+
 func _process(_delta: float) -> void:
 	if state == State.VISIBLE and not activity_check_timer.is_stopped():
 		var progress := 1.0 - activity_check_timer.time_left / current_watch_delay
@@ -82,7 +96,7 @@ func on_activity_end(source_id: StringName) -> void:
 		tween.tween_property(self, "modulate", Color.WHITE, 0.1)
 
 func schedule_next_move() -> void:
-	if scripted_rise_pending:
+	if scripted_rise_pending or not is_activated:
 		return
 
 	move_timer.start(randf_range(min_move_interval, max_move_interval))

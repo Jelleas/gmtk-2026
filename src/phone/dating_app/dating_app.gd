@@ -72,6 +72,14 @@ func _end_drag() -> void:
 		active_card.reset_swipe()
 
 
+## The phone can become unavailable while a pointer is down; do not leave the
+## next session holding a stale drag.
+func cancel_drag() -> void:
+	if is_dragging and active_card:
+		active_card.reset_swipe()
+	is_dragging = false
+
+
 func _finish_swipe(card: DatingCard, direction: int) -> void:
 	profile_swiped.emit()
 	EventBus.profile_swiped.emit(direction)
