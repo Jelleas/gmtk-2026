@@ -76,6 +76,10 @@ func _show_cards() -> void:
 
 
 func _gui_input(event: InputEvent) -> void:
+	if not _can_open_phone():
+		accept_event()
+		return
+
 	if event is InputEventMouse:
 		_forward_input(event, event.position)
 	elif event is InputEventScreenTouch:
@@ -223,13 +227,16 @@ func _can_open_phone() -> bool:
 
 
 func _can_activate_activity() -> bool:
-	return not is_boss_watching and not is_punishment_active
+	return not is_punishment_active
 
 
 func _update_phone_access() -> void:
 	if drawer:
 		drawer.can_open = _can_activate_activity()
 	if not _can_open_phone():
+		dating_app.cancel_drag()
 		mouse_filter = Control.MOUSE_FILTER_IGNORE
 	elif phone_surface.visible:
 		mouse_filter = Control.MOUSE_FILTER_STOP
+	elif drawer == null or drawer.is_open:
+		_show_cards()
