@@ -68,9 +68,11 @@ func _process(delta: float) -> void:
 		if item_rect.intersects(player_rect):
 			if item["type"] == &"coin":
 				coins_collected += 1
+				EventBus.video_coin_collected.emit()
 			else:
 				hits += 1
 				hit_flash = 0.18
+				EventBus.video_obstacle_hit.emit()
 			items.remove_at(index)
 		elif item_rect.position.y > PLAYFIELD.end.y:
 			items.remove_at(index)

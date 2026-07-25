@@ -28,6 +28,7 @@ func start() -> void:
 	is_running = true
 	spin_timer.start(spin_duration + spin_level * 2.5)
 	started.emit(spin_level)
+	EventBus.fidget_spun.emit(spin_level)
 	EventBus.activity_started.emit(SOURCE_ID, ACTIVITY_MULTIPLIER + (spin_level-1)*0.5)
 
 func stop(forced: bool) -> void:

@@ -117,6 +117,7 @@ func _on_current_task_changed() -> void:
 		return
 
 	task.changed.disconnect(_on_current_task_changed)
+	EventBus.punishment_task_completed.emit()
 	post_it_stack.advance_punishment(current_index)
 	current_index += 1
 

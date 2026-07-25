@@ -66,13 +66,15 @@ func _end_drag() -> void:
 	var horizontal_offset := active_card.position.x
 	if absf(horizontal_offset) >= SWIPE_THRESHOLD:
 		is_resolving_swipe = true
-		active_card.animate_swipe(signf(horizontal_offset), _finish_swipe.bind(active_card))
+		var direction := signf(horizontal_offset)
+		active_card.animate_swipe(direction, _finish_swipe.bind(active_card, int(direction)))
 	else:
 		active_card.reset_swipe()
 
 
-func _finish_swipe(card: DatingCard) -> void:
+func _finish_swipe(card: DatingCard, direction: int) -> void:
 	profile_swiped.emit()
+	EventBus.profile_swiped.emit(direction)
 	stacked_cards.erase(card)
 	card.queue_free()
 	profile_index = (profile_index + 1) % PROFILES.size()

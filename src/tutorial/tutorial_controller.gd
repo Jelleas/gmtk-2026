@@ -210,6 +210,7 @@ func _on_beat_changed() -> void:
 ## The side effects of finishing a beat.
 func _on_beat_completed() -> void:
 	var task := beats[current_index]
+	EventBus.tutorial_beat_completed.emit()
 
 	if current_index == 0:
 		# The clock has been held at the opening time until now: the day starts

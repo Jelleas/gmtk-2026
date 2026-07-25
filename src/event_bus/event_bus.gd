@@ -18,3 +18,15 @@ signal boss_watch_progress(progress: float)
 
 signal task_added(task: Task)
 signal task_completed(task: Task)
+
+## Announced for the stat tracker's benefit, next to the local signals the scene
+## itself is wired up with.
+@warning_ignore_start("unused_signal")
+signal fidget_spun(level: int)
+## -1 for a swipe left, 1 for a swipe right.
+signal profile_swiped(direction: int)
+signal video_coin_collected()
+signal video_obstacle_hit()
+signal punishment_task_completed()
+signal tutorial_beat_completed()
+@warning_ignore_restore("unused_signal")

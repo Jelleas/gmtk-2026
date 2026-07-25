@@ -34,9 +34,14 @@ func _process(delta: float) -> void:
 	realtime += delta
 	# The clock stands still while the boss has the player doing punishment work.
 	if is_punished:
+		StatTracker.record_punished_tick(delta)
 		return
 
-	time -= delta * 60 * positive_multiplier() * negative_multiplier()
+	# The tracker is handed the multiplier the clock is actually spending, so the
+	# stats cannot drift away from the day the player watched go by.
+	var multiplier := positive_multiplier()
+	StatTracker.record_tick(delta, multiplier)
+	time -= delta * 60 * multiplier * negative_multiplier()
 
 	if time <= LAST_HOUR and not last_hour_announced:
 		last_hour_announced = true
@@ -71,7 +76,7 @@ func format_time(seconds: float) -> String:
 	var secs := total % 60
 	return "%02d:%02d:%02d" % [hours, minutes, secs]
 
-func positive_multiplier():
+func positive_multiplier() -> float:
 	var m = 1.0
 	for multi in active_multipliers.values():
 		m *= multi

@@ -18,6 +18,7 @@ config/icon="res://icon.svg"
 [autoload]
 
 EventBus="*uid://b336jrorewyep"
+StatTracker="*uid://8v771oju4mfh"
 
 [display]
 

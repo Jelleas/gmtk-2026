@@ -15,6 +15,10 @@ var is_punished := false
 var is_scripted := false
 
 func _ready():
+	# The tracker outlives the scene, so a fresh run clears it here rather than
+	# on day_started: the tutorial's first spin comes before the day does.
+	StatTracker.reset()
+
 	var computer: Computer = $Screen/Computer
 	var spreadsheet: Spreadsheet = computer.spreadsheet
 	var boss: Boss = $Boss
