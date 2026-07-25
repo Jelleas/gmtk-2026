@@ -15,9 +15,11 @@ extends Node
 ## Fires when the last beat starts: the regular workday can take over from here.
 signal finished
 
-## The boss watches for longer on its first rise, so the player gets time to read
-## the filling watch instead of being punished by a mechanic they have not met.
-const FIRST_WATCH_DELAY := 8.0
+## The boss's first appearance is staged: putting the spinner away is what brings
+## it up, and it only hangs around long enough to find nothing and leave. Turning
+## up in answer to something the player did reads as a near miss rather than as
+## the boss popping in and out at random.
+const FIRST_LOOK_SECONDS := 2.0
 
 ## Once the boss has been introduced it backs off for the remaining lessons: at
 ## its normal pace it is up again every few seconds, which leaves no room to sit
@@ -54,6 +56,7 @@ func setup(p_post_it_stack: PostItStack, p_spreadsheet: Spreadsheet, p_computer:
 	dating_app = p_dating_app
 	default_watch_delay = boss.activity_check_delay
 	default_move_interval = Vector2(boss.min_move_interval, boss.max_move_interval)
+	spreadsheet.cell_text_changed.connect(_on_cell_text_changed)
 
 func start() -> void:
 	if running:
@@ -136,6 +139,8 @@ func _enter_beat() -> void:
 			task.changed.connect(_on_beat_changed)
 			return
 
+		# Already satisfied, but it still counts as done - side effects and all.
+		_on_beat_completed(task)
 		post_it_stack.advance_tutorial(current_index)
 		current_index += 1
 
@@ -146,19 +151,9 @@ func _on_beat_started() -> void:
 	var task := beats[current_index]
 	var is_last := current_index == beats.size() - 1
 
-	if task is LookBusyTask:
-		# The boss has been kept away until now, so beat 1 could be enjoyed. It
-		# comes up at its usual pace here, because this beat is waiting for it.
-		boss.activity_check_delay = FIRST_WATCH_DELAY
-		_set_boss_move_interval(default_move_interval)
-		boss.activate()
-	elif is_last:
-		# Hands off the pacing along with the day.
-		boss.activity_check_delay = default_watch_delay
-		_set_boss_move_interval(default_move_interval)
-	else:
-		boss.activity_check_delay = default_watch_delay
-		_set_boss_move_interval(TEACHING_MOVE_INTERVAL)
+	boss.activity_check_delay = default_watch_delay
+	# The last beat hands off the pacing along with the day.
+	_set_boss_move_interval(default_move_interval if is_last else TEACHING_MOVE_INTERVAL)
 
 	# A beat that carries its own text writes it now, so it reads right even if
 	# the thing it tracks moved on while an earlier beat was still running.
@@ -180,6 +175,15 @@ func _set_boss_move_interval(interval: Vector2) -> void:
 	boss.max_move_interval = interval.y
 	if boss.is_activated and boss.state == Boss.State.RISING and not boss.move_timer.is_stopped():
 		boss.schedule_next_move()
+
+## The top bar is the spreadsheet's own readout of the cell being edited, so the
+## hint gives it back as soon as the player starts typing. Only ever clears the
+## tutorial's own text - a punishment task's instructions stay put.
+func _on_cell_text_changed(_row: int, _col: int, _text: String) -> void:
+	if not running or current_index >= hints.size():
+		return
+	if spreadsheet.status_message == hints[current_index]:
+		spreadsheet.set_status_message("")
 
 func _on_beat_changed() -> void:
 	var task := beats[current_index]
@@ -203,10 +207,11 @@ func _on_beat_completed(task: Task) -> void:
 	if current_index == 0:
 		EventBus.day_started.emit()
 
-	# The player did the thing the boss was waiting for, so the boss has no
-	# reason to keep looking: it ducks away instead of running its watch down.
-	if task is LookBusyTask and boss.state == Boss.State.VISIBLE:
-		boss.retreat_boss_face()
+	# Putting the spinner away is what summons the boss: it comes straight up,
+	# finds a clean desk, and drops back down. From here on it comes and goes on
+	# its own - and it is watching for real.
+	if task is LookBusyTask:
+		boss.appear_now(FIRST_LOOK_SECONDS)
 
 ## The last beat ends the day, which ends the game - so there is nothing to hand
 ## over to and nothing to tidy up. The final note stays where it is, checked off.

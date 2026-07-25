@@ -25,6 +25,11 @@ var activity_check_timer: Timer
 var hidden_y := 0.0
 var visible_y := 0.0
 var becoming_red_tween: Tween
+## How long the watch on the current rise runs for, which is usually
+## activity_check_delay but can be shortened for a single rise.
+var current_watch_delay := 0.0
+## Set just before a rise to shorten that one look; cleared as it is used.
+var next_watch_delay := 0.0
 
 func _ready() -> void:
 	EventBus.activity_started.connect(on_activity_start)
@@ -59,7 +64,7 @@ func activate() -> void:
 
 func _process(_delta: float) -> void:
 	if state == State.VISIBLE and not activity_check_timer.is_stopped():
-		var progress := 1.0 - activity_check_timer.time_left / activity_check_delay
+		var progress := 1.0 - activity_check_timer.time_left / current_watch_delay
 		EventBus.boss_watch_progress.emit(clampf(progress, 0.0, 1.0))
 
 func on_activity_start(source_id: StringName, _multiplier: float) -> void:
@@ -76,6 +81,19 @@ func on_activity_end(source_id: StringName) -> void:
 func schedule_next_move() -> void:
 	move_timer.start(randf_range(min_move_interval, max_move_interval))
 
+## Comes up right now for a single short look, instead of waiting for the next
+## scheduled rise. The tutorial uses this to script a near miss, so the boss
+## turns up in answer to something the player did rather than out of the blue.
+func appear_now(watch_duration: float) -> void:
+	if not is_activated:
+		activate()
+	if state != State.RISING:
+		return
+
+	move_timer.stop()
+	next_watch_delay = watch_duration
+	move_boss_face()
+
 func move_boss_face() -> void:
 	if state != State.RISING:
 		return
@@ -87,11 +105,13 @@ func move_boss_face() -> void:
 
 func boss_face_visible() -> void:
 	state = State.VISIBLE
-	activity_check_timer.start(activity_check_delay)
+	current_watch_delay = next_watch_delay if next_watch_delay > 0.0 else activity_check_delay
+	next_watch_delay = 0.0
+	activity_check_timer.start(current_watch_delay)
 	EventBus.boss_watch_started.emit()
 	if activity_states.values().any(func(b): return b):
 		becoming_red_tween = create_tween()
-		becoming_red_tween.tween_property(self, "modulate", Color("#D14B3E"), activity_check_delay)
+		becoming_red_tween.tween_property(self, "modulate", Color("#D14B3E"), current_watch_delay)
 
 func check_active_activities() -> void:
 	var activity_count := 0

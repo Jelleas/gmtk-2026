@@ -54,7 +54,6 @@ func _ready():
 ## while the player is still holding the note.
 func _on_tutorial_finished() -> void:
 	is_scripted = false
-	_refill_tasks()
 
 func _on_task_completed(_task: Task) -> void:
 	refill_timer.start(task_refill_delay)
