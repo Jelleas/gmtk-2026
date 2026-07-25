@@ -7,6 +7,7 @@ var TASK_TYPES := [
 	CopyRowTask,
 	CopyColumnTask,
 	HighNumberTask,
+	WhackAMoleTask,
 ]
 
 var spreadsheet: Spreadsheet
