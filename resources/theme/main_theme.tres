@@ -11,6 +11,14 @@ shadow_color = Color(0.19255564, 0.1925557, 0.19255555, 1)
 shadow_size = 1
 shadow_offset = Vector2(0, 1)
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_6q8pu"]
+bg_color = Color(0.18039216, 0.19607843, 0.21960784, 0)
+draw_center = false
+corner_radius_top_left = 2
+corner_radius_top_right = 2
+corner_radius_bottom_right = 2
+corner_radius_bottom_left = 2
+
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1ecgp"]
 bg_color = Color(0, 0, 0.50980395, 1)
 
@@ -68,6 +76,8 @@ ComputerPanel/base_type = &"PanelContainer"
 ComputerPanel/styles/panel = SubResource("StyleBoxFlat_3doyt")
 ComputerTaskbar/base_type = &"PanelContainer"
 ComputerTaskbar/styles/panel = SubResource("StyleBoxFlat_taskbar")
+MultiplierPanel/base_type = &"PanelContainer"
+MultiplierPanel/styles/panel = SubResource("StyleBoxFlat_6q8pu")
 TopBarContainer/base_type = &"PanelContainer"
 TopBarContainer/styles/panel = SubResource("StyleBoxFlat_1ecgp")
 WindowsButton/base_type = &"Button"

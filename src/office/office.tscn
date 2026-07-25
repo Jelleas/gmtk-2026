@@ -5,6 +5,7 @@
 [ext_resource type="PackedScene" uid="uid://drnwmmcdl4ifr" path="res://src/boss/boss.tscn" id="3_jfxul"]
 [ext_resource type="PackedScene" uid="uid://dolb7fbje0brd" path="res://src/clock/clock.tscn" id="4_yltk5"]
 [ext_resource type="PackedScene" uid="uid://pnkt02rak0tl" path="res://src/computer/computer.tscn" id="5_jfxul"]
+[ext_resource type="PackedScene" uid="uid://iiy5mthiwbhn" path="res://src/multiplier_meter/multiplier_meter.tscn" id="5_multiplier_meter"]
 [ext_resource type="PackedScene" uid="uid://dosq7nhbpil77" path="res://src/phone/phone.tscn" id="7_pcami"]
 [ext_resource type="PackedScene" uid="uid://ct8knnije263x" path="res://src/postit/postit_stack.tscn" id="8_yo1l8"]
 [ext_resource type="PackedScene" uid="uid://vfw2c4ylf0ob" path="res://src/office/office_view.tscn" id="9_office_view"]
@@ -25,6 +26,10 @@ position = Vector2(929, 176)
 
 [node name="ClockSurface" parent="Clock" index="1"]
 polygon = PackedVector2Array(-28, -20, 222, -23, 215, 70, -32, 65)
+
+[node name="MultiplierMeter" parent="." unique_id=1559379934 instance=ExtResource("5_multiplier_meter")]
+position = Vector2(927, 262)
+clock_path = NodePath("../Clock")
 
 [node name="Boss" parent="." unique_id=821479703 instance=ExtResource("3_jfxul")]
 z_index = -1

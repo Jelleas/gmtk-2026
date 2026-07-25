@@ -3,6 +3,7 @@ extends Control
 const SOURCE_ID := &"dating_app"
 const ACTIVITY_MULTIPLIER := 5.0
 const SWIPE_MULTIPLIER_INCREASE := 0.5
+const MAX_ACTIVITY_MULTIPLIER := 10.0
 const SWIPE_RESET_DELAY := 3.0
 const CARDS_VISIBLE_PROGRESS := 0.92
 
@@ -179,7 +180,10 @@ func _on_profile_swiped() -> void:
 	if not is_activity_active or not _can_activate_activity():
 		return
 
-	current_activity_multiplier += SWIPE_MULTIPLIER_INCREASE
+	current_activity_multiplier = minf(
+		MAX_ACTIVITY_MULTIPLIER,
+		current_activity_multiplier + SWIPE_MULTIPLIER_INCREASE,
+	)
 	swipe_reset_timer.start()
 	EventBus.activity_started.emit(SOURCE_ID, current_activity_multiplier)
 
