@@ -17,6 +17,11 @@ const VIDEO_BUTTON_WIDTH := 136
 const TASKBAR_FONT_SIZE := 16
 const CHROME_SCALE := 0.5
 
+const RESULTS_SCREEN := preload("res://src/results_screen/results_screen.tscn")
+## How long the report waits before coming up: the camera is on its way back to
+## the monitor, and it takes ZOOM_SECONDS (camera.gd) to get there.
+const RESULTS_DELAY := 1.0
+
 var can_activate_activity = true
 
 @onready var spreadsheet: Control = %Spreadsheet
@@ -48,11 +53,22 @@ func _ready() -> void:
 	EventBus.boss_watch_started.connect(_on_deactivate_activities)
 	EventBus.punishment_ended.connect(_on_activate_activities)
 	EventBus.boss_watch_ended.connect(_on_activate_activities)
+	EventBus.day_ended.connect(_on_day_ended)
 
 	#close_button.pressed.connect(hide)
 
 func _on_login_authenticated() -> void:
 	login_authenticated.emit()
+
+## The day ends where it started: on the monitor, with the camera pulled back in
+## on it. The report is laid over the whole window, the way the login screen is.
+func _on_day_ended(_realtime: float) -> void:
+	EventBus.zoom_in_requested.emit()
+	await get_tree().create_timer(RESULTS_DELAY).timeout
+
+	var results_screen := RESULTS_SCREEN.instantiate()
+	add_child(results_screen)
+	results_screen.show_stats(StatTracker.stats)
 
 func _on_taskbar_tab_changed(tab: int) -> void:
 	spreadsheet_selector.set_pressed_no_signal(tab == 0)
