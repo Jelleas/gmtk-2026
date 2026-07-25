@@ -12,6 +12,9 @@ extends Node2D
 ## they keep their own colour, and they leave as a whole instead of being sealed.
 ## There are two of them: the punishment note, and the prep note above it that
 ## lists what the player has to sort out before starting the punishment work.
+##
+## The tutorial rides on the same machinery, in the regular colour and a page of
+## TUTORIAL_PAGE_SIZE beats at a time.
 
 const PostItScene := preload("res://src/postit/postit.tscn")
 
@@ -38,6 +41,13 @@ const POSE_DURATION := 0.18
 ## The boss's notes stand out from the regular yellow ones.
 const PUNISHMENT_COLOR := Color("d14b3e")
 
+## Only so many items fit on a note, so the tutorial is handed out a page at a
+## time: a finished page leaves and the next one flies in behind it. How the
+## beats are split over the pages is the tutorial's call, not the stack's.
+const TUTORIAL_MAX_PAGE_SIZE := 3
+## How long a finished page stays up, so the last check can be read.
+const TUTORIAL_PAGE_TURN_DELAY := 0.6
+
 @export var note_color: Color = Color("edcb44"):
 	set(value):
 		note_color = value
@@ -53,13 +63,30 @@ const PUNISHMENT_COLOR := Color("d14b3e")
 var notes: Array[PostIt] = []
 ## The top / newest note where new items are added.
 var active_note: PostIt
-## The boss's notes, bottom to top. They are kept at the tail of `notes`, so
-## regular notes always slot in underneath them.
+## The notes that are driven from outside (the boss's work, the tutorial),
+## bottom to top. They are kept at the tail of `notes`, so regular notes always
+## slot in underneath them.
 var special_notes: Array[PostIt] = []
+## Each special note's own colour, before the depth tint is applied.
+var special_colors := {}
 ## The punishment note, while the boss has one out.
 var punishment_note: PostIt
 ## The prep note listing what to sort out before the punishment work starts.
 var prep_note: PostIt
+## The tutorial page currently up, on the player's first day. Null for the beat
+## of a second between a finished page leaving and the next one arriving.
+var tutorial_note: PostIt
+## Every tutorial beat's text, whether or not its page is up.
+var tutorial_texts: Array[String] = []
+## How many beats each page holds, in order.
+var tutorial_page_sizes := PackedInt32Array()
+## Which page is up, which beat it starts at, and how many beats are done.
+## Together they decide what a page looks like, so a page can be redrawn at any
+## time - which is what makes turning one safe.
+var tutorial_page_index := 0
+var tutorial_page := 0
+var tutorial_completed := 0
+var tutorial_running := false
 
 func _ready() -> void:
 	EventBus.task_added.connect(on_task_added)
@@ -92,8 +119,12 @@ func clear_items() -> void:
 	notes.clear()
 	active_note = null
 	special_notes.clear()
+	special_colors.clear()
 	punishment_note = null
 	prep_note = null
+	tutorial_note = null
+	tutorial_running = false
+	tutorial_texts.clear()
 	_spawn_note(false)
 
 func on_task_added(task: Task) -> void:
@@ -113,23 +144,17 @@ func on_task_completed(task: Task) -> void:
 				return
 			i += 1
 
-# --- The boss's notes -------------------------------------------------------
+# --- Notes driven from outside ----------------------------------------------
 
 ## Flies in the boss's punishment note listing every task the player owes.
 ## Only the first one is the player's turn; the rest wait, greyed out.
 func start_punishment(descriptions: Array[String]) -> void:
-	var note := _spawn_special_note(descriptions)
-	punishment_note = note
-	for i in descriptions.size():
-		note.set_item_pending(i, i > 0)
+	punishment_note = _spawn_special_note(descriptions)
+	_grey_out_from(punishment_note, 1)
 
 ## Checks off the punishment task at `index` and hands the player the next one.
 func advance_punishment(index: int) -> void:
-	if not punishment_note:
-		return
-	punishment_note.set_item_checked(index, true)
-	if index + 1 < punishment_note.item_count():
-		punishment_note.set_item_pending(index + 1, false)
+	_advance_special_note(punishment_note, index)
 
 ## Takes the punishment note away again: it leaves whole, it is never sealed.
 func end_punishment() -> void:
@@ -154,9 +179,87 @@ func end_prep_note() -> void:
 	_remove_note(prep_note)
 	prep_note = null
 
+## The player's first day, written out on notes of their own in the regular
+## colour - it is the day's plan, not the boss's punishment. The day arrives a
+## page at a time, `page_sizes` beats to a note. One beat at a time is live; the
+## rest of the page waits, greyed out.
+func start_tutorial(descriptions: Array[String], page_sizes: PackedInt32Array) -> void:
+	tutorial_texts = descriptions.duplicate()
+	tutorial_page_sizes = page_sizes.duplicate()
+	tutorial_page_index = 0
+	tutorial_page = 0
+	tutorial_completed = 0
+	tutorial_running = true
+	_show_tutorial_page()
+
+## Checks off the tutorial beat at `index` and hands the player the next one,
+## turning the page when that was the last beat on it.
+func advance_tutorial(index: int) -> void:
+	tutorial_completed = maxi(tutorial_completed, index + 1)
+	var local := index - tutorial_page
+	if is_instance_valid(tutorial_note) and local >= 0 and local < tutorial_note.item_count():
+		tutorial_note.set_item_checked(local, true)
+		if local + 1 < tutorial_note.item_count():
+			tutorial_note.set_item_pending(local + 1, false)
+	_turn_tutorial_page_if_finished()
+
+## Rewrites a tutorial beat, so a beat can carry its own progress.
+func set_tutorial_item_text(index: int, text: String) -> void:
+	if index >= tutorial_texts.size():
+		return
+	tutorial_texts[index] = text
+	var local := index - tutorial_page
+	if is_instance_valid(tutorial_note) and local >= 0 and local < tutorial_note.item_count():
+		tutorial_note.set_item_text(local, text)
+
 # --- Internals --------------------------------------------------------------
 
-## The boss's notes, bottom to top, skipping any that have already left.
+## Draws the current page from scratch: which beats are on it, and which of them
+## are done, waiting, or the player's turn. Called for a fresh page, so a page
+## that arrives already finished (beats can complete while it is on its way in)
+## simply turns again.
+func _show_tutorial_page() -> void:
+	if not tutorial_running or tutorial_page_index >= tutorial_page_sizes.size():
+		return
+
+	var page: Array[String] = []
+	var page_end := mini(tutorial_page + tutorial_page_sizes[tutorial_page_index], tutorial_texts.size())
+	for i in range(tutorial_page, page_end):
+		page.append(tutorial_texts[i])
+	if page.is_empty():
+		return
+
+	tutorial_note = _spawn_special_note(page, note_color)
+	for i in page.size():
+		var beat := tutorial_page + i
+		tutorial_note.set_item_checked(i, beat < tutorial_completed)
+		tutorial_note.set_item_pending(i, beat > tutorial_completed)
+
+	_turn_tutorial_page_if_finished()
+
+## Every beat on the page is done and there are more to come: let the finished
+## page be read for a moment, then send it off and bring in the next one.
+func _turn_tutorial_page_if_finished() -> void:
+	if not is_instance_valid(tutorial_note):
+		return
+	if tutorial_completed < tutorial_page + tutorial_note.item_count():
+		return
+	# The last page stays: its beat is the rest of the day, and checking it off
+	# is the end of the game.
+	if tutorial_page_index + 1 >= tutorial_page_sizes.size():
+		return
+
+	var leaving := tutorial_note
+	tutorial_note = null
+	tutorial_page += leaving.item_count()
+	tutorial_page_index += 1
+
+	var turn := create_tween()
+	turn.tween_interval(TUTORIAL_PAGE_TURN_DELAY)
+	turn.tween_callback(_remove_note.bind(leaving))
+	turn.tween_callback(_show_tutorial_page)
+
+## The externally driven notes, bottom to top, skipping any that have left.
 func _special_notes() -> Array[PostIt]:
 	var alive: Array[PostIt] = []
 	for note in special_notes:
@@ -164,12 +267,25 @@ func _special_notes() -> Array[PostIt]:
 			alive.append(note)
 	return alive
 
-## Flies in one of the boss's notes on top of the pile, listing `descriptions`.
-func _spawn_special_note(descriptions: Array[String]) -> PostIt:
-	var note := _spawn_note(true, true)
+## Flies in a note on top of the pile, listing `descriptions`.
+func _spawn_special_note(descriptions: Array[String], color := PUNISHMENT_COLOR) -> PostIt:
+	var note := _spawn_note(true, true, color)
 	for description in descriptions:
 		note.add_item(description)
 	return note
+
+## Greys out every item from `index` on: they are not the player's turn yet.
+func _grey_out_from(note: PostIt, index: int) -> void:
+	for i in range(index, note.item_count()):
+		note.set_item_pending(i, true)
+
+## Checks off item `index` and hands the player the one after it.
+func _advance_special_note(note: PostIt, index: int) -> void:
+	if not is_instance_valid(note) or index >= note.item_count():
+		return
+	note.set_item_checked(index, true)
+	if index + 1 < note.item_count():
+		note.set_item_pending(index + 1, false)
 
 ## Sends a note off the top of the pile for good, instead of sealing it.
 func _remove_note(note: PostIt) -> void:
@@ -178,6 +294,7 @@ func _remove_note(note: PostIt) -> void:
 
 	notes.erase(note)
 	special_notes.erase(note)
+	special_colors.erase(note)
 
 	var leave := create_tween()
 	leave.set_parallel(true)
@@ -202,10 +319,10 @@ func _resolve(index: int) -> Array:
 		remaining -= count
 	return []
 
-func _spawn_note(animate: bool, is_special := false) -> PostIt:
+func _spawn_note(animate: bool, is_special := false, special_color := PUNISHMENT_COLOR) -> PostIt:
 	var note: PostIt = PostItScene.instantiate()
 	note.connect_events = false
-	note.note_color = PUNISHMENT_COLOR if is_special else note_color
+	note.note_color = special_color if is_special else note_color
 	notes_root.add_child(note)
 	# Give each note a fixed slight tilt, alternating lean per note, kept for
 	# the note's whole life so it stays visibly angled as it moves back.
@@ -214,6 +331,7 @@ func _spawn_note(animate: bool, is_special := false) -> PostIt:
 
 	if is_special:
 		special_notes.append(note)
+		special_colors[note] = special_color
 		notes.append(note)
 	else:
 		# The boss's notes stay on top, so regular notes slot in below them.
@@ -251,7 +369,7 @@ func _restack(fly_in_note: PostIt = null) -> void:
 		# Draw order comes from child order (the top note is the last child);
 		# z_index is left at 0 so notes stay in front of the office background.
 		notes_root.move_child(note, i)
-		var base_color := PUNISHMENT_COLOR if special.has(note) else note_color
+		var base_color: Color = special_colors.get(note, note_color) if special.has(note) else note_color
 		note.note_color = base_color.darkened(minf(depth, MAX_VISIBLE_DEPTH) * DEPTH_DARKEN)
 
 		if note == fly_in_note:

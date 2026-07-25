@@ -1,6 +1,11 @@
+class_name Boss
 extends Node2D
 
 enum State { RISING, VISIBLE, RETREATING }
+
+## The tutorial keeps the boss away for its first beat, so it activates the boss
+## itself once the player has been told there is one.
+@export var auto_activate := true
 
 @export var min_move_interval := 5.0
 @export var max_move_interval := 20.0
@@ -25,7 +30,8 @@ func _ready() -> void:
 	EventBus.activity_started.connect(on_activity_start)
 	EventBus.activity_ended.connect(on_activity_end)
 	EventBus.punishment_ended.connect(on_punishment_ended)
-	activate()
+	if auto_activate:
+		activate()
 
 func activate() -> void:
 	if is_activated:

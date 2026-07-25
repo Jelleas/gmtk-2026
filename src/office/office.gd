@@ -3,13 +3,21 @@ extends Node2D
 const TARGET_TASK_COUNT := 2
 
 @export var task_refill_delay := 2.0
+## The first day walks the player through the game. Turn this off to drop
+## straight into a regular workday.
+@export var run_tutorial := true
 
 var task_store: TaskStore
 var refill_timer: Timer
 var is_punished := false
+## While the tutorial is walking the player around, the regular task rotation
+## stays out of the way.
+var is_scripted := false
 
 func _ready():
-	var spreadsheet: Spreadsheet = $Screen/Computer.spreadsheet
+	var computer: Computer = $Screen/Computer
+	var spreadsheet: Spreadsheet = computer.spreadsheet
+	var boss: Boss = $Boss
 	task_store = TaskStore.new(spreadsheet)
 	$Punishment.setup(task_store, spreadsheet, $PostItStack)
 	EventBus.task_completed.connect(_on_task_completed)
@@ -23,6 +31,27 @@ func _ready():
 	refill_timer.timeout.connect(_refill_tasks)
 	add_child(refill_timer)
 
+	if run_tutorial:
+		is_scripted = true
+		$Tutorial.setup(
+			$PostItStack,
+			spreadsheet,
+			computer,
+			boss,
+			$OfficeView.drawer,
+			$Phone.dating_app,
+		)
+		$Tutorial.finished.connect(_on_tutorial_finished)
+		$Tutorial.start()
+	else:
+		# The tutorial normally brings the boss in on its second beat.
+		boss.activate()
+		_refill_tasks()
+
+## The tutorial's last beat is the rest of the day, so real work starts flowing
+## while the player is still holding the note.
+func _on_tutorial_finished() -> void:
+	is_scripted = false
 	_refill_tasks()
 
 func _on_task_completed(_task: Task) -> void:
@@ -43,8 +72,9 @@ func _on_punishment_ended() -> void:
 
 func _refill_tasks() -> void:
 	# Handing out regular work mid-punishment would start another spreadsheet
-	# task and wipe the sheet the punishment is running on.
-	if is_punished:
+	# task and wipe the sheet the punishment is running on. The tutorial holds it
+	# off for the same reason.
+	if is_punished or is_scripted:
 		return
 
 	while task_store.active_tasks.size() < TARGET_TASK_COUNT:
