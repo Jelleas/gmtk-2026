@@ -11,17 +11,6 @@ shadow_color = Color(0.19255564, 0.1925557, 0.19255555, 1)
 shadow_size = 1
 shadow_offset = Vector2(0, 1)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_6q8pu"]
-bg_color = Color(0.18039216, 0.19607843, 0.21960784, 0)
-draw_center = false
-corner_radius_top_left = 2
-corner_radius_top_right = 2
-corner_radius_bottom_right = 2
-corner_radius_bottom_left = 2
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1ecgp"]
-bg_color = Color(0, 0, 0.50980395, 1)
-
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_rjbnf"]
 content_margin_left = 2.0
 content_margin_top = 2.0
@@ -71,11 +60,30 @@ shadow_color = Color(0.8111275, 0.8111274, 0.8111274, 0.6)
 shadow_size = 2
 shadow_offset = Vector2(1, 1)
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_6q8pu"]
+bg_color = Color(0.18039216, 0.19607843, 0.21960784, 0)
+draw_center = false
+corner_radius_top_left = 2
+corner_radius_top_right = 2
+corner_radius_bottom_right = 2
+corner_radius_bottom_left = 2
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1ecgp"]
+bg_color = Color(0, 0, 0.50980395, 1)
+
 [resource]
 ComputerPanel/base_type = &"PanelContainer"
 ComputerPanel/styles/panel = SubResource("StyleBoxFlat_3doyt")
 ComputerTaskbar/base_type = &"PanelContainer"
 ComputerTaskbar/styles/panel = SubResource("StyleBoxFlat_taskbar")
+LoginWindowsButton/base_type = &"Button"
+LoginWindowsButton/colors/font_color = Color(0, 0, 0, 1)
+LoginWindowsButton/colors/font_hover_color = Color(0, 0, 0, 1)
+LoginWindowsButton/colors/font_hover_pressed_color = Color(0, 0, 0, 1)
+LoginWindowsButton/colors/font_pressed_color = Color(0, 0, 0, 1)
+LoginWindowsButton/styles/hover = SubResource("StyleBoxFlat_rjbnf")
+LoginWindowsButton/styles/normal = SubResource("StyleBoxFlat_d2t2c")
+LoginWindowsButton/styles/pressed = SubResource("StyleBoxFlat_jtt15")
 MultiplierPanel/base_type = &"PanelContainer"
 MultiplierPanel/styles/panel = SubResource("StyleBoxFlat_6q8pu")
 TopBarContainer/base_type = &"PanelContainer"

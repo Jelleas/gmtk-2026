@@ -3,6 +3,7 @@
 [ext_resource type="PackedScene" uid="uid://3sjwwynn3cgc" path="res://src/computer/video_distraction/video_distraction.tscn" id="1_bjt8x"]
 [ext_resource type="Script" uid="uid://j0wqy6uatgq7" path="res://src/computer/computer.gd" id="2_computer"]
 [ext_resource type="PackedScene" uid="uid://cdk3d2phm1nem" path="res://src/computer/spreadsheet/spreadsheet.tscn" id="3_spreadsheet"]
+[ext_resource type="PackedScene" path="res://src/login_screen/login_screen.tscn" id="4_login_screen"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_button98_normal"]
 bg_color = Color(0.75, 0.75, 0.75, 1)
@@ -29,6 +30,14 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_type_variation = &"ComputerPanel"
+
+[node name="LoginScreen" parent="." instance=ExtResource("4_login_screen")]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 
 [node name="MarginContainer" type="MarginContainer" parent="PanelContainer" unique_id=1254119487]
 layout_mode = 2

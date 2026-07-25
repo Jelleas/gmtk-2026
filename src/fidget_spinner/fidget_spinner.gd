@@ -10,6 +10,7 @@ const ACTIVITY_MULTIPLIER := 2.0
 
 @onready var spin_timer: Timer = $SpinTimer
 var is_running := false
+var is_interaction_enabled := true
 var is_boss_watching := false
 var is_punishment_active := false
 var spin_level: int = 0
@@ -21,7 +22,7 @@ func _ready() -> void:
 	EventBus.boss_watch_ended.connect(_on_boss_watch_ended)
 
 func start() -> void:
-	if not _can_activate_activity():
+	if not is_interaction_enabled or not _can_activate_activity():
 		return
 
 	spin_level = clampi(spin_level + 1, 0, 3)
@@ -46,6 +47,10 @@ func _on_click_area_input_event(_viewport: Node, event: InputEvent, _shape_idx: 
 		start()
 	elif event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_RIGHT and event.pressed:
 		stop(true)
+
+func set_interaction_enabled(enabled: bool) -> void:
+	is_interaction_enabled = enabled
+	$ClickArea.input_pickable = enabled
 
 func _on_spin_timer_timeout() -> void:
 	stop(false)

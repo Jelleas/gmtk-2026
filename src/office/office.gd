@@ -9,7 +9,11 @@ const TARGET_TASK_COUNT := 2
 
 var task_store: TaskStore
 var refill_timer: Timer
+var computer: Computer
+var spreadsheet: Spreadsheet
+var boss: Boss
 var is_punished := false
+var has_started := false
 ## While the tutorial is walking the player around, the regular task rotation
 ## stays out of the way.
 var is_scripted := false
@@ -19,9 +23,9 @@ func _ready():
 	# on day_started: the tutorial's first spin comes before the day does.
 	StatTracker.reset()
 
-	var computer: Computer = $Screen/Computer
-	var spreadsheet: Spreadsheet = computer.spreadsheet
-	var boss: Boss = $Boss
+	computer = $Screen/Computer
+	spreadsheet = computer.spreadsheet
+	boss = $Boss
 	task_store = TaskStore.new(spreadsheet)
 	$Punishment.setup(task_store, spreadsheet, $PostItStack)
 	EventBus.task_completed.connect(_on_task_completed)
@@ -29,11 +33,22 @@ func _ready():
 	EventBus.punishment_ended.connect(_on_punishment_ended)
 	$FidgetSpinner.started.connect($OfficeView.play_fidget_spin)
 	$FidgetSpinner.stopped.connect($OfficeView.stop_fidget_spin)
+	$FidgetSpinner.set_interaction_enabled(false)
+	$OfficeView.drawer.can_open = false
+	computer.login_authenticated.connect(start_day)
 
 	refill_timer = Timer.new()
 	refill_timer.one_shot = true
 	refill_timer.timeout.connect(_refill_tasks)
 	add_child(refill_timer)
+
+
+func start_day() -> void:
+	if has_started:
+		return
+	has_started = true
+	$FidgetSpinner.set_interaction_enabled(true)
+	$OfficeView.drawer.can_open = true
 
 	if run_tutorial:
 		is_scripted = true

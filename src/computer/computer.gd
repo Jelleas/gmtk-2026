@@ -1,6 +1,8 @@
 class_name Computer
 extends Control
 
+signal login_authenticated
+
 const DESIGN_SIZE := Vector2(328.0, 257.0)
 const OUTER_MARGIN := 5
 const TITLE_MARGIN := 4
@@ -32,8 +34,10 @@ var can_activate_activity = true
 @onready var start_button: Button = %StartButton
 @onready var spreadsheet_selector: Button = %SpreadsheetSelector
 @onready var video_distraction_selector: Button = %VideoDistractionSelector
+@onready var login_screen: Control = $LoginScreen
 
 func _ready() -> void:
+	login_screen.connect(&"authenticated", _on_login_authenticated)
 	taskbar.tab_changed.connect(_on_taskbar_tab_changed)
 	spreadsheet_selector.pressed.connect(_select_task.bind(0))
 	video_distraction_selector.pressed.connect(_select_task.bind(1))
@@ -46,6 +50,9 @@ func _ready() -> void:
 	EventBus.boss_watch_ended.connect(_on_activate_activities)
 
 	#close_button.pressed.connect(hide)
+
+func _on_login_authenticated() -> void:
+	login_authenticated.emit()
 
 func _on_taskbar_tab_changed(tab: int) -> void:
 	spreadsheet_selector.set_pressed_no_signal(tab == 0)
