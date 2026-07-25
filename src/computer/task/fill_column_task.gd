@@ -1,31 +1,22 @@
 class_name FillColumnTask
 extends SpreadsheetTask
 
-const COLUMN_NUMBERS: Array[String] = [
-	"first",
-	"second",
-	"third",
-	"fourth",
-	"fifth",
-	"sixth",
-	"seventh",
-	"eight"
-]
+const COLUMN_LETTERS: String = "ABCDEFGHJ"
 
 var col_number: int
 
 func _init(spreadsheet: Spreadsheet, _col_number: int = -1) -> void:
-	if _col_number > COLUMN_NUMBERS.size():
-		push_error("col_number must be < %i" % [COLUMN_NUMBERS.size()])
+	if _col_number > COLUMN_LETTERS.length():
+		push_error("col_number must be < %i" % [COLUMN_LETTERS.length()])
 
 	if _col_number < 0:
-		col_number = randi() % COLUMN_NUMBERS.size()
+		col_number = randi() % COLUMN_LETTERS.length()
 	else:
 		col_number = _col_number
 
 	super._init(
-		"Fill column %s" % [col_number],
-		"Fill column %s with numbers" % [col_number],
+		"Fill column %s" % [COLUMN_LETTERS[col_number]],
+		"Fill column %s with numbers" % [COLUMN_LETTERS[col_number]],
 		spreadsheet,
 	)
 
