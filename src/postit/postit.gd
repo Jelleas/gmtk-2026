@@ -7,11 +7,15 @@ const TodoItemScene := preload("res://src/postit/todo_item.tscn")
 ## The PostItStack disables this and drives its child post-its manually.
 @export var connect_events: bool = true
 
-@export var note_color: Color = Color(1.0, 0.94, 0.42):
+@export var note_color: Color = Color("edcb44"):
 	set(value):
 		note_color = value
 		if background:
 			background.color = value
+		# The checkboxes are drawn in the note's colour, so they follow along.
+		if todo_list:
+			for todo_item: TodoItem in todo_list.get_children():
+				todo_item.box_color = value
 
 @onready var background: ColorRect = $Background
 @onready var todo_list: VBoxContainer = $TodoList
@@ -28,6 +32,7 @@ func add_item(text: String, checked: bool = false) -> TodoItem:
 	todo_list.add_child(item)
 	item.text = text
 	item.checked = checked
+	item.box_color = note_color
 	return item
 
 func set_item_text(index: int, text: String) -> void:

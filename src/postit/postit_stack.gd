@@ -7,9 +7,11 @@ extends Node2D
 ## SEAL_AT_CHECKED checked-off tasks it is sealed and a fresh note flies in
 ## from the top, keeping any still-active tasks visible on the new top note.
 ##
-## The punishment the boss hands out gets its own note on top of the pile: it is
+## The work the boss hands out gets its own notes on top of the pile: they are
 ## never the active note (regular tasks keep landing on the note underneath),
-## it keeps its own colour, and it leaves as a whole instead of being sealed.
+## they keep their own colour, and they leave as a whole instead of being sealed.
+## There are two of them: the punishment note, and the prep note above it that
+## lists what the player has to sort out before starting the punishment work.
 
 const PostItScene := preload("res://src/postit/postit.tscn")
 
@@ -33,25 +35,31 @@ const FLY_IN_HEIGHT := 320.0
 const FLY_IN_DURATION := 0.35
 const POSE_DURATION := 0.18
 
-## The boss's punishment note stands out from the regular yellow ones.
-const PUNISHMENT_COLOR := Color(1.0, 0.55, 0.55)
+## The boss's notes stand out from the regular yellow ones.
+const PUNISHMENT_COLOR := Color("d14b3e")
 
-@export var note_color: Color = Color(1.0, 0.94, 0.42):
+@export var note_color: Color = Color("edcb44"):
 	set(value):
 		note_color = value
+		var special := _special_notes()
 		for note in notes:
-			if is_instance_valid(note) and note != punishment_note:
+			if is_instance_valid(note) and not special.has(note):
 				note.note_color = value
 
 @onready var notes_root: Node2D = $Notes
 
 ## Notes in creation order (notes[0] is oldest, notes.back() is the top note).
-## While a punishment is running its note is kept last, so it stays on top.
+## While the boss has work out its notes are kept last, so they stay on top.
 var notes: Array[PostIt] = []
 ## The top / newest note where new items are added.
 var active_note: PostIt
+## The boss's notes, bottom to top. They are kept at the tail of `notes`, so
+## regular notes always slot in underneath them.
+var special_notes: Array[PostIt] = []
 ## The punishment note, while the boss has one out.
 var punishment_note: PostIt
+## The prep note listing what to sort out before the punishment work starts.
+var prep_note: PostIt
 
 func _ready() -> void:
 	EventBus.task_added.connect(on_task_added)
@@ -83,15 +91,18 @@ func clear_items() -> void:
 		note.queue_free()
 	notes.clear()
 	active_note = null
+	special_notes.clear()
 	punishment_note = null
+	prep_note = null
 	_spawn_note(false)
 
 func on_task_added(task: Task) -> void:
 	add_item(task.description)
 
 func on_task_completed(task: Task) -> void:
+	var special := _special_notes()
 	for note in notes:
-		if note == punishment_note:
+		if special.has(note):
 			continue
 		var i := 0
 		for todo_item: TodoItem in note.todo_list.get_children():
@@ -102,14 +113,14 @@ func on_task_completed(task: Task) -> void:
 				return
 			i += 1
 
-# --- Punishment note --------------------------------------------------------
+# --- The boss's notes -------------------------------------------------------
 
 ## Flies in the boss's punishment note listing every task the player owes.
 ## Only the first one is the player's turn; the rest wait, greyed out.
 func start_punishment(descriptions: Array[String]) -> void:
-	var note := _spawn_note(true, true)
+	var note := _spawn_special_note(descriptions)
+	punishment_note = note
 	for i in descriptions.size():
-		note.add_item(descriptions[i])
 		note.set_item_pending(i, i > 0)
 
 ## Checks off the punishment task at `index` and hands the player the next one.
@@ -122,12 +133,51 @@ func advance_punishment(index: int) -> void:
 
 ## Takes the punishment note away again: it leaves whole, it is never sealed.
 func end_punishment() -> void:
-	if not punishment_note:
+	_remove_note(punishment_note)
+	punishment_note = null
+
+## Flies in the note listing what the player has to sort out before the
+## punishment work can start. It sits on top of the punishment note, so taking
+## it away reveals the work underneath. Both items are live at once - the player
+## can tick them off in either order.
+func start_prep_note(descriptions: Array[String]) -> void:
+	prep_note = _spawn_special_note(descriptions)
+
+## Ticks a prep item on or off; it mirrors live state, so it can go both ways.
+func set_prep_item_checked(index: int, checked: bool) -> void:
+	if not prep_note or index >= prep_note.item_count():
+		return
+	prep_note.set_item_checked(index, checked)
+
+## Takes the prep note away again, revealing the punishment note below it.
+func end_prep_note() -> void:
+	_remove_note(prep_note)
+	prep_note = null
+
+# --- Internals --------------------------------------------------------------
+
+## The boss's notes, bottom to top, skipping any that have already left.
+func _special_notes() -> Array[PostIt]:
+	var alive: Array[PostIt] = []
+	for note in special_notes:
+		if is_instance_valid(note):
+			alive.append(note)
+	return alive
+
+## Flies in one of the boss's notes on top of the pile, listing `descriptions`.
+func _spawn_special_note(descriptions: Array[String]) -> PostIt:
+	var note := _spawn_note(true, true)
+	for description in descriptions:
+		note.add_item(description)
+	return note
+
+## Sends a note off the top of the pile for good, instead of sealing it.
+func _remove_note(note: PostIt) -> void:
+	if not is_instance_valid(note):
 		return
 
-	var note := punishment_note
-	punishment_note = null
 	notes.erase(note)
+	special_notes.erase(note)
 
 	var leave := create_tween()
 	leave.set_parallel(true)
@@ -138,14 +188,13 @@ func end_punishment() -> void:
 
 	_restack()
 
-# --- Internals --------------------------------------------------------------
-
 ## Maps a global item index to [note, local_index]; empty array if out of range.
-## The punishment note is addressed separately and does not take up indices.
+## The boss's notes are addressed separately and do not take up indices.
 func _resolve(index: int) -> Array:
 	var remaining := index
+	var special := _special_notes()
 	for note in notes:
-		if note == punishment_note:
+		if special.has(note):
 			continue
 		var count := note.item_count()
 		if remaining < count:
@@ -153,25 +202,22 @@ func _resolve(index: int) -> Array:
 		remaining -= count
 	return []
 
-func _spawn_note(animate: bool, is_punishment := false) -> PostIt:
+func _spawn_note(animate: bool, is_special := false) -> PostIt:
 	var note: PostIt = PostItScene.instantiate()
 	note.connect_events = false
-	note.note_color = PUNISHMENT_COLOR if is_punishment else note_color
+	note.note_color = PUNISHMENT_COLOR if is_special else note_color
 	notes_root.add_child(note)
 	# Give each note a fixed slight tilt, alternating lean per note, kept for
 	# the note's whole life so it stays visibly angled as it moves back.
 	var lean := 1.0 if notes.size() % 2 == 0 else -1.0
 	note.rotation = deg_to_rad(lean * randf_range(MIN_TILT, MAX_TILT))
 
-	if is_punishment:
-		punishment_note = note
+	if is_special:
+		special_notes.append(note)
 		notes.append(note)
-	elif punishment_note:
-		# The punishment note stays on top, so regular notes slot in below it.
-		notes.insert(notes.size() - 1, note)
-		active_note = note
 	else:
-		notes.append(note)
+		# The boss's notes stay on top, so regular notes slot in below them.
+		notes.insert(notes.size() - _special_notes().size(), note)
 		active_note = note
 
 	_restack(note if animate else null)
@@ -189,6 +235,7 @@ func _seal_active() -> void:
 			unchecked.append(todo_item)
 	for todo_item in unchecked:
 		todo_item.reparent(new_note.todo_list)
+		todo_item.box_color = new_note.note_color
 
 ## Re-applies the layered pose to every note. depth 0 is the top/newest note;
 ## older notes step further back. Each note keeps its own fixed tilt (set in
@@ -196,6 +243,7 @@ func _seal_active() -> void:
 ## `fly_in_note`, when given, drops in from above instead of sliding into place.
 func _restack(fly_in_note: PostIt = null) -> void:
 	var count := notes.size()
+	var special := _special_notes()
 	for i in count:
 		var note := notes[i]
 		var depth := count - 1 - i
@@ -203,7 +251,7 @@ func _restack(fly_in_note: PostIt = null) -> void:
 		# Draw order comes from child order (the top note is the last child);
 		# z_index is left at 0 so notes stay in front of the office background.
 		notes_root.move_child(note, i)
-		var base_color := PUNISHMENT_COLOR if note == punishment_note else note_color
+		var base_color := PUNISHMENT_COLOR if special.has(note) else note_color
 		note.note_color = base_color.darkened(minf(depth, MAX_VISIBLE_DEPTH) * DEPTH_DARKEN)
 
 		if note == fly_in_note:
