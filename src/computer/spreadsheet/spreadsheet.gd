@@ -9,6 +9,7 @@ const ROWS := 12
 const ROW_HEADER_WIDTH := 32.0
 const HEADER_HEIGHT := 20.0
 const CELL_FONT_SIZE := 10
+const MIN_CELL_FONT_SIZE := 6
 const HEADER_COLOR := Color(0.75, 0.75, 0.75, 1)
 const HEADER_BORDER_COLOR := Color(0.4, 0.4, 0.4, 1)
 
@@ -22,6 +23,7 @@ var corner_box: Label
 
 var current_row := 0
 var current_col := 0
+var cell_font_size := CELL_FONT_SIZE
 
 func _ready() -> void:
 	_build_top_bar()
@@ -38,8 +40,7 @@ func _ready() -> void:
 			edit.add_theme_font_size_override("font_size", CELL_FONT_SIZE)
 			edit.add_theme_color_override("font_color", Color(0, 0, 0, 1))
 			edit.add_theme_color_override("font_placeholder_color", Color(0.45, 0.45, 0.45, 1))
-			edit.add_theme_stylebox_override("normal", _make_stylebox(Color(1, 1, 1, 1)))
-			edit.add_theme_stylebox_override("focus", _make_stylebox(Color(0.7, 0.85, 1, 1)))
+			_style_cell(edit, Color(1, 1, 1, 1), Color(0.7, 0.85, 1, 1))
 			edit.focus_entered.connect(_on_cell_focus_entered.bind(row, col))
 			edit.text_changed.connect(_on_cell_text_changed.bind(row, col))
 			add_child(edit)
@@ -94,6 +95,8 @@ func _make_header_stylebox() -> StyleBoxFlat:
 	style.bg_color = HEADER_COLOR
 	style.set_border_width_all(1)
 	style.border_color = HEADER_BORDER_COLOR
+	style.content_margin_top = 0
+	style.content_margin_bottom = 0
 	return style
 
 func _layout_content() -> void:
@@ -111,6 +114,16 @@ func _layout_content() -> void:
 	var col_header_y := grid_offset.y + top_bar_height
 	var cells_y := col_header_y + col_header_height
 	var cells_x := grid_offset.x + ROW_HEADER_WIDTH
+
+	# A LineEdit refuses to be sized below its font height plus stylebox margins, so
+	# without this the cells would be silently clamped taller than their row and the
+	# text would overlap the border of the row below.
+	var fitted_font_size := _fit_font_size(cell_size.y + 1.0)
+	if fitted_font_size != cell_font_size:
+		_apply_font_size(fitted_font_size)
+		# Minimum sizes only refresh after the theme change is processed, so lay out
+		# once more next frame with the cells finally able to fit their row.
+		call_deferred(&"_layout_content")
 
 	top_bar_background.position = grid_offset
 	top_bar_background.size = Vector2(grid_size.x, top_bar_height)
@@ -136,6 +149,14 @@ func _layout_content() -> void:
 			edit.position = Vector2(cells_x + col * cell_size.x, cells_y + row * cell_size.y)
 			edit.size = cell_size + Vector2.ONE
 
+# A LineEdit's minimum height is its font height plus the tallest of its normal,
+# focus and read_only styleboxes, so all three have to be overridden - leaving the
+# themed read_only box in place would keep padding the cell taller than its row.
+func _style_cell(edit: LineEdit, normal_color: Color, focus_color: Color) -> void:
+	edit.add_theme_stylebox_override(&"normal", _make_stylebox(normal_color))
+	edit.add_theme_stylebox_override(&"focus", _make_stylebox(focus_color))
+	edit.add_theme_stylebox_override(&"read_only", _make_stylebox(normal_color))
+
 func _make_stylebox(color: Color) -> StyleBoxFlat:
 	var style := StyleBoxFlat.new()
 	style.bg_color = color
@@ -143,9 +164,34 @@ func _make_stylebox(color: Color) -> StyleBoxFlat:
 	style.border_color = Color(0.6, 0.6, 0.6, 1)
 	style.content_margin_left = 4
 	style.content_margin_right = 4
-	style.content_margin_top = 1
-	style.content_margin_bottom = 1
+	style.content_margin_top = 0
+	style.content_margin_bottom = 0
 	return style
+
+# Largest size up to CELL_FONT_SIZE whose line height still fits inside a cell.
+func _fit_font_size(available_height: float) -> int:
+	var edit: LineEdit = cell_edits[0][0]
+	var font := edit.get_theme_font(&"font")
+	if font == null:
+		return CELL_FONT_SIZE
+
+	var font_size := CELL_FONT_SIZE
+	while font_size > MIN_CELL_FONT_SIZE and font.get_height(font_size) > available_height:
+		font_size -= 1
+	return font_size
+
+func _apply_font_size(font_size: int) -> void:
+	cell_font_size = font_size
+
+	for row in range(ROWS):
+		for col in range(COLS):
+			cell_edits[row][col].add_theme_font_size_override(&"font_size", font_size)
+
+	for label in col_header_labels + row_header_labels:
+		label.add_theme_font_size_override(&"font_size", font_size)
+
+	corner_box.add_theme_font_size_override(&"font_size", font_size)
+	top_bar_label.add_theme_font_size_override(&"font_size", font_size)
 
 func set_cell_text(row: int, col: int, text: String) -> void:
 	cell_edits[row][col].text = text
@@ -160,8 +206,7 @@ func set_cell_highlighted(row: int, col: int, highlighted: bool) -> void:
 	var edit: LineEdit = cell_edits[row][col]
 	var normal_color := Color(1.0, 0.85, 0.55, 1.0) if highlighted else Color(1, 1, 1, 1)
 	var focus_color := Color(1.0, 0.75, 0.35, 1.0) if highlighted else Color(0.7, 0.85, 1, 1)
-	edit.add_theme_stylebox_override("normal", _make_stylebox(normal_color))
-	edit.add_theme_stylebox_override("focus", _make_stylebox(focus_color))
+	_style_cell(edit, normal_color, focus_color)
 
 func clear_cells() -> void:
 	for row in range(ROWS):
