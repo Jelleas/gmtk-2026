@@ -1,3 +1,4 @@
+class_name Computer
 extends Control
 
 const DESIGN_SIZE := Vector2(328.0, 257.0)
@@ -50,9 +51,14 @@ func _on_taskbar_tab_changed(tab: int) -> void:
 		_show_video_distraction()
 
 
-func _select_task(tab: int) -> void:
+## Brings a tab up as if the player had clicked its taskbar button.
+func show_tab(tab: int) -> void:
 	taskbar.current_tab = tab
 	_on_taskbar_tab_changed(tab)
+
+
+func _select_task(tab: int) -> void:
+	show_tab(tab)
 
 
 func _show_video_distraction() -> void:

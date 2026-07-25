@@ -9,6 +9,7 @@
 [ext_resource type="PackedScene" uid="uid://ct8knnije263x" path="res://src/postit/postit_stack.tscn" id="8_yo1l8"]
 [ext_resource type="PackedScene" uid="uid://vfw2c4ylf0ob" path="res://src/office/office_view.tscn" id="9_office_view"]
 [ext_resource type="Script" uid="uid://estm6ana6hbr" path="res://src/computer/punishment/punishment_controller.gd" id="10_punishment"]
+[ext_resource type="Script" uid="uid://c2tegairt0p5y" path="res://src/tutorial/tutorial_controller.gd" id="11_tutorial"]
 
 [node name="Office" type="Node2D" unique_id=1406735297]
 script = ExtResource("1_6infj")
@@ -28,6 +29,7 @@ polygon = PackedVector2Array(-28, -20, 222, -23, 215, 70, -32, 65)
 [node name="Boss" parent="." unique_id=821479703 instance=ExtResource("3_jfxul")]
 z_index = -1
 position = Vector2(713, 383)
+auto_activate = false
 
 [node name="Screen" type="Control" parent="." unique_id=429750863]
 layout_mode = 3
@@ -66,6 +68,9 @@ scale = Vector2(0.7, 0.7)
 
 [node name="Punishment" type="Node" parent="." unique_id=1835767381]
 script = ExtResource("10_punishment")
+
+[node name="Tutorial" type="Node" parent="." unique_id=1835767382]
+script = ExtResource("11_tutorial")
 
 [editable path="Clock"]
 [editable path="Phone"]
