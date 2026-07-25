@@ -33,4 +33,18 @@ func check_completed() -> bool:
 	for col in range(spreadsheet.COLS):
 		if not spreadsheet.get_cell_text(row_number, col).is_valid_float():
 			return false
+
+	spreadsheet.cell_text_changed.disconnect(_on_cell_text_changed)
 	return true
+
+func _on_cell_text_changed(_row: int, _col: int, _text: String) -> void:
+	if _row != row_number:
+		return
+	
+	get_spreadsheet().set_cell_highlighted(
+		_row, 
+		_col, 
+		not _text.is_valid_float()
+	)
+	
+	super._on_cell_text_changed(_row, _col, _text)
