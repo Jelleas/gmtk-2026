@@ -4,6 +4,9 @@ var TASK_TYPES := [
 	FillRowTask,
 	EmptySpreadsheetTask,
 	FillColumnTask,
+	CopyRowTask,
+	CopyColumnTask,
+	HighNumberTask,
 ]
 
 var spreadsheet: Spreadsheet

@@ -39,6 +39,7 @@ func _ready() -> void:
 			var edit := LineEdit.new()
 			edit.add_theme_font_size_override("font_size", CELL_FONT_SIZE)
 			edit.add_theme_color_override("font_color", Color(0, 0, 0, 1))
+			edit.add_theme_color_override("font_uneditable_color", Color(0, 0, 0, 1))
 			edit.add_theme_color_override("font_placeholder_color", Color(0.45, 0.45, 0.45, 1))
 			_style_cell(edit, Color(1, 1, 1, 1), Color(0.7, 0.85, 1, 1))
 			edit.focus_entered.connect(_on_cell_focus_entered.bind(row, col))
@@ -155,7 +156,8 @@ func _layout_content() -> void:
 func _style_cell(edit: LineEdit, normal_color: Color, focus_color: Color) -> void:
 	edit.add_theme_stylebox_override(&"normal", _make_stylebox(normal_color))
 	edit.add_theme_stylebox_override(&"focus", _make_stylebox(focus_color))
-	edit.add_theme_stylebox_override(&"read_only", _make_stylebox(normal_color))
+	# Only drawn while the cell is locked, so tint it to show it cannot be edited.
+	edit.add_theme_stylebox_override(&"read_only", _make_stylebox(normal_color.darkened(0.15)))
 
 func _make_stylebox(color: Color) -> StyleBoxFlat:
 	var style := StyleBoxFlat.new()
@@ -208,10 +210,14 @@ func set_cell_highlighted(row: int, col: int, highlighted: bool) -> void:
 	var focus_color := Color(1.0, 0.75, 0.35, 1.0) if highlighted else Color(0.7, 0.85, 1, 1)
 	_style_cell(edit, normal_color, focus_color)
 
+func set_cell_editable(row: int, col: int, editable: bool) -> void:
+	cell_edits[row][col].editable = editable
+
 func clear_cell(row: int, col: int) -> void:
 	set_cell_text(row, col, "")
 	set_cell_placeholder(row, col, "")
 	set_cell_highlighted(row, col, false)
+	set_cell_editable(row, col, true)
 
 func clear_cells() -> void:
 	for row in range(ROWS):
@@ -219,11 +225,12 @@ func clear_cells() -> void:
 			clear_cell(row, col)
 
 func clear_focus() -> void:
-	"""remove all hightlights and placeholders"""
+	"""remove all hightlights and placeholders, and unlock every cell"""
 	for row in range(ROWS):
 		for col in range(COLS):
 			set_cell_placeholder(row, col, "")
 			set_cell_highlighted(row, col, false)
+			set_cell_editable(row, col, true)
 
 func set_status_message(message: String) -> void:
 	status_message = message
