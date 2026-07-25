@@ -10,6 +10,8 @@ func _init(spreadsheet: Spreadsheet) -> void:
 		"Empty the spreadsheet",
 		spreadsheet,
 	)
+	
+	#spreadsheet.cell_text_changed.connect(_on_cell_text_changed)
 
 func start_task() -> void:
 	var spreadsheet := get_spreadsheet()
@@ -32,7 +34,6 @@ func start_task() -> void:
 	
 	for cell in coords:
 		spreadsheet.set_cell_highlighted(cell.x, cell.y, true)
-		
 
 func check_completed() -> bool:
 	var spreadsheet := get_spreadsheet()
@@ -40,4 +41,13 @@ func check_completed() -> bool:
 		for col in range(spreadsheet.COLS):
 			if not spreadsheet.get_cell_text(row, col).is_empty():
 				return false
+				
+	spreadsheet.cell_text_changed.disconnect(_on_cell_text_changed)
 	return true
+	
+func _on_cell_text_changed(row: int, col: int, text: String) -> void:
+	if text == "":
+		get_spreadsheet().set_cell_highlighted(row, col, false)
+	else:
+		get_spreadsheet().set_cell_highlighted(row, col, true)
+	super._on_cell_text_changed(row, col, text)

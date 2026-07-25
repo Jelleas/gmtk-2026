@@ -35,4 +35,6 @@ func check_completed() -> bool:
 	for row in range(spreadsheet.ROWS):
 		if not spreadsheet.get_cell_text(row, col_number).is_valid_float():
 			return false
+
+	spreadsheet.cell_text_changed.disconnect(_on_cell_text_changed)
 	return true

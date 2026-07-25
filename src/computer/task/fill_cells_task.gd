@@ -41,4 +41,5 @@ func check_completed() -> bool:
 		if spreadsheet.get_cell_text(cell_position.x, cell_position.y) != required_cells[cell_position]:
 			return false
 
+	spreadsheet.cell_text_changed.disconnect(_on_cell_text_changed)
 	return true
