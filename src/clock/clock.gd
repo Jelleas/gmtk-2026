@@ -6,10 +6,16 @@ extends Node2D
 var active_multipliers: Dictionary[StringName, float] = {}
 var is_punished := false
 
-var is_running = true
+## The clock does not move until the day is started, so the tutorial can hold it
+## at the opening time until the player has done something worth timing.
+var is_running = false
+
+## Under this much left on the clock, the day is on its last hour.
+const LAST_HOUR := 3600
 
 var realtime = 0.0
 var time = 10 * 3600
+var last_hour_announced := false
 
 func _ready() -> void:
 	clock_surface.texture = clock_viewport.get_texture()
@@ -31,6 +37,10 @@ func _process(delta: float) -> void:
 		return
 
 	time -= delta * 60 * positive_multiplier() * negative_multiplier()
+
+	if time <= LAST_HOUR and not last_hour_announced:
+		last_hour_announced = true
+		EventBus.last_hour_started.emit()
 
 	if time <= 0:
 		EventBus.day_ended.emit(realtime)

@@ -108,7 +108,7 @@ func _build_beats() -> void:
 	# own, because it is the whole game rather than a step of the tutorial.
 	_add_beat(
 		SurviveDayTask.new(),
-		"The last hour always drags",
+		"Only distractions move the clock",
 		true,
 	)
 
@@ -160,6 +160,11 @@ func _on_beat_started() -> void:
 		boss.activity_check_delay = default_watch_delay
 		_set_boss_move_interval(TEACHING_MOVE_INTERVAL)
 
+	# A beat that carries its own text writes it now, so it reads right even if
+	# the thing it tracks moved on while an earlier beat was still running.
+	if task.has_method("progress_description"):
+		post_it_stack.set_tutorial_item_text(current_index, task.progress_description())
+
 	# The last beat is the rest of the day: regular work starts flowing again.
 	if is_last:
 		finished.emit()
@@ -193,6 +198,11 @@ func _on_beat_changed() -> void:
 
 ## The side effects of finishing a beat.
 func _on_beat_completed(task: Task) -> void:
+	# The clock has been held at the opening time until now: the day starts with
+	# the player's first distraction, which is also the first thing that moves it.
+	if current_index == 0:
+		EventBus.day_started.emit()
+
 	# The player did the thing the boss was waiting for, so the boss has no
 	# reason to keep looking: it ducks away instead of running its watch down.
 	if task is LookBusyTask and boss.state == Boss.State.VISIBLE:

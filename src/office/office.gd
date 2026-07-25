@@ -44,8 +44,10 @@ func _ready():
 		$Tutorial.finished.connect(_on_tutorial_finished)
 		$Tutorial.start()
 	else:
-		# The tutorial normally brings the boss in on its second beat.
+		# The tutorial normally brings the boss in on its second beat and starts
+		# the clock once the player has taken their first distraction.
 		boss.activate()
+		EventBus.day_started.emit()
 		_refill_tasks()
 
 ## The tutorial's last beat is the rest of the day, so real work starts flowing
