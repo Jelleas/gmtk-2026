@@ -13,6 +13,13 @@ extends HBoxContainer
 		if checkbox_box:
 			checkbox_box.checked = value
 
+## The checkbox is filled with the colour of the note it sits on.
+@export var box_color: Color = Color("edcb44"):
+	set(value):
+		box_color = value
+		if checkbox_box:
+			checkbox_box.fill_color = value
+
 ## Dims the whole item to show it is not the player's turn yet.
 const PENDING_ALPHA := 0.35
 
@@ -26,4 +33,5 @@ const PENDING_ALPHA := 0.35
 
 func _ready() -> void:
 	checkbox_box.checked = checked
+	checkbox_box.fill_color = box_color
 	label.text = text
