@@ -1,5 +1,7 @@
 extends Node2D
 
+signal total_multiplier_changed(multiplier: float, cap: float)
+
 @onready var clock_viewport: SubViewport = $ClockViewport
 @onready var clock_surface: Polygon2D = $ClockSurface
 
@@ -12,6 +14,8 @@ var is_running = false
 
 ## Under this much left on the clock, the day is on its last hour.
 const LAST_HOUR := 3600
+## Spinner x phone x video: 2 x 10 x 10.
+const MAX_TOTAL_MULTIPLIER := 200.0
 
 var realtime = 0.0
 var time = 10 * 3600
@@ -26,6 +30,7 @@ func _ready() -> void:
 	EventBus.punishment_ended.connect(on_punishment_end)
 	
 	%TimeLabel.text = format_time(time)
+	_update_multiplier_display()
 
 func _process(delta: float) -> void:
 	if not is_running:
@@ -52,11 +57,13 @@ func _process(delta: float) -> void:
 func on_day_start():
 	is_running = true
 
-func on_activity_start(source_id: StringName, multiplier: float):
+func on_activity_start(source_id: StringName, multiplier: float) -> void:
 	active_multipliers[source_id] = multiplier
+	_update_multiplier_display()
 	
-func on_activity_end(source_id: StringName):
+func on_activity_end(source_id: StringName) -> void:
 	active_multipliers.erase(source_id)
+	_update_multiplier_display()
 
 func on_punishment_start(_activity_count: int) -> void:
 	is_punished = true
@@ -71,12 +78,18 @@ func format_time(seconds: float) -> String:
 	var secs := total % 60
 	return "%02d:%02d:%02d" % [hours, minutes, secs]
 
-func positive_multiplier():
-	var m = 1.0
+func positive_multiplier() -> float:
+	var multiplier := 1.0
 	for multi in active_multipliers.values():
-		m *= multi
-	return m
+		multiplier *= multi
+	return multiplier
 
-func negative_multiplier():
+func max_total_multiplier() -> float:
+	return MAX_TOTAL_MULTIPLIER
+
+func negative_multiplier() -> float:
 	var hours = 8 - (time / 3600)
 	return 1 / exp(hours / (10 - hours))
+
+func _update_multiplier_display() -> void:
+	total_multiplier_changed.emit(positive_multiplier(), MAX_TOTAL_MULTIPLIER)
