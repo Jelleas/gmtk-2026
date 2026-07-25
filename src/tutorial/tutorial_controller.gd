@@ -89,7 +89,7 @@ func _build_beats() -> void:
 	# 2. The catch: the boss decides what that costs.
 	_add_beat(
 		LookBusyTask.new(),
-		"Stop everything before the boss's watch runs out",
+		"Stop everything before the boss sees",
 	)
 	# 3. Where the good stuff is, and what it costs to reach.
 	_add_beat(
