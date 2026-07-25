@@ -7,8 +7,8 @@ enum State { RISING, VISIBLE, RETREATING }
 ## itself once the player has been told there is one.
 @export var auto_activate := true
 
-@export var min_move_interval := 1.0
-@export var max_move_interval := 3.0
+@export var min_move_interval := 5.0
+@export var max_move_interval := 20.0
 @export var move_duration := 0.5
 @export var rise_distance := 256.0
 @export var activity_check_delay := 5.0
