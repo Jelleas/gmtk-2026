@@ -1,31 +1,20 @@
 class_name FillRowTask
 extends SpreadsheetTask
 
-const ROW_NUMBERS: Array[String] = [
-	"first",
-	"second",
-	"third",
-	"fourth",
-	"fifth",
-	"sixth",
-	"seventh",
-	"eight"
-]
-
 var row_number: int
 
 func _init(spreadsheet: Spreadsheet, _row_number: int=-1) -> void:
-	if _row_number > ROW_NUMBERS.size():
-		push_error("row_number must be < %i" % [ROW_NUMBERS.size()])
+	if _row_number >= spreadsheet.ROWS:
+		push_error("row_number must be < %i" % [spreadsheet.ROWS])
 
 	if _row_number < 0:
-		row_number = randi() % ROW_NUMBERS.size()
+		row_number = randi() % spreadsheet.ROWS
 	else:
 		row_number = _row_number
 
 	super._init(
-		"Fill row %s" % [row_number],
-		"Fill row %s with numbers" % [row_number],
+		"Fill row %s" % [row_number + 1],
+		"Fill row %s with numbers" % [row_number + 1],
 		spreadsheet,
 	)
 
