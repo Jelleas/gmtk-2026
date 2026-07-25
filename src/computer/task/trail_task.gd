@@ -16,7 +16,7 @@ var trail: Array[Vector2i] = []
 func _init(spreadsheet: Spreadsheet) -> void:
 	super._init(
 		"Follow the trail",
-		"Follow the trail, keep entering numbers" % [REQUIRED_CELLS],
+		"Follow the trail, keep entering numbers",
 		spreadsheet,
 	)
 
