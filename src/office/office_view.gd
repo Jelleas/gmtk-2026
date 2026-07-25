@@ -5,6 +5,8 @@ extends Node2D
 @onready var fidget: AnimatedSprite2D = $Fidget
 @onready var phone: AnimatedSprite2D = $Phone
 
+var fidget_slow_down_tween: Tween
+
 func _ready() -> void:
 	drawer.progress_changed.connect(_on_drawer_progress_changed)
 	drawer.opened.connect(_on_drawer_opened)
@@ -15,13 +17,23 @@ func _ready() -> void:
 	_on_drawer_progress_changed(drawer.open_progress)
 
 
-func play_fidget_spin() -> void:
+func play_fidget_spin(spin_level: int) -> void:
+	if fidget_slow_down_tween: 
+		fidget_slow_down_tween.kill()
+		fidget_slow_down_tween = null
+		
 	fidget.play()
+	fidget.speed_scale = spin_level
 
 
-func stop_fidget_spin() -> void:
-	fidget.stop()
-	fidget.frame = 0
+func stop_fidget_spin(forced: bool) -> void:
+	if not fidget.is_playing(): return
+	if forced:
+		fidget.stop()
+	else:
+		var tween = create_tween()
+		tween.tween_property(fidget, "speed_scale", 0, 0.3)
+		tween.tween_callback(func(): fidget.stop())
 
 
 func _on_drawer_progress_changed(progress: float) -> void:
