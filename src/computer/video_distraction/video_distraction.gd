@@ -28,7 +28,7 @@ var player_lane := 1
 
 
 func _ready() -> void:
-	EventBus.punishment_started.connect(_on_deactivate_activity)
+	EventBus.punishment_started.connect(_on_deactivate_activity.unbind(1))
 	EventBus.punishment_ended.connect(_on_activate_activity)
 	
 	if content_area:
