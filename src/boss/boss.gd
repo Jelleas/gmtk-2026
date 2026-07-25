@@ -25,9 +25,12 @@ var activity_check_timer: Timer
 var hidden_y := 0.0
 var visible_y := 0.0
 var becoming_red_tween: Tween
-## How long the watch on the current rise runs for, which is usually
-## activity_check_delay but can be shortened for a single rise.
+## How long the watch on the rise currently underway runs for. Read back by the
+## watch halo, which has to fill over the length actually being counted down.
 var current_watch_delay := 0.0
+## True while the pending rise was asked for by rise_in(): its delay is a promise
+## to whoever scripted it, so a change of pace must not reschedule it away.
+var scripted_rise_pending := false
 ## Set just before a rise to shorten that one look; cleared as it is used.
 var next_watch_delay := 0.0
 
@@ -79,15 +82,31 @@ func on_activity_end(source_id: StringName) -> void:
 		tween.tween_property(self, "modulate", Color.WHITE, 0.1)
 
 func schedule_next_move() -> void:
+	if scripted_rise_pending:
+		return
+
 	move_timer.start(randf_range(min_move_interval, max_move_interval))
 
-## Comes up right now for a single short look, instead of waiting for the next
-## scheduled rise. The tutorial uses this to script a near miss, so the boss
-## turns up in answer to something the player did rather than out of the blue.
-func appear_now(watch_duration: float) -> void:
+## Brings the next rise forward to a fixed delay instead of the random interval,
+## and holds it there: schedule_next_move() leaves it alone until it goes off.
+## The tutorial uses this to put a deadline on a lesson - the boss turns up in
+## answer to something the player just did, at a moment they can count on.
+func rise_in(delay: float) -> void:
 	if not is_activated:
 		activate()
 	if state != State.RISING:
+		return
+
+	scripted_rise_pending = true
+	move_timer.start(delay)
+
+## Cuts a pending rise short and comes up now, for a single look of the given
+## length. Does nothing once the boss is on its way up or already watching - that
+## look is running on its own terms and is not to be interrupted.
+func appear_now(watch_duration: float) -> void:
+	if not is_activated:
+		activate()
+	if state != State.RISING or move_timer.is_stopped():
 		return
 
 	move_timer.stop()
@@ -98,6 +117,7 @@ func move_boss_face() -> void:
 	if state != State.RISING:
 		return
 
+	scripted_rise_pending = false
 	position.x = randf_range(200, 1080)
 	var tween := create_tween()
 	tween.tween_property(boss_face, "position:y", visible_y, move_duration).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)

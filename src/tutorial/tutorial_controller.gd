@@ -15,10 +15,16 @@ extends Node
 ## Fires when the last beat starts: the regular workday can take over from here.
 signal finished
 
-## The boss's first appearance is staged: putting the spinner away is what brings
-## it up, and it only hangs around long enough to find nothing and leave. Turning
-## up in answer to something the player did reads as a near miss rather than as
-## the boss popping in and out at random.
+## The boss's first appearance is staged: the spinner starting is what brings it
+## up, on a fixed delay rather than the random one. Turning up in answer to
+## something the player just did reads as a consequence rather than as the boss
+## popping in and out at random, and it puts a deadline the player can feel on
+## the beat that follows - this plus the watch itself is the time they have to
+## put the spinner away.
+const FIRST_RISE_SECONDS := 5.0
+
+## How long that first look lasts when the player beats the boss to it. Just long
+## enough to register: the desk is clean, so there is nothing to find.
 const FIRST_LOOK_SECONDS := 2.0
 
 ## Once the boss has been introduced it backs off for the remaining lessons: at
@@ -140,7 +146,7 @@ func _enter_beat() -> void:
 			return
 
 		# Already satisfied, but it still counts as done - side effects and all.
-		_on_beat_completed(task)
+		_on_beat_completed()
 		post_it_stack.advance_tutorial(current_index)
 		current_index += 1
 
@@ -165,7 +171,8 @@ func _on_beat_started() -> void:
 		finished.emit()
 
 ## Re-arms a rise that is already on its way, so a change of pace takes effect
-## now instead of one appearance later.
+## now instead of one appearance later. A rise scripted by rise_in() keeps its
+## own delay - the boss protects that itself.
 func _set_boss_move_interval(interval: Vector2) -> void:
 	if is_equal_approx(boss.min_move_interval, interval.x) \
 			and is_equal_approx(boss.max_move_interval, interval.y):
@@ -195,21 +202,29 @@ func _on_beat_changed() -> void:
 		return
 
 	task.changed.disconnect(_on_beat_changed)
-	_on_beat_completed(task)
+	_on_beat_completed()
 	post_it_stack.advance_tutorial(current_index)
 	current_index += 1
 	_enter_beat()
 
 ## The side effects of finishing a beat.
-func _on_beat_completed(task: Task) -> void:
-	# The clock has been held at the opening time until now: the day starts with
-	# the player's first distraction, which is also the first thing that moves it.
-	if current_index == 0:
-		EventBus.day_started.emit()
+func _on_beat_completed() -> void:
+	var task := beats[current_index]
 
-	# Putting the spinner away is what summons the boss: it comes straight up,
-	# finds a clean desk, and drops back down. From here on it comes and goes on
-	# its own - and it is watching for real.
+	if current_index == 0:
+		# The clock has been held at the opening time until now: the day starts
+		# with the player's first distraction, which is also the first thing that
+		# moves it.
+		EventBus.day_started.emit()
+		# Starting the spinner puts the boss on a clock of its own, so the next
+		# beat comes with a deadline. From here on the boss is watching for real:
+		# a player who sits on the spinner through the rise is punished.
+		boss.rise_in(FIRST_RISE_SECONDS)
+
+	# The quick player clears the desk before that deadline, and would otherwise
+	# never see what they avoided - so the boss comes up at once for a short look
+	# and finds nothing. Once it is up (or on its way) this does nothing: the look
+	# it is already taking is answer enough.
 	if task is LookBusyTask:
 		boss.appear_now(FIRST_LOOK_SECONDS)
 

@@ -2,8 +2,9 @@ class_name LookBusyTask
 extends Task
 
 ## Teaches the reflex the whole game runs on: put the distraction away. Completed
-## the moment the desk is clean, which is the cue for the boss to turn up and find
-## nothing - see TutorialController, which scripts that near miss.
+## the moment the desk is clean, with no reference to the boss - the boss is the
+## deadline here, not the condition. TutorialController owns the timing: it is on
+## its way up either way, and beating it there only buys a shorter look.
 
 var survived := false
 var activity_states: Dictionary[StringName, bool] = {}
