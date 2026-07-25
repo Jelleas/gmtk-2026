@@ -10,14 +10,16 @@ const ACTIVITY_MULTIPLIER := 2.0
 
 @onready var spin_timer: Timer = $SpinTimer
 var is_running := false
-var is_punishment_active := false
+var can_activate_activity := true
 
 func _ready() -> void:
-	EventBus.punishment_started.connect(_on_punishment_started)
-	EventBus.punishment_ended.connect(_on_punishment_ended)
+	EventBus.punishment_started.connect(_on_deactivate_activity)
+	EventBus.boss_watch_started.connect(_on_deactivate_activity)
+	EventBus.punishment_ended.connect(_on_activate_activity)
+	EventBus.boss_watch_ended.connect(_on_activate_activity)
 
 func start() -> void:
-	if is_running or is_punishment_active:
+	if is_running or not can_activate_activity:
 		return
 
 	is_running = true
@@ -43,8 +45,8 @@ func _on_click_area_input_event(_viewport: Node, event: InputEvent, _shape_idx: 
 func _on_spin_timer_timeout() -> void:
 	stop()
 
-func _on_punishment_started(_activity_count: int) -> void:
-	is_punishment_active = true
+func _on_deactivate_activity(_activity_count: int = 0) -> void:
+	can_activate_activity = false
 
-func _on_punishment_ended() -> void:
-	is_punishment_active = false
+func _on_activate_activity() -> void:
+	can_activate_activity = true

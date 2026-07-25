@@ -15,6 +15,10 @@ shadow_offset = Vector2(0, 1)
 bg_color = Color(0, 0, 0.50980395, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_rjbnf"]
+content_margin_left = 2.0
+content_margin_top = 2.0
+content_margin_right = 2.0
+content_margin_bottom = 2.0
 bg_color = Color(0.7647059, 0.7647059, 0.7647059, 1)
 border_width_left = 1
 border_width_top = 1
@@ -27,6 +31,10 @@ shadow_size = 2
 shadow_offset = Vector2(1, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_d2t2c"]
+content_margin_left = 2.0
+content_margin_top = 2.0
+content_margin_right = 2.0
+content_margin_bottom = 2.0
 bg_color = Color(0.7647059, 0.7647059, 0.7647059, 1)
 border_width_left = 1
 border_width_top = 1
@@ -39,6 +47,10 @@ shadow_size = 2
 shadow_offset = Vector2(1, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_jtt15"]
+content_margin_left = 2.0
+content_margin_top = 2.0
+content_margin_right = 2.0
+content_margin_bottom = 2.0
 bg_color = Color(0.7647059, 0.7647059, 0.7647059, 1)
 border_width_left = 1
 border_width_top = 1

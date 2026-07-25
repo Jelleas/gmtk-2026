@@ -14,6 +14,7 @@ const CARDS_VISIBLE_PROGRESS := 0.92
 
 var drawer: OfficeDrawer
 var is_activity_active := false
+var can_activate_activity := true
 var current_activity_multiplier := ACTIVITY_MULTIPLIER
 var swipe_reset_timer: Timer
 
@@ -26,12 +27,17 @@ func _ready() -> void:
 		drawer.opened.connect(_on_drawer_opened)
 		drawer.closing.connect(_on_drawer_closing)
 	dating_app.profile_swiped.connect(_on_profile_swiped)
+	EventBus.punishment_started.connect(_on_punish_activity)
+	EventBus.punishment_ended.connect(_on_activate_activity)
+	EventBus.boss_watch_started.connect(_on_deactivate_activity)
+	EventBus.boss_watch_ended.connect(_on_activate_activity)
 	swipe_reset_timer = Timer.new()
 	swipe_reset_timer.one_shot = true
 	swipe_reset_timer.wait_time = SWIPE_RESET_DELAY
 	swipe_reset_timer.timeout.connect(_reset_swipe_multiplier)
 	add_child(swipe_reset_timer)
 	phone_surface.hide()
+	_update_phone_access()
 	if drawer == null or drawer.is_open:
 		_show_cards()
 
@@ -59,6 +65,9 @@ func _hide_cards() -> void:
 
 
 func _show_cards() -> void:
+	if not _can_open_phone():
+		_hide_cards()
+		return
 	phone_surface.show()
 	mouse_filter = Control.MOUSE_FILTER_STOP
 	_start_activity()
@@ -74,7 +83,7 @@ func _gui_input(event: InputEvent) -> void:
 
 
 func _input(event: InputEvent) -> void:
-	if not dating_app.is_dragging:
+	if not _can_open_phone() or not dating_app.is_dragging:
 		return
 
 	if event is InputEventMouse:
@@ -90,7 +99,7 @@ func _input(event: InputEvent) -> void:
 
 
 func _forward_input(event: InputEvent, input_position: Vector2, allow_outside := false) -> void:
-	if not phone_surface.visible:
+	if not _can_open_phone() or not phone_surface.visible:
 		return
 
 	var surface_point: Vector2 = phone_surface.get_global_transform().affine_inverse() * (get_global_transform() * input_position)
@@ -149,7 +158,7 @@ func _map_triangle(point: Vector2, first: Vector2, second: Vector2, third: Vecto
 
 
 func _start_activity() -> void:
-	if is_activity_active:
+	if is_activity_active or not can_activate_activity:
 		return
 
 	is_activity_active = true
@@ -166,7 +175,7 @@ func _stop_activity() -> void:
 
 
 func _on_profile_swiped() -> void:
-	if not is_activity_active:
+	if not is_activity_active or not can_activate_activity:
 		return
 
 	current_activity_multiplier += SWIPE_MULTIPLIER_INCREASE
@@ -176,5 +185,36 @@ func _on_profile_swiped() -> void:
 
 func _reset_swipe_multiplier() -> void:
 	current_activity_multiplier = ACTIVITY_MULTIPLIER
+	if is_activity_active and can_activate_activity:
+		EventBus.activity_started.emit(SOURCE_ID, current_activity_multiplier)
+
+
+func _on_punish_activity(_activity_count: int) -> void:
+	current_activity_multiplier = 0.0
+	swipe_reset_timer.stop()
 	if is_activity_active:
 		EventBus.activity_started.emit(SOURCE_ID, current_activity_multiplier)
+
+	_on_deactivate_activity()
+
+func _on_deactivate_activity() -> void:
+	can_activate_activity = false
+	_update_phone_access()
+
+
+func _on_activate_activity() -> void:
+	can_activate_activity = true
+	_update_phone_access()
+
+
+func _can_open_phone() -> bool:
+	return can_activate_activity
+
+
+func _update_phone_access() -> void:
+	if drawer:
+		drawer.can_open = can_activate_activity
+	if not _can_open_phone():
+		mouse_filter = Control.MOUSE_FILTER_IGNORE
+	elif phone_surface.visible:
+		mouse_filter = Control.MOUSE_FILTER_STOP

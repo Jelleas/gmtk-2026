@@ -17,6 +17,7 @@ const SWIPE_DECISION_DISTANCE := 24.0
 
 var open_progress := 0.0
 var is_open := false
+var can_open := true
 var is_dragging := false
 var drag_start_y := 0.0
 var drag_start_progress := 0.0
@@ -59,6 +60,8 @@ func _input(event: InputEvent) -> void:
 
 
 func _begin_drag(pointer_y: float) -> void:
+	if not can_open and is_zero_approx(open_progress):
+		return
 	if slide_tween:
 		slide_tween.kill()
 
@@ -90,6 +93,8 @@ func _to_global_y(local_position: Vector2) -> float:
 
 
 func set_open(open: bool) -> void:
+	if open and not can_open:
+		return
 	is_open = open
 	if slide_tween:
 		slide_tween.kill()
