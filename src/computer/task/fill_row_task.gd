@@ -20,8 +20,11 @@ func _init(spreadsheet: Spreadsheet, _row_number: int=-1) -> void:
 
 func start_task() -> void:
 	var spreadsheet := get_spreadsheet()
-	spreadsheet.clear_cells()
+	
+	spreadsheet.clear_focus()
+	
 	for col in range(spreadsheet.COLS):
+		spreadsheet.clear_cell(row_number, col)
 		spreadsheet.set_cell_placeholder(row_number, col, "0")
 		spreadsheet.set_cell_highlighted(row_number, col, true)
 

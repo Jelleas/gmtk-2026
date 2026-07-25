@@ -208,16 +208,34 @@ func set_cell_highlighted(row: int, col: int, highlighted: bool) -> void:
 	var focus_color := Color(1.0, 0.75, 0.35, 1.0) if highlighted else Color(0.7, 0.85, 1, 1)
 	_style_cell(edit, normal_color, focus_color)
 
+func clear_cell(row: int, col: int) -> void:
+	set_cell_text(row, col, "")
+	set_cell_placeholder(row, col, "")
+	set_cell_highlighted(row, col, false)
+
 func clear_cells() -> void:
 	for row in range(ROWS):
 		for col in range(COLS):
-			set_cell_text(row, col, "")
+			clear_cell(row, col)
+
+func clear_focus() -> void:
+	"""remove all hightlights and placeholders"""
+	for row in range(ROWS):
+		for col in range(COLS):
 			set_cell_placeholder(row, col, "")
 			set_cell_highlighted(row, col, false)
 
 func set_status_message(message: String) -> void:
 	status_message = message
 	_update_top_bar()
+
+func get_filled_coords() -> Array[Vector2i]:
+	var coords: Array[Vector2i] = []
+	for row in ROWS:
+		for col in COLS:
+			if get_cell_text(row, col) != "":
+				coords.push_back(Vector2i(row, col))
+	return coords
 
 func _on_cell_focus_entered(row: int, col: int) -> void:
 	current_row = row

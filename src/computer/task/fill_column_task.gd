@@ -1,7 +1,7 @@
 class_name FillColumnTask
 extends SpreadsheetTask
 
-const COLUMN_LETTERS: String = "ABCDEFGHJ"
+const COLUMN_LETTERS: String = "ABCDEFGH"
 
 var col_number: int
 
@@ -22,8 +22,11 @@ func _init(spreadsheet: Spreadsheet, _col_number: int = -1) -> void:
 
 func start_task() -> void:
 	var spreadsheet := get_spreadsheet()
-	spreadsheet.clear_cells()
+	
+	spreadsheet.clear_focus()
+	
 	for row in range(spreadsheet.ROWS):
+		spreadsheet.clear_cell(row, col_number)
 		spreadsheet.set_cell_placeholder(row, col_number, "0")
 		spreadsheet.set_cell_highlighted(row, col_number, true)
 
