@@ -13,7 +13,7 @@ var active_moles: Array[Vector2i] = []
 func _init(spreadsheet: Spreadsheet) -> void:
 	super._init(
 		"Clear stray digits",
-		"Clear highlighted cells before they move" % [REQUIRED_HITS],
+		"Clear highlighted cells before they move",
 		spreadsheet,
 	)
 
