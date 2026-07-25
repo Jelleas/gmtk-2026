@@ -7,7 +7,7 @@ signal activity_ended(source_id: StringName)
 signal day_started()
 signal day_ended(realtime: float)
 
-signal punish(weight: float)
+signal punishment_started(activity_count: int)
 signal punishment_ended()
 
 signal boss_watch_progress(progress: float)

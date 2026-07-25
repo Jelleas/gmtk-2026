@@ -36,6 +36,9 @@ func set_item_text(index: int, text: String) -> void:
 func set_item_checked(index: int, checked: bool) -> void:
 	(todo_list.get_child(index) as TodoItem).checked = checked
 
+func set_item_pending(index: int, pending: bool) -> void:
+	(todo_list.get_child(index) as TodoItem).pending = pending
+
 func clear_items() -> void:
 	for child in todo_list.get_children():
 		child.queue_free()

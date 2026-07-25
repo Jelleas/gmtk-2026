@@ -4,7 +4,7 @@ extends Node2D
 @onready var clock_surface: Polygon2D = $ClockSurface
 
 var active_multipliers: Dictionary[StringName, float] = {}
-var punishment_weight := 0.0
+var is_punished := false
 
 var is_running = true
 
@@ -16,7 +16,7 @@ func _ready() -> void:
 	EventBus.day_started.connect(on_day_start)
 	EventBus.activity_started.connect(on_activity_start)
 	EventBus.activity_ended.connect(on_activity_end)
-	EventBus.punish.connect(on_punish)
+	EventBus.punishment_started.connect(on_punishment_start)
 	EventBus.punishment_ended.connect(on_punishment_end)
 	
 	%TimeLabel.text = format_time(time)
@@ -26,11 +26,12 @@ func _process(delta: float) -> void:
 		return
 	
 	realtime += delta
-	if punishment_weight > 0.0:
-		time += delta * 60 * punishment_weight
-	else:
-		time -= delta * 60 * positive_multiplier() * negative_multiplier()
-	
+	# The clock stands still while the boss has the player doing punishment work.
+	if is_punished:
+		return
+
+	time -= delta * 60 * positive_multiplier() * negative_multiplier()
+
 	if time <= 0:
 		EventBus.day_ended.emit(realtime)
 		is_running = false
@@ -47,11 +48,11 @@ func on_activity_start(source_id: StringName, multiplier: float):
 func on_activity_end(source_id: StringName):
 	active_multipliers.erase(source_id)
 
-func on_punish(weight: float) -> void:
-	punishment_weight = weight
+func on_punishment_start(_activity_count: int) -> void:
+	is_punished = true
 
 func on_punishment_end() -> void:
-	punishment_weight = 0.0
+	is_punished = false
 
 func format_time(seconds: float) -> String:
 	var total := int(seconds)

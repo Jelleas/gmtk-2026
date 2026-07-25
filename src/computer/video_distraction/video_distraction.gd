@@ -28,7 +28,7 @@ var player_lane := 1
 
 
 func _ready() -> void:
-	EventBus.punish.connect(_on_punish)
+	EventBus.punishment_started.connect(_on_punishment_started)
 	EventBus.punishment_ended.connect(_on_punishment_ended)
 	content_area.resized.connect(_resize_to_content_area)
 	_resize_to_content_area()
@@ -185,7 +185,7 @@ func _resize_to_content_area() -> void:
 	scale = Vector2.ONE * scale_factor
 
 
-func _on_punish(_weight: float) -> void:
+func _on_punishment_started(_activity_count: int) -> void:
 	is_punishment_active = true
 	stop()
 

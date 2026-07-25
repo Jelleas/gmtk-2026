@@ -77,14 +77,14 @@ func boss_face_visible() -> void:
 	activity_check_timer.start(activity_check_delay)
 
 func check_active_activities() -> void:
-	var activity_weight := 0.0
+	var activity_count := 0
 	for is_active in activity_states.values():
 		if is_active:
-			activity_weight += 20.0
+			activity_count += 1
 
-	has_active_activities = activity_weight > 0.0
+	has_active_activities = activity_count > 0
 	if has_active_activities:
-		EventBus.punish.emit(activity_weight)
+		EventBus.punishment_started.emit(activity_count)
 	else:
 		retreat_boss_face()
 

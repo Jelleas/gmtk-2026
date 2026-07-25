@@ -8,6 +8,7 @@
 [ext_resource type="PackedScene" uid="uid://dosq7nhbpil77" path="res://src/phone/phone.tscn" id="7_pcami"]
 [ext_resource type="PackedScene" uid="uid://ct8knnije263x" path="res://src/postit/postit_stack.tscn" id="8_yo1l8"]
 [ext_resource type="PackedScene" uid="uid://vfw2c4ylf0ob" path="res://src/office/office_view.tscn" id="9_office_view"]
+[ext_resource type="Script" uid="uid://estm6ana6hbr" path="res://src/computer/punishment/punishment_controller.gd" id="10_punishment"]
 
 [node name="Office" type="Node2D" unique_id=1406735297]
 script = ExtResource("1_6infj")
@@ -62,6 +63,9 @@ polygon = PackedVector2Array(2.7875977, -11.671997, 280.43408, -8.737183, 320.92
 [node name="PostItStack" parent="." unique_id=1177477717 instance=ExtResource("8_yo1l8")]
 position = Vector2(140, 222)
 scale = Vector2(0.7, 0.7)
+
+[node name="Punishment" type="Node" parent="." unique_id=1835767381]
+script = ExtResource("10_punishment")
 
 [editable path="Clock"]
 [editable path="Phone"]

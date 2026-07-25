@@ -13,7 +13,7 @@ var is_running := false
 var is_punishment_active := false
 
 func _ready() -> void:
-	EventBus.punish.connect(_on_punish)
+	EventBus.punishment_started.connect(_on_punishment_started)
 	EventBus.punishment_ended.connect(_on_punishment_ended)
 
 func start() -> void:
@@ -43,7 +43,7 @@ func _on_click_area_input_event(_viewport: Node, event: InputEvent, _shape_idx: 
 func _on_spin_timer_timeout() -> void:
 	stop()
 
-func _on_punish(_weight: float) -> void:
+func _on_punishment_started(_activity_count: int) -> void:
 	is_punishment_active = true
 
 func _on_punishment_ended() -> void:

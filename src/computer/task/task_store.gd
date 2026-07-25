@@ -63,6 +63,17 @@ func assign_new_task() -> Task:
 	EventBus.task_added.emit(task)
 	return task
 
+# Punishment work is picked with the same weighted roll as the regular rotation,
+# but it lives outside it: the tasks are not tracked here and are returned
+# unstarted, so the punishment can list them all up front and run them one by one.
+func create_punishment_tasks(count: int) -> Array[Task]:
+	var tasks: Array[Task] = []
+	for _i in count:
+		var task_type := _pick_weighted_type(TASK_TYPES)
+		_update_weights(task_type)
+		tasks.append(task_type.new(spreadsheet))
+	return tasks
+
 func get_weight(task_type: Script) -> float:
 	return BASE_WEIGHTS[task_type] * weight_multipliers[task_type]
 
