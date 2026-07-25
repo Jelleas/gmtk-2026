@@ -14,7 +14,8 @@ const CARDS_VISIBLE_PROGRESS := 0.92
 
 var drawer: OfficeDrawer
 var is_activity_active := false
-var can_activate_activity := true
+var is_boss_watching := false
+var is_punishment_active := false
 var current_activity_multiplier := ACTIVITY_MULTIPLIER
 var swipe_reset_timer: Timer
 
@@ -27,10 +28,10 @@ func _ready() -> void:
 		drawer.opened.connect(_on_drawer_opened)
 		drawer.closing.connect(_on_drawer_closing)
 	dating_app.profile_swiped.connect(_on_profile_swiped)
-	EventBus.punishment_started.connect(_on_punish_activity)
-	EventBus.punishment_ended.connect(_on_activate_activity)
-	EventBus.boss_watch_started.connect(_on_deactivate_activity)
-	EventBus.boss_watch_ended.connect(_on_activate_activity)
+	EventBus.punishment_started.connect(_on_punishment_started)
+	EventBus.punishment_ended.connect(_on_punishment_ended)
+	EventBus.boss_watch_started.connect(_on_boss_watch_started)
+	EventBus.boss_watch_ended.connect(_on_boss_watch_ended)
 	swipe_reset_timer = Timer.new()
 	swipe_reset_timer.one_shot = true
 	swipe_reset_timer.wait_time = SWIPE_RESET_DELAY
@@ -158,7 +159,7 @@ func _map_triangle(point: Vector2, first: Vector2, second: Vector2, third: Vecto
 
 
 func _start_activity() -> void:
-	if is_activity_active or not can_activate_activity:
+	if is_activity_active or not _can_activate_activity():
 		return
 
 	is_activity_active = true
@@ -175,7 +176,7 @@ func _stop_activity() -> void:
 
 
 func _on_profile_swiped() -> void:
-	if not is_activity_active or not can_activate_activity:
+	if not is_activity_active or not _can_activate_activity():
 		return
 
 	current_activity_multiplier += SWIPE_MULTIPLIER_INCREASE
@@ -185,35 +186,45 @@ func _on_profile_swiped() -> void:
 
 func _reset_swipe_multiplier() -> void:
 	current_activity_multiplier = ACTIVITY_MULTIPLIER
-	if is_activity_active and can_activate_activity:
+	if is_activity_active and _can_activate_activity():
 		EventBus.activity_started.emit(SOURCE_ID, current_activity_multiplier)
 
 
-func _on_punish_activity(_activity_count: int) -> void:
+func _on_punishment_started(_activity_count: int) -> void:
+	is_punishment_active = true
 	current_activity_multiplier = 0.0
 	swipe_reset_timer.stop()
 	if is_activity_active:
 		EventBus.activity_started.emit(SOURCE_ID, current_activity_multiplier)
-
-	_on_deactivate_activity()
-
-func _on_deactivate_activity() -> void:
-	can_activate_activity = false
 	_update_phone_access()
 
 
-func _on_activate_activity() -> void:
-	can_activate_activity = true
+func _on_punishment_ended() -> void:
+	is_punishment_active = false
+	_update_phone_access()
+
+
+func _on_boss_watch_started() -> void:
+	is_boss_watching = true
+	_update_phone_access()
+
+
+func _on_boss_watch_ended() -> void:
+	is_boss_watching = false
 	_update_phone_access()
 
 
 func _can_open_phone() -> bool:
-	return can_activate_activity
+	return _can_activate_activity()
+
+
+func _can_activate_activity() -> bool:
+	return not is_boss_watching and not is_punishment_active
 
 
 func _update_phone_access() -> void:
 	if drawer:
-		drawer.can_open = can_activate_activity
+		drawer.can_open = _can_activate_activity()
 	if not _can_open_phone():
 		mouse_filter = Control.MOUSE_FILTER_IGNORE
 	elif phone_surface.visible:

@@ -17,7 +17,8 @@ var time_multiplier := 10.0
 @onready var content_area: Control = get_parent() as Control
 
 var is_running := false
-var can_activate_activity := false
+var is_boss_watching := false
+var is_punishment_active := false
 var player_position := Vector2(LANE_X[1], PLAYER_Y)
 var items: Array[Dictionary] = []
 var spawn_elapsed := 0.0
@@ -28,8 +29,10 @@ var player_lane := 1
 
 
 func _ready() -> void:
-	EventBus.punishment_started.connect(_on_deactivate_activity.unbind(1))
-	EventBus.punishment_ended.connect(_on_activate_activity)
+	EventBus.punishment_started.connect(_on_punishment_started)
+	EventBus.punishment_ended.connect(_on_punishment_ended)
+	EventBus.boss_watch_started.connect(_on_boss_watch_started)
+	EventBus.boss_watch_ended.connect(_on_boss_watch_ended)
 	
 	if content_area:
 		content_area.resized.connect(_resize_to_content_area)
@@ -107,7 +110,7 @@ func _draw() -> void:
 
 
 func start() -> void:
-	if is_running or can_activate_activity:
+	if is_running or not _can_activate_activity():
 		return
 
 	is_running = true
@@ -190,9 +193,19 @@ func _resize_to_content_area() -> void:
 	scale = Vector2.ONE * scale_factor
 
 
-func _on_deactivate_activity() -> void:
-	can_activate_activity = false
-	EventBus.activity_started.emit(SOURCE_ID, 0.0)
+func _on_punishment_started(_activity_count: int) -> void:
+	is_punishment_active = true
+	if is_running:
+		EventBus.activity_started.emit(SOURCE_ID, 0.0)
 
-func _on_activate_activity() -> void:
-	can_activate_activity = true
+func _on_punishment_ended() -> void:
+	is_punishment_active = false
+
+func _on_boss_watch_started() -> void:
+	is_boss_watching = true
+
+func _on_boss_watch_ended() -> void:
+	is_boss_watching = false
+
+func _can_activate_activity() -> bool:
+	return not is_boss_watching and not is_punishment_active

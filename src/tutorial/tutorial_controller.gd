@@ -19,6 +19,12 @@ signal finished
 ## the filling watch instead of being punished by a mechanic they have not met.
 const FIRST_WATCH_DELAY := 8.0
 
+## Once the boss has been introduced it backs off for the remaining lessons: at
+## its normal pace it is up again every few seconds, which leaves no room to sit
+## in a distraction long enough to see what it does. Restored to the scene's own
+## pacing when the tutorial hands the day over.
+const TEACHING_MOVE_INTERVAL := Vector2(12.0, 18.0)
+
 ## Handed over by office.gd, which owns the scene.
 var post_it_stack: PostItStack
 var spreadsheet: Spreadsheet
@@ -36,6 +42,7 @@ var page_sizes := PackedInt32Array()
 var current_index := 0
 var running := false
 var default_watch_delay := 0.0
+var default_move_interval := Vector2.ZERO
 
 func setup(p_post_it_stack: PostItStack, p_spreadsheet: Spreadsheet, p_computer: Computer,
 		p_boss: Boss, p_drawer: OfficeDrawer, p_dating_app: DatingApp) -> void:
@@ -46,6 +53,7 @@ func setup(p_post_it_stack: PostItStack, p_spreadsheet: Spreadsheet, p_computer:
 	drawer = p_drawer
 	dating_app = p_dating_app
 	default_watch_delay = boss.activity_check_delay
+	default_move_interval = Vector2(boss.min_move_interval, boss.max_move_interval)
 
 func start() -> void:
 	if running:
@@ -136,17 +144,37 @@ func _enter_beat() -> void:
 ## The side effects a beat needs before the player can work on it.
 func _on_beat_started() -> void:
 	var task := beats[current_index]
+	var is_last := current_index == beats.size() - 1
 
 	if task is LookBusyTask:
-		# The boss has been kept away until now, so beat 1 could be enjoyed.
+		# The boss has been kept away until now, so beat 1 could be enjoyed. It
+		# comes up at its usual pace here, because this beat is waiting for it.
 		boss.activity_check_delay = FIRST_WATCH_DELAY
+		_set_boss_move_interval(default_move_interval)
 		boss.activate()
+	elif is_last:
+		# Hands off the pacing along with the day.
+		boss.activity_check_delay = default_watch_delay
+		_set_boss_move_interval(default_move_interval)
 	else:
 		boss.activity_check_delay = default_watch_delay
+		_set_boss_move_interval(TEACHING_MOVE_INTERVAL)
 
 	# The last beat is the rest of the day: regular work starts flowing again.
-	if current_index == beats.size() - 1:
+	if is_last:
 		finished.emit()
+
+## Re-arms a rise that is already on its way, so a change of pace takes effect
+## now instead of one appearance later.
+func _set_boss_move_interval(interval: Vector2) -> void:
+	if is_equal_approx(boss.min_move_interval, interval.x) \
+			and is_equal_approx(boss.max_move_interval, interval.y):
+		return
+
+	boss.min_move_interval = interval.x
+	boss.max_move_interval = interval.y
+	if boss.is_activated and boss.state == Boss.State.RISING and not boss.move_timer.is_stopped():
+		boss.schedule_next_move()
 
 func _on_beat_changed() -> void:
 	var task := beats[current_index]
@@ -158,9 +186,17 @@ func _on_beat_changed() -> void:
 		return
 
 	task.changed.disconnect(_on_beat_changed)
+	_on_beat_completed(task)
 	post_it_stack.advance_tutorial(current_index)
 	current_index += 1
 	_enter_beat()
+
+## The side effects of finishing a beat.
+func _on_beat_completed(task: Task) -> void:
+	# The player did the thing the boss was waiting for, so the boss has no
+	# reason to keep looking: it ducks away instead of running its watch down.
+	if task is LookBusyTask and boss.state == Boss.State.VISIBLE:
+		boss.retreat_boss_face()
 
 ## The last beat ends the day, which ends the game - so there is nothing to hand
 ## over to and nothing to tidy up. The final note stays where it is, checked off.
