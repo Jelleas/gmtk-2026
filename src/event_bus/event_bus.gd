@@ -10,6 +10,8 @@ signal day_ended(realtime: float)
 signal punishment_started(activity_count: int)
 signal punishment_ended()
 
+signal boss_watch_started()
+signal boss_watch_ended()
 signal boss_watch_progress(progress: float)
 
 signal task_added(task: Task)

@@ -19,6 +19,7 @@ var move_timer: Timer
 var activity_check_timer: Timer
 var hidden_y := 0.0
 var visible_y := 0.0
+var becoming_red_tween: Tween
 
 func _ready() -> void:
 	EventBus.activity_started.connect(on_activity_start)
@@ -60,6 +61,11 @@ func on_activity_start(source_id: StringName, _multiplier: float) -> void:
 
 func on_activity_end(source_id: StringName) -> void:
 	activity_states[source_id] = false
+	if becoming_red_tween && activity_states.values().all(func(b): return not b):
+		becoming_red_tween.kill()
+		becoming_red_tween = null
+		var tween = create_tween()
+		tween.tween_property(self, "modulate", Color.WHITE, 0.1)
 
 func schedule_next_move() -> void:
 	move_timer.start(randf_range(min_move_interval, max_move_interval))
@@ -68,6 +74,7 @@ func move_boss_face() -> void:
 	if state != State.RISING:
 		return
 
+	position.x = randf_range(200, 1080)
 	var tween := create_tween()
 	tween.tween_property(boss_face, "position:y", visible_y, move_duration).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
 	tween.finished.connect(boss_face_visible)
@@ -75,6 +82,10 @@ func move_boss_face() -> void:
 func boss_face_visible() -> void:
 	state = State.VISIBLE
 	activity_check_timer.start(activity_check_delay)
+	EventBus.boss_watch_started.emit()
+	if activity_states.values().any(func(b): return b):
+		becoming_red_tween = create_tween()
+		becoming_red_tween.tween_property(self, "modulate", Color("#D14B3E"), activity_check_delay)
 
 func check_active_activities() -> void:
 	var activity_count := 0
