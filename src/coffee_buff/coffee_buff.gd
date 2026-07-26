@@ -60,6 +60,7 @@ func activate() -> void:
 
 	is_active = true
 	EventBus.buff_started.emit(SOURCE_ID, multiplier)
+	Sfx.play(Sfx.COFFEE_SLURP)
 	active_timer.start(duration)
 	buff_state_changed.emit(true)
 	_emit_visual_state()

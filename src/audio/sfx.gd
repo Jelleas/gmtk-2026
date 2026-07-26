@@ -6,6 +6,7 @@ extends Node
 
 const DRAWER_OPEN := preload("res://resources/audio/drawer1.mp3")
 const DRAWER_CLOSE := preload("res://resources/audio/drawer2.mp3")
+const COFFEE_SLURP := preload("res://resources/audio/slurp.mp3")
 
 ## The mouse, for the things the player clicks on the computer rather than on the
 ## desk. The desk props have their own sounds and do not want this on top.
