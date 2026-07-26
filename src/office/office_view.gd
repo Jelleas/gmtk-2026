@@ -1,11 +1,24 @@
 class_name OfficeView
 extends Node2D
 
+const FIDGET_SOUND := preload("res://resources/audio/fidget.mp3")
+
+## What the spin sound does between a level 1 spin and a level 3 one. The pitch
+## range is deliberately narrow - much past this and the loop reads as a
+## different object rather than the same one going faster.
+const FIDGET_PITCH := Vector2(0.9, 1.35)
+const FIDGET_VOLUME_DB := Vector2(-6.0, 0.0)
+const FIDGET_SPIN_DOWN_SECONDS := 0.3
+## Where the sound fades to on a spin-down. Low enough to be gone, and the
+## player is stopped once it lands.
+const FIDGET_SILENT_DB := -40.0
+
 @onready var drawer: OfficeDrawer = $Drawer
 @onready var fidget: AnimatedSprite2D = $Fidget
 @onready var phone: AnimatedSprite2D = $Phone
 
 var fidget_slow_down_tween: Tween
+var fidget_player: AudioStreamPlayer
 
 func _ready() -> void:
 	drawer.progress_changed.connect(_on_drawer_progress_changed)
@@ -16,25 +29,53 @@ func _ready() -> void:
 	phone.hide()
 	_on_drawer_progress_changed(drawer.open_progress)
 
+	# The loop runs for as long as the spinner does, so it gets a player of its
+	# own rather than one of Sfx's one-shot slots.
+	fidget_player = AudioStreamPlayer.new()
+	fidget_player.stream = FIDGET_SOUND
+	add_child(fidget_player)
+
 
 func play_fidget_spin(spin_level: int) -> void:
-	if fidget_slow_down_tween: 
+	if fidget_slow_down_tween:
 		fidget_slow_down_tween.kill()
 		fidget_slow_down_tween = null
-		
+
 	fidget.play()
 	fidget.speed_scale = spin_level
+
+	# Faster spins sit a little higher and a little louder.
+	var t := _fidget_level_ratio(spin_level)
+	fidget_player.pitch_scale = lerpf(FIDGET_PITCH.x, FIDGET_PITCH.y, t)
+	fidget_player.volume_db = lerpf(FIDGET_VOLUME_DB.x, FIDGET_VOLUME_DB.y, t)
+	if not fidget_player.playing:
+		fidget_player.play()
 
 
 func stop_fidget_spin(forced: bool) -> void:
 	if not fidget.is_playing(): return
 	if forced:
 		fidget.stop()
+		fidget_player.stop()
 	else:
-		var tween := create_tween()
-		tween.tween_property(fidget, "speed_scale", 0, 0.3)
-		tween.tween_callback(func(): fidget.stop())
-		
+		# Kept on fidget_slow_down_tween so a new spin can cancel the wind-down
+		# and take the sound back up with it.
+		fidget_slow_down_tween = create_tween()
+		fidget_slow_down_tween.parallel().tween_property(fidget, "speed_scale", 0, FIDGET_SPIN_DOWN_SECONDS)
+		fidget_slow_down_tween.parallel().tween_property(fidget_player, "volume_db", FIDGET_SILENT_DB, FIDGET_SPIN_DOWN_SECONDS)
+		fidget_slow_down_tween.parallel().tween_property(fidget_player, "pitch_scale", FIDGET_PITCH.x * 0.8, FIDGET_SPIN_DOWN_SECONDS)
+		fidget_slow_down_tween.tween_callback(func():
+			fidget.stop()
+			fidget_player.stop()
+		)
+
+
+## Spin levels run 1-3 (fidget_spinner.gd clamps them), so this maps that onto
+## 0-1 for the pitch and volume ramps.
+func _fidget_level_ratio(spin_level: int) -> float:
+	return clampf((spin_level - 1) / 2.0, 0.0, 1.0)
+
+
 func highlight_fidget_spin_start(color: Color):
 	OutlineHighlight.show_outline(fidget, color)
 

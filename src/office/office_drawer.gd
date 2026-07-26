@@ -95,6 +95,13 @@ func _to_global_y(local_position: Vector2) -> float:
 func set_open(open: bool) -> void:
 	if open and not can_open:
 		return
+
+	# Only when it actually travels: settling a half-drag back where it started
+	# calls this too, and that should be silent.
+	var target := 1.0 if open else 0.0
+	if not is_equal_approx(open_progress, target):
+		Sfx.play(Sfx.DRAWER_OPEN if open else Sfx.DRAWER_CLOSE)
+
 	is_open = open
 	if slide_tween:
 		slide_tween.kill()

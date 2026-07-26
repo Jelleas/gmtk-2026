@@ -19,6 +19,7 @@ config/icon="res://icon.svg"
 
 EventBus="*uid://b336jrorewyep"
 StatTracker="*uid://8v771oju4mfh"
+Sfx="*res://src/audio/sfx.gd"
 
 [display]
 

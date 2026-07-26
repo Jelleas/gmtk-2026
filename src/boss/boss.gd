@@ -137,6 +137,7 @@ func boss_face_visible() -> void:
 	current_watch_delay = next_watch_delay if next_watch_delay > 0.0 else activity_check_delay
 	next_watch_delay = 0.0
 	activity_check_timer.start(current_watch_delay)
+	Sfx.play_random(Sfx.BOSS_INVESTIGATE)
 	EventBus.boss_watch_started.emit()
 	if activity_states.values().any(func(b): return b):
 		becoming_red_tween = create_tween()
@@ -150,6 +151,7 @@ func check_active_activities() -> void:
 
 	has_active_activities = activity_count > 0
 	if has_active_activities:
+		Sfx.play_random(Sfx.BOSS_ANGRY)
 		EventBus.punishment_started.emit(activity_count)
 		shake()
 	else:
