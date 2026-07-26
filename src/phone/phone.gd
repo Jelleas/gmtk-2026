@@ -227,7 +227,7 @@ func _can_open_phone() -> bool:
 
 
 func _can_activate_activity() -> bool:
-	return not is_punishment_active
+	return not is_boss_watching and not is_punishment_active
 
 
 func _update_phone_access() -> void:
