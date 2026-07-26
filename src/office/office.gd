@@ -110,13 +110,15 @@ func _on_punishment_started(_activity_count: int) -> void:
 
 func _on_punishment_ended() -> void:
 	is_punished = false
-	# The punishment took over the spreadsheet, so hand the regular work back.
+	# The punishment took over the spreadsheet, so hand back whatever it
+	# interrupted. Nothing new is handed out: serving the sentence is not a reason
+	# to be given more work, and what the player goes back to is the day the
+	# tutorial's last beat set them - waste it until it is over.
 	for task in task_store.active_tasks:
 		if task is SpreadsheetTask:
 			task.get_spreadsheet().set_status_message("")
 			task.start_task()
 			break
-	refill_timer.start(task_refill_delay)
 
 func _refill_tasks() -> void:
 	# Handing out regular work mid-punishment would start another spreadsheet

@@ -64,6 +64,7 @@ func setup(p_post_it_stack: PostItStack, p_spreadsheet: Spreadsheet, p_computer:
 	default_watch_delay = boss.activity_check_delay
 	default_move_interval = Vector2(boss.min_move_interval, boss.max_move_interval)
 	spreadsheet.cell_text_changed.connect(_on_cell_text_changed)
+	EventBus.punishment_ended.connect(_on_punishment_ended)
 
 func start() -> void:
 	if running:
@@ -199,6 +200,15 @@ func _on_cell_text_changed(_row: int, _col: int, _text: String) -> void:
 		return
 	if spreadsheet.status_message == hints[current_index]:
 		spreadsheet.set_status_message("")
+
+## The boss's work borrowed the top bar and the note on top of the pile. Both are
+## its own to give back, so all that is left is the beat it interrupted, which is
+## waiting exactly where the player left it - usually the last one, the rest of
+## the day.
+func _on_punishment_ended() -> void:
+	if not running or current_index >= hints.size():
+		return
+	spreadsheet.set_status_message(hints[current_index])
 
 func _on_beat_changed() -> void:
 	var task := beats[current_index]
