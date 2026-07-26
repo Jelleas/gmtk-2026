@@ -21,7 +21,7 @@ signal finished
 ## popping in and out at random, and it puts a deadline the player can feel on
 ## the beat that follows - this plus the watch itself is the time they have to
 ## put the spinner away.
-const FIRST_RISE_SECONDS := 5.0
+const FIRST_RISE_SECONDS := 3.0
 
 ## How long that first look lasts when the player beats the boss to it. Just long
 ## enough to register: the desk is clean, so there is nothing to find.
