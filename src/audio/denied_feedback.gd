@@ -33,7 +33,7 @@ static func _tut() -> void:
 		return
 
 	_last_sound_msec = now
-	Sfx.play(Sfx.NUH_UH, Sfx.NUH_UH_DB)
+	Sfx.play(Sfx.UH_UH, Sfx.UH_UH_DB)
 
 
 ## Flinches a node in place. The resting position is read on the way in and put
