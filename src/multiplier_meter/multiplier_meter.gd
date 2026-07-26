@@ -44,7 +44,7 @@ func _ready() -> void:
 		fill_style = scene_fill.duplicate()
 		progress_bar.add_theme_stylebox_override(&"fill", fill_style)
 
-	combo_label.hide()
+	combo_label.modulate.a = 0.0
 
 	clock = get_node_or_null(clock_path)
 	if clock == null:
@@ -98,12 +98,12 @@ func _on_total_multiplier_changed(new_multiplier: float, new_cap: float, active_
 func _update_combo(active_count: int, color: Color) -> void:
 	var bonus: float = clock.call(&"combo_bonus") if clock else 1.0
 	if active_count < 2 or is_equal_approx(bonus, 1.0):
-		combo_label.hide()
+		combo_label.modulate.a = 0.0
 		return
 
 	combo_label.text = "COMBO x%s" % _format_multiplier(bonus)
 	combo_label.add_theme_color_override(&"font_color", color)
-	combo_label.show()
+	combo_label.modulate.a = 1.0
 
 
 func _punch() -> void:
