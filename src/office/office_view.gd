@@ -2,6 +2,10 @@ class_name OfficeView
 extends Node2D
 
 const FIDGET_SOUND := preload("res://resources/audio/fidget.mp3")
+const EMPTY_CUP_TEXTURE := preload("res://resources/images/cup.png")
+const FULL_CUP_TEXTURE := preload("res://resources/images/cup-full.png")
+const MULTIPLIER_GOLD := Color(0.92941177, 0.79607844, 0.26666668, 1.0)
+const REFILL_BROWN := Color(0.78, 0.36, 0.10, 1.0)
 
 ## What the spin sound does between a level 1 spin and a level 3 one. The pitch
 ## range is deliberately narrow - much past this and the loop reads as a
@@ -87,22 +91,18 @@ func highlight_fidget_spin_end():
 
 func set_coffee_state(is_active: bool, fill_amount: float, is_ready: bool) -> void:
 	var material := cup.material as ShaderMaterial
+	cup.texture = FULL_CUP_TEXTURE if is_ready else EMPTY_CUP_TEXTURE
 	material.set_shader_parameter(&"fill_amount", fill_amount)
 
 	if is_active:
-		material.set_shader_parameter(&"outline_color", Color(1.0, 0.66, 0.2, 1.0))
+		material.set_shader_parameter(&"outline_color", MULTIPLIER_GOLD)
 		material.set_shader_parameter(&"outline_width", 5.0)
-		material.set_shader_parameter(&"active_glow", 1.0)
-		material.set_shader_parameter(&"dim_amount", 0.0)
 	elif is_ready:
-		material.set_shader_parameter(&"outline_color", Color(1.0, 0.66, 0.2, 1.0))
+		material.set_shader_parameter(&"outline_color", MULTIPLIER_GOLD)
 		material.set_shader_parameter(&"outline_width", 3.0)
-		material.set_shader_parameter(&"active_glow", 0.0)
-		material.set_shader_parameter(&"dim_amount", 0.0)
 	else:
-		material.set_shader_parameter(&"outline_width", 0.0)
-		material.set_shader_parameter(&"active_glow", 0.0)
-		material.set_shader_parameter(&"dim_amount", 0.4)
+		material.set_shader_parameter(&"outline_color", REFILL_BROWN)
+		material.set_shader_parameter(&"outline_width", 3.0 if fill_amount < 1.0 else 0.0)
 
 func _on_drawer_progress_changed(progress: float) -> void:
 	if progress <= 0.0:

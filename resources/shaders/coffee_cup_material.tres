@@ -4,9 +4,6 @@
 
 [resource]
 shader = ExtResource("1_shader")
-shader_parameter/coffee_color = Color(0.22, 0.1, 0.04, 1)
-shader_parameter/outline_color = Color(1, 0.66, 0.2, 1)
+shader_parameter/outline_color = Color(0.929412, 0.796078, 0.266667, 1)
 shader_parameter/outline_width = 0.0
 shader_parameter/fill_amount = 1.0
-shader_parameter/active_glow = 0.0
-shader_parameter/dim_amount = 0.4
