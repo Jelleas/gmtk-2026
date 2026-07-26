@@ -17,7 +17,7 @@ const MOUSE_CLICK_PITCH := Vector2(0.94, 1.06)
 ## Reaching for something the boss has put out of bounds. Played through
 ## DeniedFeedback, which pairs it with the flinch.
 const NUH_UH := preload("res://resources/audio/nuh_uh.mp3")
-const NUH_UH_DB := -3.0
+const NUH_UH_DB := -11.0
 
 ## The boss thinking it over on the way up. Picked at random so a long shift
 ## doesn't turn into the same syllable over and over.
