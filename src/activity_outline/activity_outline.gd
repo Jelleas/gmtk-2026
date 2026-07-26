@@ -24,7 +24,7 @@ func _ready() -> void:
 	EventBus.punishment_started.connect(_on_punishment_started)
 	EventBus.punishment_ended.connect(_on_punishment_ended)
 
-func _on_activity_started(id: StringName, _multiplier: float) -> void:
+func _on_activity_started(id: StringName, _bonus: float) -> void:
 	if id != source_id:
 		return
 	is_active = true

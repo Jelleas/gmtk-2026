@@ -4,7 +4,10 @@ signal started(level: int)
 signal stopped(forced: bool)
 
 const SOURCE_ID := &"fidget_spinner"
-const ACTIVITY_MULTIPLIER := 2.0
+## Worth +2 / +3 / +4 at spin levels 1-3: more than the video, less than the
+## phone. The spin timer running out is what keeps it from being free.
+const ACTIVITY_BONUS_BASE := 1.0
+const ACTIVITY_BONUS_PER_LEVEL := 1.0
 
 @export var spin_duration := 2.5
 
@@ -30,7 +33,7 @@ func start() -> void:
 	spin_timer.start(spin_duration + spin_level * 2.5)
 	started.emit(spin_level)
 	EventBus.fidget_spun.emit(spin_level)
-	EventBus.activity_started.emit(SOURCE_ID, ACTIVITY_MULTIPLIER + (spin_level-1)*0.5)
+	EventBus.activity_started.emit(SOURCE_ID, ACTIVITY_BONUS_BASE + spin_level * ACTIVITY_BONUS_PER_LEVEL)
 
 func stop(forced: bool) -> void:
 	if not is_running:

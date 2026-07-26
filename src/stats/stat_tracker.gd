@@ -64,7 +64,7 @@ func _on_day_ended(_realtime: float) -> void:
 ## Only a stopped activity starting again counts: the phone re-emits this on
 ## every swipe, the spinner on every click that winds it up further, and the
 ## video with a multiplier of 0.0 when a punishment cuts it off.
-func _on_activity_started(source_id: StringName, _multiplier: float) -> void:
+func _on_activity_started(source_id: StringName, _bonus: float) -> void:
 	if active_sources.get(source_id, false):
 		return
 
