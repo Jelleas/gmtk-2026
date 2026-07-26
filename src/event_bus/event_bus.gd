@@ -14,7 +14,6 @@ signal punishment_ended()
 
 signal boss_watch_started()
 signal boss_watch_ended()
-signal boss_watch_progress(progress: float)
 
 signal task_added(task: Task)
 signal task_completed(task: Task)

@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://biw4vo866lm20" path="res://src/phone/phone.gd" id="1_phone"]
 [ext_resource type="PackedScene" uid="uid://dbdb7j38pxfkb" path="res://src/phone/dating_app/dating_app.tscn" id="2_dating_app"]
-[ext_resource type="Script" uid="uid://c1pfarlh0o4bq" path="res://src/boss_watch_halo/boss_watch_halo.gd" id="4_halo"]
+[ext_resource type="Script" path="res://src/activity_outline/activity_outline.gd" id="4_outline"]
 
 [node name="Phone" type="Control" unique_id=1620515731]
 clip_contents = true
@@ -22,11 +22,10 @@ render_target_update_mode = 4
 [node name="DatingApp" parent="AppViewport" unique_id=835218628 instance=ExtResource("2_dating_app")]
 unique_name_in_owner = true
 
-[node name="BossWatchHalo" type="Node2D" parent="AppViewport" unique_id=1648962623]
-script = ExtResource("4_halo")
+[node name="ActivityOutline" type="Node" parent="." unique_id=1648962623]
+script = ExtResource("4_outline")
 source_id = &"dating_app"
-target_size = Vector2(300, 440)
-target_offset = Vector2(30, 30)
+target_path = NodePath("OfficeView/Phone")
 
 [node name="PhoneSurface" type="Polygon2D" parent="." unique_id=762875576]
 texture_filter = 1

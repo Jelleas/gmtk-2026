@@ -25,8 +25,8 @@ var activity_check_timer: Timer
 var hidden_y := 0.0
 var visible_y := 0.0
 var becoming_red_tween: Tween
-## How long the watch on the rise currently underway runs for. Read back by the
-## watch halo, which has to fill over the length actually being counted down.
+## How long the watch on the rise currently underway runs for, so the face has
+## the length actually being counted down to redden over.
 var current_watch_delay := 0.0
 ## True while the pending rise was asked for by rise_in(): its delay is a promise
 ## to whoever scripted it, so a change of pace must not reschedule it away.
@@ -78,11 +78,6 @@ func deactivate() -> void:
 		retreat_boss_face()
 	else:
 		activity_check_timer.stop()
-
-func _process(_delta: float) -> void:
-	if state == State.VISIBLE and not activity_check_timer.is_stopped():
-		var progress := 1.0 - activity_check_timer.time_left / current_watch_delay
-		EventBus.boss_watch_progress.emit(clampf(progress, 0.0, 1.0))
 
 func on_activity_start(source_id: StringName, _multiplier: float) -> void:
 	activity_states[source_id] = true
@@ -168,7 +163,6 @@ func on_punishment_ended() -> void:
 
 func retreat_boss_face() -> void:
 	activity_check_timer.stop()
-	EventBus.boss_watch_progress.emit(0.0)
 	EventBus.boss_watch_ended.emit()
 	state = State.RETREATING
 	var tween := create_tween()

@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://qu7neb5oc0up"]
 
 [ext_resource type="Script" uid="uid://cefnk8bvjcibg" path="res://src/fidget_spinner/fidget_spinner.gd" id="1_tsi7e"]
-[ext_resource type="Script" uid="uid://c1pfarlh0o4bq" path="res://src/boss_watch_halo/boss_watch_halo.gd" id="3_halo"]
+[ext_resource type="Script" uid="uid://dxkfitwwqq2bn" path="res://src/activity_outline/activity_outline.gd" id="3_outline"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_x2p3e"]
 radius = 75.026665
@@ -12,11 +12,10 @@ script = ExtResource("1_tsi7e")
 [node name="SpinTimer" type="Timer" parent="." unique_id=1827216203]
 one_shot = true
 
-[node name="BossWatchHalo" type="Node2D" parent="." unique_id=1122806938]
-script = ExtResource("3_halo")
+[node name="ActivityOutline" type="Node" parent="." unique_id=1122806938]
+script = ExtResource("3_outline")
 source_id = &"fidget_spinner"
-target_size = Vector2(128, 128)
-target_offset = Vector2(-64, -64)
+target_path = NodePath("OfficeView/Fidget")
 
 [node name="ClickArea" type="Area2D" parent="." unique_id=1768960208]
 

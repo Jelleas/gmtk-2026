@@ -11,7 +11,6 @@ func _ready() -> void:
 	drawer.progress_changed.connect(_on_drawer_progress_changed)
 	drawer.opened.connect(_on_drawer_opened)
 	fidget.frame = 0
-	fidget.material = fidget.material.duplicate()
 	phone.frame = 0
 	phone.stop()
 	phone.hide()
@@ -37,11 +36,10 @@ func stop_fidget_spin(forced: bool) -> void:
 		tween.tween_callback(func(): fidget.stop())
 		
 func highlight_fidget_spin_start(color: Color):
-	fidget.material.set_shader_parameter("outline_color", color)
-	fidget.material.set_shader_parameter("outline_width", 3.0)
+	OutlineHighlight.show_outline(fidget, color)
 
 func highlight_fidget_spin_end():
-	fidget.material.set_shader_parameter("outline_width", 0.0)
+	OutlineHighlight.hide_outline(fidget)
 
 func _on_drawer_progress_changed(progress: float) -> void:
 	if progress <= 0.0:
