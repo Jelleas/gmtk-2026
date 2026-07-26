@@ -4,9 +4,10 @@ extends Node
 ## The player's first day, written out on its own post-it and worked through one
 ## beat at a time. The order teaches the game's argument rather than its
 ## controls: slacking off is what moves the clock (beat 1), the boss is what
-## makes that dangerous (beat 2), and the better a distraction pays the more it
-## exposes you (beats 3-5). The last beat hands the day over to the regular task
-## rotation and asks the player to waste it.
+## makes that dangerous (beat 2), the better a distraction pays the more it
+## exposes you (beats 3-5), and the coffee multiplies whatever is already running
+## (beat 6). The last beat hands the day over to the regular task rotation and
+## asks the player to waste it.
 ##
 ## Every beat is a Task, so the whole thing runs on the same
 ## changed / check_completed contract as the boss's work - see
@@ -113,7 +114,14 @@ func _build_beats() -> void:
 		StartActivityTask.new(&"video_distraction", "Watch a video", "Open the second tab on the taskbar"),
 		"There is a video tab next to the spreadsheet",
 	)
-	# 6. Hand-over: the rest of the day, played for real. It gets a note of its
+	# 6. The one thing on the desk the boss cannot object to. It pays nothing on
+	# its own, so it comes last of the lessons: by now there is a habit to
+	# multiply, and the cup is the reward for having one.
+	_add_beat(
+		DrinkCoffeeTask.new(),
+		"Coffee multiplies whatever you already have running",
+	)
+	# 7. Hand-over: the rest of the day, played for real. It gets a note of its
 	# own, because it is the whole game rather than a step of the tutorial.
 	_add_beat(
 		SurviveDayTask.new(),
