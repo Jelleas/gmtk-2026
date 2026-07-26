@@ -1,6 +1,6 @@
 extends Node2D
 
-signal total_multiplier_changed(multiplier: float, cap: float)
+signal total_multiplier_changed(multiplier: float, cap: float, active_count: int)
 
 @onready var clock_viewport: SubViewport = $ClockViewport
 @onready var clock_surface: Polygon2D = $ClockSurface
@@ -35,6 +35,11 @@ const MIN_DRAG := 0.15
 ## tools/balance_sim.gd measures it - re-run that after touching MIN_DRAG.
 const DRAG_SCALE := 0.86
 
+## What the clock face does once the day is on its last hour, which is a quarter
+## of the round and wants to read as a moment rather than a stall.
+const LAST_HOUR_TINT := Color(1.0, 0.45, 0.4, 1.0)
+const LAST_HOUR_PULSE_SECONDS := 0.9
+
 var realtime = 0.0
 var time = 10 * 3600
 var last_hour_announced := false
@@ -46,7 +51,8 @@ func _ready() -> void:
 	EventBus.activity_ended.connect(on_activity_end)
 	EventBus.punishment_started.connect(on_punishment_start)
 	EventBus.punishment_ended.connect(on_punishment_end)
-	
+	EventBus.last_hour_started.connect(on_last_hour_start)
+
 	%TimeLabel.text = format_time(time)
 	_update_multiplier_display()
 
@@ -103,15 +109,22 @@ func format_time(seconds: float) -> String:
 
 func positive_multiplier() -> float:
 	var total := 1.0
-	var active := 0
-	# A punishment cuts a distraction off by zeroing its bonus rather than ending
-	# it, so those must not be counted towards the combo either.
 	for bonus in active_bonuses.values():
-		if bonus <= 0.0:
-			continue
-		total += bonus
-		active += 1
-	return total * COMBO_BONUS[mini(active, COMBO_BONUS.size() - 1)]
+		if bonus > 0.0:
+			total += bonus
+	return total * combo_bonus()
+
+## How many distractions are really running. A punishment cuts one off by zeroing
+## its bonus rather than ending it, and one worth nothing is not part of a combo.
+func active_bonus_count() -> int:
+	var active := 0
+	for bonus in active_bonuses.values():
+		if bonus > 0.0:
+			active += 1
+	return active
+
+func combo_bonus() -> float:
+	return COMBO_BONUS[mini(active_bonus_count(), COMBO_BONUS.size() - 1)]
 
 func max_total_multiplier() -> float:
 	return MAX_TOTAL_MULTIPLIER
@@ -121,4 +134,14 @@ func negative_multiplier() -> float:
 	return DRAG_SCALE * maxf(MIN_DRAG, 1 / exp(hours / (10 - hours)))
 
 func _update_multiplier_display() -> void:
-	total_multiplier_changed.emit(positive_multiplier(), MAX_TOTAL_MULTIPLIER)
+	total_multiplier_changed.emit(positive_multiplier(), MAX_TOTAL_MULTIPLIER, active_bonus_count())
+
+## Home time is close enough to see. The face keeps pulsing for the rest of the
+## day - this is the stretch the drag curve makes a quarter of the round, so it
+## should look like it was meant.
+func on_last_hour_start() -> void:
+	var pulse := create_tween().set_loops()
+	pulse.tween_property(clock_surface, "modulate", LAST_HOUR_TINT, LAST_HOUR_PULSE_SECONDS) \
+		.set_trans(Tween.TRANS_SINE)
+	pulse.tween_property(clock_surface, "modulate", Color.WHITE, LAST_HOUR_PULSE_SECONDS) \
+		.set_trans(Tween.TRANS_SINE)

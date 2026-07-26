@@ -17,6 +17,7 @@ func _authenticate() -> void:
 		return
 
 	is_authenticating = true
+	Sfx.play_click()
 	EventBus.zoom_out_requested.emit()
 	status_label.text = "Logging on..."
 	await get_tree().create_timer(0.2).timeout

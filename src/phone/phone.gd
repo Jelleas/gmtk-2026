@@ -3,7 +3,9 @@ extends Control
 const SOURCE_ID := &"dating_app"
 ## The biggest payout of the three, because it costs the most to run: the drawer
 ## has to be open, a swipe is needed every SWIPE_RESET_DELAY to hold the bonus up,
-## and dragging the drawer shut is the slowest way to go clean when the boss rises.
+## and the drawer takes the longest to go clean with - the spinner stops on a
+## right-click and the video on a tab change, but the drawer has a slide to sit
+## through before the phone is out of sight.
 const ACTIVITY_BONUS := 4.0
 const SWIPE_BONUS_INCREASE := 0.5
 const MAX_ACTIVITY_BONUS := 7.0
