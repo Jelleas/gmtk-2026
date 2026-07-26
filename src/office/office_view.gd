@@ -85,6 +85,18 @@ func _fidget_level_ratio(spin_level: int) -> float:
 	return clampf((spin_level - 1) / 2.0, 0.0, 1.0)
 
 
+## The props live here rather than with the scripts that own the rules about them,
+## so this is where a rule saying no turns into something the player can see.
+func deny_fidget() -> void:
+	DeniedFeedback.deny(fidget)
+
+func deny_cup() -> void:
+	DeniedFeedback.deny(cup)
+
+func deny_phone() -> void:
+	DeniedFeedback.deny(phone)
+
+
 func highlight_fidget_spin_start(color: Color):
 	OutlineHighlight.show_outline(fidget, color)
 

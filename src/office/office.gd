@@ -35,6 +35,10 @@ func _ready():
 	EventBus.day_ended.connect(_on_day_ended)
 	$FidgetSpinner.started.connect($OfficeView.play_fidget_spin)
 	$FidgetSpinner.stopped.connect($OfficeView.stop_fidget_spin)
+	# The spinner and the cup keep their rules to themselves and own no sprite, so
+	# their refusals are handed to the props in the office view.
+	$FidgetSpinner.denied.connect($OfficeView.deny_fidget)
+	$CoffeeBuff.denied.connect($OfficeView.deny_cup)
 	$CoffeeBuff.visual_state_changed.connect($OfficeView.set_coffee_state)
 	$CoffeeBuff.refresh_visual_state()
 	$FidgetSpinner.set_interaction_enabled(false)

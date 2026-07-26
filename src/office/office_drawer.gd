@@ -33,6 +33,9 @@ func _on_drawer_input(event: InputEvent) -> void:
 
 func set_open(open: bool) -> void:
 	if open and not can_open:
+		# Shutting it is always allowed, so only a refused opening is a no. The
+		# drawer is its own sprite, so it can flinch on its own behalf.
+		DeniedFeedback.deny(self)
 		return
 
 	# Repeated requests for the current state should be silent.

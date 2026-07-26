@@ -2,6 +2,9 @@ extends Node2D
 
 signal started(level: int)
 signal stopped(forced: bool)
+## Reached for while the boss had it out of bounds. The spinner has no sprite of
+## its own - the office wires this to the one in the office view.
+signal denied
 
 const SOURCE_ID := &"fidget_spinner"
 ## Worth +2 / +3 / +4 at spin levels 1-3: more than the video, less than the
@@ -25,7 +28,12 @@ func _ready() -> void:
 	EventBus.boss_watch_ended.connect(_on_boss_watch_ended)
 
 func start() -> void:
-	if not is_interaction_enabled or not _can_activate_activity():
+	# Nothing is said when interaction is off: that is the tutorial or the day
+	# being over, not the boss telling the player no.
+	if not is_interaction_enabled:
+		return
+	if not _can_activate_activity():
+		denied.emit()
 		return
 
 	spin_level = clampi(spin_level + 1, 0, 3)

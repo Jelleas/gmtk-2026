@@ -3,6 +3,9 @@ extends Control
 
 signal buff_state_changed(is_active: bool)
 signal visual_state_changed(is_active: bool, fill_amount: float, is_ready: bool)
+## Reached for while the boss had it out of bounds. The cup the player sees is a
+## sprite in the office view, so the office wires this through to it.
+signal denied
 
 const SOURCE_ID := &"coffee"
 
@@ -42,7 +45,13 @@ func _process(_delta: float) -> void:
 func _gui_input(event: InputEvent) -> void:
 	if not (event is InputEventMouseButton) or event.button_index != MOUSE_BUTTON_LEFT or not event.pressed:
 		return
+
 	if not _can_activate():
+		# Only the boss's no gets a telling-off. An empty cup is the player's own
+		# doing and already says so by being empty.
+		if is_interaction_enabled and (is_boss_watching or is_punishment_active):
+			denied.emit()
+			accept_event()
 		return
 
 	activate()

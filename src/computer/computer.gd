@@ -94,7 +94,12 @@ func show_tab(tab: int) -> void:
 ## them by something else - the punishment dragging them back to the spreadsheet,
 ## the day ending - and stays silent.
 func _select_task(tab: int) -> void:
-	Sfx.play_click()
+	# show_tab() refuses the video tab while the boss is looking, and puts the
+	# taskbar buttons back the way they were. All that is missing is being told.
+	if tab == 1 and not can_activate_activity:
+		DeniedFeedback.deny(video_distraction_selector)
+	else:
+		Sfx.play_click()
 	show_tab(tab)
 
 
