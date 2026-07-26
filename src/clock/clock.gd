@@ -5,7 +5,7 @@ signal total_multiplier_changed(multiplier: float, cap: float)
 @onready var clock_viewport: SubViewport = $ClockViewport
 @onready var clock_surface: Polygon2D = $ClockSurface
 
-var active_multipliers: Dictionary[StringName, float] = {}
+var active_bonuses: Dictionary[StringName, float] = {}
 var is_punished := false
 
 ## The clock does not move until the day is started, so the tutorial can hold it
@@ -14,8 +14,26 @@ var is_running = false
 
 ## Under this much left on the clock, the day is on its last hour.
 const LAST_HOUR := 3600
-## Spinner x phone x video: 2 x 10 x 10.
-const MAX_TOTAL_MULTIPLIER := 200.0
+## Base 1 + video 2 + spinner 4 + phone 7, times the three-distraction combo bonus.
+const MAX_TOTAL_MULTIPLIER := 21.0
+
+## What the distractions are worth together, by how many are running. Distractions
+## add rather than multiply: multiplied, a second one would halve the round and a
+## third would end it in seconds, which leaves no room to tune between a good run
+## and a bad one. The combo bonus is what keeps juggling all three worth the risk
+## of being caught with all three.
+const COMBO_BONUS: Array[float] = [1.0, 1.0, 1.2, 1.5]
+
+## How long an untouched day takes in real time. Every distraction's bonus is
+## derived from this: a round lasts IDLE_DAY_SECONDS / average multiplier.
+const IDLE_DAY_SECONDS := 1800.0
+## The day drags towards home time, but never slower than this share of full
+## speed. Unfloored the curve bottoms out near 0.02 and the last hour alone eats
+## over half the round.
+const MIN_DRAG := 0.15
+## Scales the drag curve so an untouched day comes out at IDLE_DAY_SECONDS.
+## tools/balance_sim.gd measures it - re-run that after touching MIN_DRAG.
+const DRAG_SCALE := 0.86
 
 var realtime = 0.0
 var time = 10 * 3600
@@ -62,12 +80,12 @@ func _process(delta: float) -> void:
 func on_day_start():
 	is_running = true
 
-func on_activity_start(source_id: StringName, multiplier: float) -> void:
-	active_multipliers[source_id] = multiplier
+func on_activity_start(source_id: StringName, bonus: float) -> void:
+	active_bonuses[source_id] = bonus
 	_update_multiplier_display()
-	
+
 func on_activity_end(source_id: StringName) -> void:
-	active_multipliers.erase(source_id)
+	active_bonuses.erase(source_id)
 	_update_multiplier_display()
 
 func on_punishment_start(_activity_count: int) -> void:
@@ -84,17 +102,23 @@ func format_time(seconds: float) -> String:
 	return "%02d:%02d:%02d" % [hours, minutes, secs]
 
 func positive_multiplier() -> float:
-	var multiplier := 1.0
-	for multi in active_multipliers.values():
-		multiplier *= multi
-	return multiplier
+	var total := 1.0
+	var active := 0
+	# A punishment cuts a distraction off by zeroing its bonus rather than ending
+	# it, so those must not be counted towards the combo either.
+	for bonus in active_bonuses.values():
+		if bonus <= 0.0:
+			continue
+		total += bonus
+		active += 1
+	return total * COMBO_BONUS[mini(active, COMBO_BONUS.size() - 1)]
 
 func max_total_multiplier() -> float:
 	return MAX_TOTAL_MULTIPLIER
 
 func negative_multiplier() -> float:
 	var hours = 8 - (time / 3600)
-	return 1 / exp(hours / (10 - hours))
+	return DRAG_SCALE * maxf(MIN_DRAG, 1 / exp(hours / (10 - hours)))
 
 func _update_multiplier_display() -> void:
 	total_multiplier_changed.emit(positive_multiplier(), MAX_TOTAL_MULTIPLIER)

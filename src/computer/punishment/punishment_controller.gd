@@ -144,7 +144,7 @@ func _has_active_activities() -> bool:
 			return true
 	return false
 
-func _on_activity_started(source_id: StringName, _multiplier: float) -> void:
+func _on_activity_started(source_id: StringName, _bonus: float) -> void:
 	activity_states[source_id] = true
 
 func _on_activity_ended(source_id: StringName) -> void:

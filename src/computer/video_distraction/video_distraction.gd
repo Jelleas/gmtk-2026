@@ -8,7 +8,9 @@ const PLAYER_SIZE := Vector2(64.0, 52.0)
 const PLAYER_Y := 240.0
 const LANE_X := [-180.0, 0.0, 180.0]
 
-var time_multiplier := 10.0
+## The cheapest distraction on purpose: the runner drives itself, so once it is
+## open it costs the player nothing to leave running.
+var activity_bonus := 2.0
 
 @export var player_speed := 760.0
 @export var spawn_interval := 0.7
@@ -123,7 +125,7 @@ func start() -> void:
 	coins_collected = 0
 	hits = 0
 	hit_flash = 0.0
-	EventBus.activity_started.emit(SOURCE_ID, time_multiplier)
+	EventBus.activity_started.emit(SOURCE_ID, activity_bonus)
 	queue_redraw()
 
 

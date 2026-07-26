@@ -79,7 +79,7 @@ func deactivate() -> void:
 	else:
 		activity_check_timer.stop()
 
-func on_activity_start(source_id: StringName, _multiplier: float) -> void:
+func on_activity_start(source_id: StringName, _bonus: float) -> void:
 	activity_states[source_id] = true
 
 func on_activity_end(source_id: StringName) -> void:

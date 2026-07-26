@@ -18,7 +18,7 @@ func start_task() -> void:
 func check_completed() -> bool:
 	return started
 
-func _on_activity_started(id: StringName, _multiplier: float) -> void:
+func _on_activity_started(id: StringName, _bonus: float) -> void:
 	if id != source_id:
 		return
 	started = true

@@ -100,7 +100,7 @@ func _build_beats() -> void:
 	# 3. Where the good stuff is, and what it costs to reach.
 	_add_beat(
 		OpenDrawerTask.new(drawer),
-		"Drag the drawer open",
+		"Click the drawer to open it",
 	)
 	# 4. A distraction has an inside: it pays more the longer you commit.
 	_add_beat(

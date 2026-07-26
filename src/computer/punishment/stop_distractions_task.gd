@@ -24,7 +24,7 @@ func check_completed() -> bool:
 			return false
 	return true
 
-func _on_activity_started(source_id: StringName, _multiplier: float) -> void:
+func _on_activity_started(source_id: StringName, _bonus: float) -> void:
 	activity_states[source_id] = true
 	notify_changed()
 

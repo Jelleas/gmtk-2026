@@ -1,9 +1,12 @@
 extends Control
 
 const SOURCE_ID := &"dating_app"
-const ACTIVITY_MULTIPLIER := 5.0
-const SWIPE_MULTIPLIER_INCREASE := 0.5
-const MAX_ACTIVITY_MULTIPLIER := 10.0
+## The biggest payout of the three, because it costs the most to run: the drawer
+## has to be open, a swipe is needed every SWIPE_RESET_DELAY to hold the bonus up,
+## and dragging the drawer shut is the slowest way to go clean when the boss rises.
+const ACTIVITY_BONUS := 4.0
+const SWIPE_BONUS_INCREASE := 0.5
+const MAX_ACTIVITY_BONUS := 7.0
 const SWIPE_RESET_DELAY := 3.0
 const CARDS_VISIBLE_PROGRESS := 0.92
 
@@ -17,7 +20,7 @@ var drawer: OfficeDrawer
 var is_activity_active := false
 var is_boss_watching := false
 var is_punishment_active := false
-var current_activity_multiplier := ACTIVITY_MULTIPLIER
+var current_activity_bonus := ACTIVITY_BONUS
 var swipe_reset_timer: Timer
 
 func _ready() -> void:
@@ -36,7 +39,7 @@ func _ready() -> void:
 	swipe_reset_timer = Timer.new()
 	swipe_reset_timer.one_shot = true
 	swipe_reset_timer.wait_time = SWIPE_RESET_DELAY
-	swipe_reset_timer.timeout.connect(_reset_swipe_multiplier)
+	swipe_reset_timer.timeout.connect(_reset_swipe_bonus)
 	add_child(swipe_reset_timer)
 	phone_surface.hide()
 	_update_phone_access()
@@ -168,7 +171,7 @@ func _start_activity() -> void:
 		return
 
 	is_activity_active = true
-	EventBus.activity_started.emit(SOURCE_ID, current_activity_multiplier)
+	EventBus.activity_started.emit(SOURCE_ID, current_activity_bonus)
 
 func _stop_activity() -> void:
 	if not is_activity_active:
@@ -176,7 +179,7 @@ func _stop_activity() -> void:
 
 	is_activity_active = false
 	swipe_reset_timer.stop()
-	current_activity_multiplier = ACTIVITY_MULTIPLIER
+	current_activity_bonus = ACTIVITY_BONUS
 	EventBus.activity_ended.emit(SOURCE_ID)
 
 
@@ -184,31 +187,37 @@ func _on_profile_swiped() -> void:
 	if not is_activity_active or not _can_activate_activity():
 		return
 
-	current_activity_multiplier = minf(
-		MAX_ACTIVITY_MULTIPLIER,
-		current_activity_multiplier + SWIPE_MULTIPLIER_INCREASE,
+	current_activity_bonus = minf(
+		MAX_ACTIVITY_BONUS,
+		current_activity_bonus + SWIPE_BONUS_INCREASE,
 	)
 	swipe_reset_timer.start()
-	EventBus.activity_started.emit(SOURCE_ID, current_activity_multiplier)
+	EventBus.activity_started.emit(SOURCE_ID, current_activity_bonus)
 
 
-func _reset_swipe_multiplier() -> void:
-	current_activity_multiplier = ACTIVITY_MULTIPLIER
+func _reset_swipe_bonus() -> void:
+	current_activity_bonus = ACTIVITY_BONUS
 	if is_activity_active and _can_activate_activity():
-		EventBus.activity_started.emit(SOURCE_ID, current_activity_multiplier)
+		EventBus.activity_started.emit(SOURCE_ID, current_activity_bonus)
 
 
 func _on_punishment_started(_activity_count: int) -> void:
 	is_punishment_active = true
-	current_activity_multiplier = 0.0
+	current_activity_bonus = 0.0
 	swipe_reset_timer.stop()
 	if is_activity_active:
-		EventBus.activity_started.emit(SOURCE_ID, current_activity_multiplier)
+		EventBus.activity_started.emit(SOURCE_ID, current_activity_bonus)
 	_update_phone_access()
 
 
 func _on_punishment_ended() -> void:
 	is_punishment_active = false
+	# The punishment zeroed the bonus on an activity that is still flagged active,
+	# so _start_activity() will not run again to put it back. Without this the
+	# phone stays worth nothing until the drawer is closed and reopened.
+	current_activity_bonus = ACTIVITY_BONUS
+	if is_activity_active:
+		EventBus.activity_started.emit(SOURCE_ID, current_activity_bonus)
 	_update_phone_access()
 
 
@@ -227,7 +236,7 @@ func _can_open_phone() -> bool:
 
 
 func _can_activate_activity() -> bool:
-	return not is_punishment_active
+	return not is_boss_watching and not is_punishment_active
 
 
 func _update_phone_access() -> void:
