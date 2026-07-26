@@ -37,11 +37,21 @@ const DRAG_SCALE := 0.86
 
 ## What the clock face does once the day is on its last hour, which is a quarter
 ## of the round and wants to read as a moment rather than a stall.
-const LAST_HOUR_TINT := Color(1.0, 0.45, 0.4, 1.0)
-const LAST_HOUR_PULSE_SECONDS := 0.9
+##
+## The digits warm up and back down rather than being tinted red: they are a red
+## seven-segment display already sitting at full saturation, so there is nowhere
+## redder for them to go. Modulating the face is worse than useless for the same
+## reason - modulate multiplies, and against (1, 0.1, 0.1) it can only take the
+## two channels that are already at nothing.
+##
+## Only far enough up to read as an ember rather than a warning light. Taken to
+## white the clock wins the screen, and the last hour is meant to be noticed out
+## of the corner of an eye while the player is busy elsewhere.
+const LAST_HOUR_GLOW := Color(1.0, 0.35, 0.26, 1.0)
+const LAST_HOUR_PULSE_SECONDS := 1.5
 
 var realtime = 0.0
-var time = 10 * 3600
+var time = 1.01 * 3600
 var last_hour_announced := false
 
 func _ready() -> void:
@@ -136,12 +146,18 @@ func negative_multiplier() -> float:
 func _update_multiplier_display() -> void:
 	total_multiplier_changed.emit(positive_multiplier(), MAX_TOTAL_MULTIPLIER, active_bonus_count())
 
-## Home time is close enough to see. The face keeps pulsing for the rest of the
+## Home time is close enough to see. The digits keep pulsing for the rest of the
 ## day - this is the stretch the drag curve makes a quarter of the round, so it
 ## should look like it was meant.
 func on_last_hour_start() -> void:
+	# Duplicated because a scene's sub-resources are shared by every instance of
+	# it, and this writes into the settings for as long as the day lasts.
+	var settings: LabelSettings = %TimeLabel.label_settings.duplicate()
+	%TimeLabel.label_settings = settings
+	var resting := settings.font_color
+
 	var pulse := create_tween().set_loops()
-	pulse.tween_property(clock_surface, "modulate", LAST_HOUR_TINT, LAST_HOUR_PULSE_SECONDS) \
+	pulse.tween_property(settings, "font_color", LAST_HOUR_GLOW, LAST_HOUR_PULSE_SECONDS) \
 		.set_trans(Tween.TRANS_SINE)
-	pulse.tween_property(clock_surface, "modulate", Color.WHITE, LAST_HOUR_PULSE_SECONDS) \
+	pulse.tween_property(settings, "font_color", resting, LAST_HOUR_PULSE_SECONDS) \
 		.set_trans(Tween.TRANS_SINE)
