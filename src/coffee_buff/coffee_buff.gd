@@ -18,12 +18,18 @@ const SOURCE_ID := &"coffee"
 var is_active := false
 var is_interaction_enabled := false
 var is_refill_pending := false
+var is_boss_watching := false
+var is_punishment_active := false
 
 
 func _ready() -> void:
 	active_timer.timeout.connect(_on_active_timer_timeout)
 	cooldown_timer.timeout.connect(_on_cooldown_timer_timeout)
 	refill_delay_timer.timeout.connect(_on_refill_delay_timer_timeout)
+	EventBus.boss_watch_started.connect(_on_boss_watch_started)
+	EventBus.boss_watch_ended.connect(_on_boss_watch_ended)
+	EventBus.punishment_started.connect(_on_punishment_started)
+	EventBus.punishment_ended.connect(_on_punishment_ended)
 	tooltip_text = "Drink coffee: %.1fx time for %d seconds" % [multiplier, int(duration)]
 	_emit_visual_state()
 
@@ -85,6 +91,26 @@ func _on_cooldown_timer_timeout() -> void:
 	_emit_visual_state()
 
 
+func _on_boss_watch_started() -> void:
+	is_boss_watching = true
+	_emit_visual_state()
+
+
+func _on_boss_watch_ended() -> void:
+	is_boss_watching = false
+	_emit_visual_state()
+
+
+func _on_punishment_started(_activity_count: int) -> void:
+	is_punishment_active = true
+	_emit_visual_state()
+
+
+func _on_punishment_ended() -> void:
+	is_punishment_active = false
+	_emit_visual_state()
+
+
 func _end_buff() -> void:
 	if not is_active:
 		return
@@ -95,7 +121,11 @@ func _end_buff() -> void:
 
 
 func _can_activate() -> bool:
-	return is_interaction_enabled and not is_active and not is_refill_pending and cooldown_timer.is_stopped()
+	return is_interaction_enabled and not is_boss_watching and not is_punishment_active and _is_full()
+
+
+func _is_full() -> bool:
+	return not is_active and not is_refill_pending and cooldown_timer.is_stopped()
 
 
 func refresh_visual_state() -> void:
@@ -110,4 +140,4 @@ func _emit_visual_state() -> void:
 		fill_amount = 0.0
 	elif not cooldown_timer.is_stopped():
 		fill_amount = 1.0 - cooldown_timer.time_left / maxf(cooldown, 0.001)
-	visual_state_changed.emit(is_active, clampf(fill_amount, 0.0, 1.0), _can_activate())
+	visual_state_changed.emit(is_active, clampf(fill_amount, 0.0, 1.0), _is_full())

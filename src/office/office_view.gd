@@ -21,6 +21,7 @@ const FIDGET_SILENT_DB := -40.0
 @onready var fidget: AnimatedSprite2D = $Fidget
 @onready var phone: AnimatedSprite2D = $Phone
 @onready var cup: Sprite2D = $Cup
+@onready var coffee_steam: Array[GPUParticles2D] = [$CoffeeSteamLeft, $CoffeeSteam, $CoffeeSteamRight]
 
 var fidget_slow_down_tween: Tween
 var fidget_player: AudioStreamPlayer
@@ -32,6 +33,8 @@ func _ready() -> void:
 	phone.frame = 0
 	phone.stop()
 	phone.hide()
+	for steam in coffee_steam:
+		steam.emitting = false
 	set_coffee_state(false, 1.0, false)
 	_on_drawer_progress_changed(drawer.open_progress)
 
@@ -92,6 +95,8 @@ func highlight_fidget_spin_end():
 func set_coffee_state(is_active: bool, fill_amount: float, is_ready: bool) -> void:
 	var material := cup.material as ShaderMaterial
 	cup.texture = FULL_CUP_TEXTURE if is_ready else EMPTY_CUP_TEXTURE
+	for steam in coffee_steam:
+		steam.emitting = is_ready
 	material.set_shader_parameter(&"fill_amount", fill_amount)
 
 	if is_active:
