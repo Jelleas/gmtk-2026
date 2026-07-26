@@ -70,7 +70,7 @@ offset_bottom = 655.99994
 scale = Vector2(1.2194625, 1.0871345)
 drawer_path = NodePath("../OfficeView/Drawer")
 
-[node name="PhoneSurface" parent="Phone" index="2" unique_id=762875576]
+[node name="PhoneSurface" parent="Phone" index="1" unique_id=762875576]
 texture_filter = 0
 position = Vector2(0.029547663, 0.89883655)
 scale = Vector2(0.2835378, 0.31342578)

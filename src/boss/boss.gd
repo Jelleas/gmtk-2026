@@ -11,7 +11,7 @@ enum State { RISING, VISIBLE, RETREATING }
 @export var max_move_interval := 20.0
 @export var move_duration := 0.5
 @export var rise_distance := 256.0
-@export var activity_check_delay := 5.0
+@export var activity_check_delay := 4.0
 @export var retreat_duration := 0.5
 
 @onready var boss_face: Sprite2D = $BossFace
