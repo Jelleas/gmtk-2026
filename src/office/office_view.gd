@@ -2,6 +2,10 @@ class_name OfficeView
 extends Node2D
 
 const FIDGET_SOUND := preload("res://resources/audio/fidget.mp3")
+const EMPTY_CUP_TEXTURE := preload("res://resources/images/cup.png")
+const FULL_CUP_TEXTURE := preload("res://resources/images/cup-full.png")
+const MULTIPLIER_GOLD := Color(0.92941177, 0.79607844, 0.26666668, 1.0)
+const REFILL_BROWN := Color(0.78, 0.36, 0.10, 1.0)
 
 ## What the spin sound does between a level 1 spin and a level 3 one. The pitch
 ## range is deliberately narrow - much past this and the loop reads as a
@@ -16,6 +20,7 @@ const FIDGET_SILENT_DB := -40.0
 @onready var drawer: OfficeDrawer = $Drawer
 @onready var fidget: AnimatedSprite2D = $Fidget
 @onready var phone: AnimatedSprite2D = $Phone
+@onready var cup: Sprite2D = $Cup
 
 var fidget_slow_down_tween: Tween
 var fidget_player: AudioStreamPlayer
@@ -27,6 +32,7 @@ func _ready() -> void:
 	phone.frame = 0
 	phone.stop()
 	phone.hide()
+	set_coffee_state(false, 1.0, false)
 	_on_drawer_progress_changed(drawer.open_progress)
 
 	# The loop runs for as long as the spinner does, so it gets a player of its
@@ -81,6 +87,22 @@ func highlight_fidget_spin_start(color: Color):
 
 func highlight_fidget_spin_end():
 	OutlineHighlight.hide_outline(fidget)
+
+
+func set_coffee_state(is_active: bool, fill_amount: float, is_ready: bool) -> void:
+	var material := cup.material as ShaderMaterial
+	cup.texture = FULL_CUP_TEXTURE if is_ready else EMPTY_CUP_TEXTURE
+	material.set_shader_parameter(&"fill_amount", fill_amount)
+
+	if is_active:
+		material.set_shader_parameter(&"outline_color", MULTIPLIER_GOLD)
+		material.set_shader_parameter(&"outline_width", 5.0)
+	elif is_ready:
+		material.set_shader_parameter(&"outline_color", MULTIPLIER_GOLD)
+		material.set_shader_parameter(&"outline_width", 3.0)
+	else:
+		material.set_shader_parameter(&"outline_color", REFILL_BROWN)
+		material.set_shader_parameter(&"outline_width", 3.0 if fill_amount < 1.0 else 0.0)
 
 func _on_drawer_progress_changed(progress: float) -> void:
 	if progress <= 0.0:

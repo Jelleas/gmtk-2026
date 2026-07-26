@@ -12,6 +12,7 @@
 [ext_resource type="Script" uid="uid://estm6ana6hbr" path="res://src/computer/punishment/punishment_controller.gd" id="10_punishment"]
 [ext_resource type="Script" uid="uid://bvhrbm6njw3qp" path="res://src/office/camera.gd" id="11_a7e1d"]
 [ext_resource type="Script" uid="uid://c2tegairt0p5y" path="res://src/tutorial/tutorial_controller.gd" id="11_tutorial"]
+[ext_resource type="PackedScene" path="res://src/coffee_buff/coffee_buff.tscn" id="12_coffee_buff"]
 
 [node name="Office" type="Node2D" unique_id=1406735297]
 script = ExtResource("1_6infj")
@@ -31,6 +32,14 @@ polygon = PackedVector2Array(-28, -20, 222, -23, 215, 70, -32, 65)
 [node name="MultiplierMeter" parent="." unique_id=1559379934 instance=ExtResource("5_multiplier_meter")]
 position = Vector2(927, 262)
 clock_path = NodePath("../Clock")
+coffee_buff_path = NodePath("../CoffeeBuff")
+
+[node name="CoffeeBuff" parent="." unique_id=100000003 instance=ExtResource("12_coffee_buff")]
+offset_left = 958.0
+offset_top = 425.0
+offset_right = 1058.0
+offset_bottom = 530.0
+mouse_default_cursor_shape = 0
 
 [node name="Boss" parent="." unique_id=821479703 instance=ExtResource("3_jfxul")]
 z_index = -1
@@ -61,7 +70,7 @@ offset_bottom = 655.99994
 scale = Vector2(1.2194625, 1.0871345)
 drawer_path = NodePath("../OfficeView/Drawer")
 
-[node name="PhoneSurface" parent="Phone" index="1" unique_id=762875576]
+[node name="PhoneSurface" parent="Phone" index="2" unique_id=762875576]
 texture_filter = 0
 position = Vector2(0.029547663, 0.89883655)
 scale = Vector2(0.2835378, 0.31342578)

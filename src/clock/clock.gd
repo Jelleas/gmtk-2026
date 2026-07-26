@@ -6,6 +6,7 @@ signal total_multiplier_changed(multiplier: float, cap: float, active_count: int
 @onready var clock_surface: Polygon2D = $ClockSurface
 
 var active_bonuses: Dictionary[StringName, float] = {}
+var active_buffs: Dictionary[StringName, float] = {}
 var is_punished := false
 
 ## The clock does not move until the day is started, so the tutorial can hold it
@@ -51,7 +52,7 @@ const LAST_HOUR_GLOW := Color(1.0, 0.35, 0.26, 1.0)
 const LAST_HOUR_PULSE_SECONDS := 1.5
 
 var realtime = 0.0
-var time = 1.01 * 3600
+var time = 10 * 3600
 var last_hour_announced := false
 
 func _ready() -> void:
@@ -59,6 +60,8 @@ func _ready() -> void:
 	EventBus.day_started.connect(on_day_start)
 	EventBus.activity_started.connect(on_activity_start)
 	EventBus.activity_ended.connect(on_activity_end)
+	EventBus.buff_started.connect(on_buff_start)
+	EventBus.buff_ended.connect(on_buff_end)
 	EventBus.punishment_started.connect(on_punishment_start)
 	EventBus.punishment_ended.connect(on_punishment_end)
 	EventBus.last_hour_started.connect(on_last_hour_start)
@@ -104,6 +107,14 @@ func on_activity_end(source_id: StringName) -> void:
 	active_bonuses.erase(source_id)
 	_update_multiplier_display()
 
+func on_buff_start(source_id: StringName, multiplier: float) -> void:
+	active_buffs[source_id] = multiplier
+	_update_multiplier_display()
+
+func on_buff_end(source_id: StringName) -> void:
+	active_buffs.erase(source_id)
+	_update_multiplier_display()
+
 func on_punishment_start(_activity_count: int) -> void:
 	is_punished = true
 
@@ -122,10 +133,17 @@ func positive_multiplier() -> float:
 	for bonus in active_bonuses.values():
 		if bonus > 0.0:
 			total += bonus
-	return total * combo_bonus()
+	total *= combo_bonus()
+
+	# Buffs multiply what the distractions have already added up to, rather than
+	# joining the sum: a coffee is worth more the better the day is already going.
+	for multiplier in active_buffs.values():
+		total *= multiplier
+	return total
 
 ## How many distractions are really running. A punishment cuts one off by zeroing
 ## its bonus rather than ending it, and one worth nothing is not part of a combo.
+## Buffs are not distractions and do not count towards it.
 func active_bonus_count() -> int:
 	var active := 0
 	for bonus in active_bonuses.values():

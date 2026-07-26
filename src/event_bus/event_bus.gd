@@ -4,6 +4,10 @@ extends Node
 signal activity_started(source_id: StringName, bonus: float)
 signal activity_ended(source_id: StringName)
 
+## Time effects that accelerate the day without making the player catchable.
+signal buff_started(source_id: StringName, multiplier: float)
+signal buff_ended(source_id: StringName)
+
 signal day_started()
 ## The clock has dropped under an hour, where it starts to crawl.
 signal last_hour_started()

@@ -13,6 +13,7 @@
 [ext_resource type="Script" uid="uid://d32mq7typ1jgv" path="res://src/office/office_view.gd" id="9_view"]
 [ext_resource type="Texture2D" uid="uid://dkjuigxb1dnmg" path="res://resources/images/mouse-28mm.png" id="10_ovhle"]
 [ext_resource type="Texture2D" uid="uid://cgqknrbnn81r7" path="res://resources/images/cup.png" id="13_s6gf3"]
+[ext_resource type="Material" path="res://resources/shaders/coffee_cup_material.tres" id="14_coffee_cup"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_s6gf3"]
 atlas = ExtResource("4_ovhle")
@@ -246,5 +247,6 @@ texture = ExtResource("10_ovhle")
 offset = Vector2(640, 360)
 
 [node name="Cup" type="Sprite2D" parent="." unique_id=1030177200]
+material = ExtResource("14_coffee_cup")
 texture = ExtResource("13_s6gf3")
 offset = Vector2(640, 360)
