@@ -90,7 +90,11 @@ func show_tab(tab: int) -> void:
 	_on_taskbar_tab_changed(tab)
 
 
+## The taskbar buttons the player presses. show_tab() is the same move made for
+## them by something else - the punishment dragging them back to the spreadsheet,
+## the day ending - and stays silent.
 func _select_task(tab: int) -> void:
+	Sfx.play_click()
 	show_tab(tab)
 
 

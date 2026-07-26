@@ -12,8 +12,10 @@ const CELL_FONT_SIZE := 10
 const MIN_CELL_FONT_SIZE := 6
 const HEADER_COLOR := Color(0.75, 0.75, 0.75, 1)
 const HEADER_BORDER_COLOR := Color(0.4, 0.4, 0.4, 1)
+const TYPING_SOUND := preload("res://resources/audio/typing.mp3")
 
 var cell_edits: Array = []
+var typing_sound: LoopSound
 var top_bar_label: Label
 var top_bar_background: ColorRect
 var status_message := ""
@@ -28,6 +30,13 @@ var cell_font_size := CELL_FONT_SIZE
 func _ready() -> void:
 	_build_top_bar()
 	_build_headers()
+
+	# Only the player's own keystrokes reach this: set_cell_text() assigns
+	# LineEdit.text directly, which does not emit text_changed, so a task laying
+	# out its source data stays silent.
+	typing_sound = LoopSound.new()
+	add_child(typing_sound)
+	typing_sound.setup(TYPING_SOUND)
 
 	cell_edits.resize(ROWS)
 
@@ -250,6 +259,7 @@ func _on_cell_focus_entered(row: int, col: int) -> void:
 	_update_top_bar()
 
 func _on_cell_text_changed(_new_text: String, row: int, col: int) -> void:
+	typing_sound.bump()
 	if row == current_row and col == current_col:
 		_update_top_bar()
 	cell_text_changed.emit(row, col, _new_text)

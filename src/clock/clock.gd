@@ -1,11 +1,12 @@
 extends Node2D
 
-signal total_multiplier_changed(multiplier: float, cap: float)
+signal total_multiplier_changed(multiplier: float, cap: float, active_count: int)
 
 @onready var clock_viewport: SubViewport = $ClockViewport
 @onready var clock_surface: Polygon2D = $ClockSurface
 
 var active_bonuses: Dictionary[StringName, float] = {}
+var active_buffs: Dictionary[StringName, float] = {}
 var is_punished := false
 
 ## The clock does not move until the day is started, so the tutorial can hold it
@@ -35,6 +36,21 @@ const MIN_DRAG := 0.15
 ## tools/balance_sim.gd measures it - re-run that after touching MIN_DRAG.
 const DRAG_SCALE := 0.86
 
+## What the clock face does once the day is on its last hour, which is a quarter
+## of the round and wants to read as a moment rather than a stall.
+##
+## The digits warm up and back down rather than being tinted red: they are a red
+## seven-segment display already sitting at full saturation, so there is nowhere
+## redder for them to go. Modulating the face is worse than useless for the same
+## reason - modulate multiplies, and against (1, 0.1, 0.1) it can only take the
+## two channels that are already at nothing.
+##
+## Only far enough up to read as an ember rather than a warning light. Taken to
+## white the clock wins the screen, and the last hour is meant to be noticed out
+## of the corner of an eye while the player is busy elsewhere.
+const LAST_HOUR_GLOW := Color(1.0, 0.35, 0.26, 1.0)
+const LAST_HOUR_PULSE_SECONDS := 1.5
+
 var realtime = 0.0
 var time = 10 * 3600
 var last_hour_announced := false
@@ -44,9 +60,12 @@ func _ready() -> void:
 	EventBus.day_started.connect(on_day_start)
 	EventBus.activity_started.connect(on_activity_start)
 	EventBus.activity_ended.connect(on_activity_end)
+	EventBus.buff_started.connect(on_buff_start)
+	EventBus.buff_ended.connect(on_buff_end)
 	EventBus.punishment_started.connect(on_punishment_start)
 	EventBus.punishment_ended.connect(on_punishment_end)
-	
+	EventBus.last_hour_started.connect(on_last_hour_start)
+
 	%TimeLabel.text = format_time(time)
 	_update_multiplier_display()
 
@@ -88,6 +107,14 @@ func on_activity_end(source_id: StringName) -> void:
 	active_bonuses.erase(source_id)
 	_update_multiplier_display()
 
+func on_buff_start(source_id: StringName, multiplier: float) -> void:
+	active_buffs[source_id] = multiplier
+	_update_multiplier_display()
+
+func on_buff_end(source_id: StringName) -> void:
+	active_buffs.erase(source_id)
+	_update_multiplier_display()
+
 func on_punishment_start(_activity_count: int) -> void:
 	is_punished = true
 
@@ -103,15 +130,29 @@ func format_time(seconds: float) -> String:
 
 func positive_multiplier() -> float:
 	var total := 1.0
-	var active := 0
-	# A punishment cuts a distraction off by zeroing its bonus rather than ending
-	# it, so those must not be counted towards the combo either.
 	for bonus in active_bonuses.values():
-		if bonus <= 0.0:
-			continue
-		total += bonus
-		active += 1
-	return total * COMBO_BONUS[mini(active, COMBO_BONUS.size() - 1)]
+		if bonus > 0.0:
+			total += bonus
+	total *= combo_bonus()
+
+	# Buffs multiply what the distractions have already added up to, rather than
+	# joining the sum: a coffee is worth more the better the day is already going.
+	for multiplier in active_buffs.values():
+		total *= multiplier
+	return total
+
+## How many distractions are really running. A punishment cuts one off by zeroing
+## its bonus rather than ending it, and one worth nothing is not part of a combo.
+## Buffs are not distractions and do not count towards it.
+func active_bonus_count() -> int:
+	var active := 0
+	for bonus in active_bonuses.values():
+		if bonus > 0.0:
+			active += 1
+	return active
+
+func combo_bonus() -> float:
+	return COMBO_BONUS[mini(active_bonus_count(), COMBO_BONUS.size() - 1)]
 
 func max_total_multiplier() -> float:
 	return MAX_TOTAL_MULTIPLIER
@@ -121,4 +162,20 @@ func negative_multiplier() -> float:
 	return DRAG_SCALE * maxf(MIN_DRAG, 1 / exp(hours / (10 - hours)))
 
 func _update_multiplier_display() -> void:
-	total_multiplier_changed.emit(positive_multiplier(), MAX_TOTAL_MULTIPLIER)
+	total_multiplier_changed.emit(positive_multiplier(), MAX_TOTAL_MULTIPLIER, active_bonus_count())
+
+## Home time is close enough to see. The digits keep pulsing for the rest of the
+## day - this is the stretch the drag curve makes a quarter of the round, so it
+## should look like it was meant.
+func on_last_hour_start() -> void:
+	# Duplicated because a scene's sub-resources are shared by every instance of
+	# it, and this writes into the settings for as long as the day lasts.
+	var settings: LabelSettings = %TimeLabel.label_settings.duplicate()
+	%TimeLabel.label_settings = settings
+	var resting := settings.font_color
+
+	var pulse := create_tween().set_loops()
+	pulse.tween_property(settings, "font_color", LAST_HOUR_GLOW, LAST_HOUR_PULSE_SECONDS) \
+		.set_trans(Tween.TRANS_SINE)
+	pulse.tween_property(settings, "font_color", resting, LAST_HOUR_PULSE_SECONDS) \
+		.set_trans(Tween.TRANS_SINE)

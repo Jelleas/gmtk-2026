@@ -7,6 +7,12 @@ extends Node
 const DRAWER_OPEN := preload("res://resources/audio/drawer1.mp3")
 const DRAWER_CLOSE := preload("res://resources/audio/drawer2.mp3")
 
+## The mouse, for the things the player clicks on the computer rather than on the
+## desk. The desk props have their own sounds and do not want this on top.
+const MOUSE_CLICK := preload("res://resources/audio/mouse-click.mp3")
+const MOUSE_CLICK_DB := -8.0
+const MOUSE_CLICK_PITCH := Vector2(0.94, 1.06)
+
 ## The boss thinking it over on the way up. Picked at random so a long shift
 ## doesn't turn into the same syllable over and over.
 const BOSS_INVESTIGATE: Array[AudioStream] = [
@@ -56,6 +62,11 @@ func play_random(streams: Array[AudioStream], volume_db := 0.0, pitch := 1.0) ->
 	_last_choice[streams] = index
 
 	play(streams[index], volume_db, pitch)
+
+## The click, at the volume and with the spread of pitch it wants everywhere it
+## is used, so no call site has to remember them.
+func play_click() -> void:
+	play(MOUSE_CLICK, MOUSE_CLICK_DB, randf_range(MOUSE_CLICK_PITCH.x, MOUSE_CLICK_PITCH.y))
 
 func _free_player() -> AudioStreamPlayer:
 	for player in _players:
