@@ -2,6 +2,7 @@
 
 [ext_resource type="Texture2D" uid="uid://ctonnthnl437k" path="res://resources/images/cubicle-28mm.png" id="1_4toum"]
 [ext_resource type="Texture2D" uid="uid://cj40lc5tqod7i" path="res://resources/images/desk-28mm.png" id="2_8664f"]
+[ext_resource type="Texture2D" uid="uid://dg37qpchtefrg" path="res://resources/images/backdrop.png" id="2_eahjm"]
 [ext_resource type="Texture2D" uid="uid://bjhrtd4552dsc" path="res://resources/images/screen-28mm.png" id="3_lefqp"]
 [ext_resource type="Texture2D" uid="uid://cj3nogtr4c6c0" path="res://resources/images/drawer-28mm.png" id="4_ovhle"]
 [ext_resource type="Script" uid="uid://egprfxwnyopd" path="res://src/office/office_drawer.gd" id="6_drawer"]
@@ -194,6 +195,11 @@ animations = [{
 
 [node name="OfficeView" type="Node2D" unique_id=1646300841]
 script = ExtResource("9_view")
+
+[node name="Backdrop" type="Sprite2D" parent="." unique_id=713165776]
+z_index = -100
+texture = ExtResource("2_eahjm")
+offset = Vector2(640, 360)
 
 [node name="Cubicle" type="Sprite2D" parent="." unique_id=1034416873]
 texture = ExtResource("1_4toum")
