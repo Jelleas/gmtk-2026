@@ -16,6 +16,7 @@ const FIDGET_SILENT_DB := -40.0
 @onready var drawer: OfficeDrawer = $Drawer
 @onready var fidget: AnimatedSprite2D = $Fidget
 @onready var phone: AnimatedSprite2D = $Phone
+@onready var cup: Sprite2D = $Cup
 
 var fidget_slow_down_tween: Tween
 var fidget_player: AudioStreamPlayer
@@ -27,6 +28,7 @@ func _ready() -> void:
 	phone.frame = 0
 	phone.stop()
 	phone.hide()
+	set_coffee_state(false, 1.0, false)
 	_on_drawer_progress_changed(drawer.open_progress)
 
 	# The loop runs for as long as the spinner does, so it gets a player of its
@@ -81,6 +83,26 @@ func highlight_fidget_spin_start(color: Color):
 
 func highlight_fidget_spin_end():
 	OutlineHighlight.hide_outline(fidget)
+
+
+func set_coffee_state(is_active: bool, fill_amount: float, is_ready: bool) -> void:
+	var material := cup.material as ShaderMaterial
+	material.set_shader_parameter(&"fill_amount", fill_amount)
+
+	if is_active:
+		material.set_shader_parameter(&"outline_color", Color(1.0, 0.66, 0.2, 1.0))
+		material.set_shader_parameter(&"outline_width", 5.0)
+		material.set_shader_parameter(&"active_glow", 1.0)
+		material.set_shader_parameter(&"dim_amount", 0.0)
+	elif is_ready:
+		material.set_shader_parameter(&"outline_color", Color(1.0, 0.66, 0.2, 1.0))
+		material.set_shader_parameter(&"outline_width", 3.0)
+		material.set_shader_parameter(&"active_glow", 0.0)
+		material.set_shader_parameter(&"dim_amount", 0.0)
+	else:
+		material.set_shader_parameter(&"outline_width", 0.0)
+		material.set_shader_parameter(&"active_glow", 0.0)
+		material.set_shader_parameter(&"dim_amount", 0.4)
 
 func _on_drawer_progress_changed(progress: float) -> void:
 	if progress <= 0.0:

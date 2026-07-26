@@ -18,10 +18,28 @@ corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_coffee_glow"]
+bg_color = Color(0, 0, 0, 0)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(1, 0.72, 0.26, 0.9)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
 [node name="MultiplierMeter" type="Node2D" unique_id=1786375230]
 script = ExtResource("1_script")
 
 [node name="Display" type="Node2D" parent="." unique_id=1958569892]
+
+[node name="CoffeeGlow" type="Panel" parent="Display" unique_id=100000001]
+unique_name_in_owner = true
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_coffee_glow")
+visible = false
 
 [node name="PanelContainer" type="PanelContainer" parent="Display" unique_id=46622246]
 offset_right = 40.0
@@ -75,3 +93,13 @@ mouse_filter = 2
 theme_override_styles/background = SubResource("StyleBoxFlat_progress_background")
 theme_override_styles/fill = SubResource("StyleBoxFlat_fill")
 show_percentage = false
+
+[node name="CoffeeIndicator" type="Label" parent="Display/PanelContainer/MarginContainer/VBoxContainer" unique_id=100000002]
+unique_name_in_owner = true
+layout_mode = 2
+visible = false
+theme_override_colors/font_color = Color(1, 0.72, 0.26, 1)
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 13
+text = "COFFEE BOOST"
+horizontal_alignment = 1

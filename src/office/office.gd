@@ -35,7 +35,10 @@ func _ready():
 	EventBus.day_ended.connect(_on_day_ended)
 	$FidgetSpinner.started.connect($OfficeView.play_fidget_spin)
 	$FidgetSpinner.stopped.connect($OfficeView.stop_fidget_spin)
+	$CoffeeBuff.visual_state_changed.connect($OfficeView.set_coffee_state)
+	$CoffeeBuff.refresh_visual_state()
 	$FidgetSpinner.set_interaction_enabled(false)
+	$CoffeeBuff.set_interaction_enabled(false)
 	$OfficeView.drawer.can_open = false
 	computer.login_authenticated.connect(start_day)
 
@@ -50,6 +53,7 @@ func start_day() -> void:
 		return
 	has_started = true
 	$FidgetSpinner.set_interaction_enabled(true)
+	$CoffeeBuff.set_interaction_enabled(true)
 	$OfficeView.drawer.can_open = true
 
 	if run_tutorial:
@@ -85,6 +89,8 @@ func _on_day_ended(_realtime: float) -> void:
 	boss.deactivate()
 	$FidgetSpinner.stop(true)
 	$FidgetSpinner.set_interaction_enabled(false)
+	$CoffeeBuff.reset()
+	$CoffeeBuff.set_interaction_enabled(false)
 	# Closing the drawer takes the phone with it, through the signals the phone
 	# is already listening to.
 	$OfficeView.drawer.set_open(false)

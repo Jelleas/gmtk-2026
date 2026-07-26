@@ -6,6 +6,7 @@ signal total_multiplier_changed(multiplier: float, cap: float)
 @onready var clock_surface: Polygon2D = $ClockSurface
 
 var active_bonuses: Dictionary[StringName, float] = {}
+var active_buffs: Dictionary[StringName, float] = {}
 var is_punished := false
 
 ## The clock does not move until the day is started, so the tutorial can hold it
@@ -44,6 +45,8 @@ func _ready() -> void:
 	EventBus.day_started.connect(on_day_start)
 	EventBus.activity_started.connect(on_activity_start)
 	EventBus.activity_ended.connect(on_activity_end)
+	EventBus.buff_started.connect(on_buff_start)
+	EventBus.buff_ended.connect(on_buff_end)
 	EventBus.punishment_started.connect(on_punishment_start)
 	EventBus.punishment_ended.connect(on_punishment_end)
 	
@@ -86,6 +89,13 @@ func on_activity_start(source_id: StringName, bonus: float) -> void:
 
 func on_activity_end(source_id: StringName) -> void:
 	active_bonuses.erase(source_id)
+
+func on_buff_start(source_id: StringName, multiplier: float) -> void:
+	active_buffs[source_id] = multiplier
+	_update_multiplier_display()
+
+func on_buff_end(source_id: StringName) -> void:
+	active_buffs.erase(source_id)
 	_update_multiplier_display()
 
 func on_punishment_start(_activity_count: int) -> void:
@@ -111,7 +121,10 @@ func positive_multiplier() -> float:
 			continue
 		total += bonus
 		active += 1
-	return total * COMBO_BONUS[mini(active, COMBO_BONUS.size() - 1)]
+	total *= COMBO_BONUS[mini(active, COMBO_BONUS.size() - 1)]
+	for multiplier in active_buffs.values():
+		total *= multiplier
+	return total
 
 func max_total_multiplier() -> float:
 	return MAX_TOTAL_MULTIPLIER
