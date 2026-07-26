@@ -65,7 +65,8 @@ var notes: Array[PostIt] = []
 var active_note: PostIt
 ## The notes that are driven from outside (the boss's work, the tutorial),
 ## bottom to top. They are kept at the tail of `notes`, so regular notes always
-## slot in underneath them.
+## slot in underneath them. Among themselves the boss's notes come last: what it
+## hands out is what the player has to read, so nothing is allowed on top of it.
 var special_notes: Array[PostIt] = []
 ## Each special note's own colour, before the depth tint is applied.
 var special_colors := {}
@@ -229,7 +230,7 @@ func _show_tutorial_page() -> void:
 	if page.is_empty():
 		return
 
-	tutorial_note = _spawn_special_note(page, note_color)
+	tutorial_note = _spawn_special_note(page, note_color, false)
 	for i in page.size():
 		var beat := tutorial_page + i
 		tutorial_note.set_item_checked(i, beat < tutorial_completed)
@@ -267,9 +268,21 @@ func _special_notes() -> Array[PostIt]:
 			alive.append(note)
 	return alive
 
-## Flies in a note on top of the pile, listing `descriptions`.
-func _spawn_special_note(descriptions: Array[String], color := PUNISHMENT_COLOR) -> PostIt:
-	var note := _spawn_note(true, true, color)
+## The boss's own notes, bottom to top, skipping any that have left. They sit on
+## top of every other note, so a tutorial page turning mid-punishment cannot
+## bury the work the player is being held to.
+func _boss_notes() -> Array[PostIt]:
+	var alive: Array[PostIt] = []
+	for note in [punishment_note, prep_note]:
+		if is_instance_valid(note):
+			alive.append(note)
+	return alive
+
+## Flies in a note on top of the pile, listing `descriptions`. A note that is not
+## the boss's slots in under whatever the boss has out.
+func _spawn_special_note(descriptions: Array[String], color := PUNISHMENT_COLOR,
+		is_boss_note := true) -> PostIt:
+	var note := _spawn_note(true, true, color, is_boss_note)
 	for description in descriptions:
 		note.add_item(description)
 	return note
@@ -319,7 +332,8 @@ func _resolve(index: int) -> Array:
 		remaining -= count
 	return []
 
-func _spawn_note(animate: bool, is_special := false, special_color := PUNISHMENT_COLOR) -> PostIt:
+func _spawn_note(animate: bool, is_special := false, special_color := PUNISHMENT_COLOR,
+		is_boss_note := true) -> PostIt:
 	var note: PostIt = PostItScene.instantiate()
 	note.connect_events = false
 	note.note_color = special_color if is_special else note_color
@@ -330,9 +344,12 @@ func _spawn_note(animate: bool, is_special := false, special_color := PUNISHMENT
 	note.rotation = deg_to_rad(lean * randf_range(MIN_TILT, MAX_TILT))
 
 	if is_special:
-		special_notes.append(note)
+		# Both lists keep the boss's notes at their tail, so one offset places the
+		# new note in both: on top of everything, or just under the boss's work.
+		var above := 0 if is_boss_note else _boss_notes().size()
 		special_colors[note] = special_color
-		notes.append(note)
+		special_notes.insert(special_notes.size() - above, note)
+		notes.insert(notes.size() - above, note)
 	else:
 		# The boss's notes stay on top, so regular notes slot in below them.
 		notes.insert(notes.size() - _special_notes().size(), note)
