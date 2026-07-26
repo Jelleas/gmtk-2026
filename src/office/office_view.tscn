@@ -14,7 +14,7 @@
 [ext_resource type="Script" uid="uid://d32mq7typ1jgv" path="res://src/office/office_view.gd" id="9_view"]
 [ext_resource type="Texture2D" uid="uid://dkjuigxb1dnmg" path="res://resources/images/mouse-28mm.png" id="10_ovhle"]
 [ext_resource type="Texture2D" uid="uid://cgqknrbnn81r7" path="res://resources/images/cup.png" id="13_s6gf3"]
-[ext_resource type="Material" path="res://resources/shaders/coffee_cup_material.tres" id="14_coffee_cup"]
+[ext_resource type="Material" uid="uid://dy7blwciby210" path="res://resources/shaders/coffee_cup_material.tres" id="14_coffee_cup"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_s6gf3"]
 atlas = ExtResource("4_ovhle")
@@ -207,12 +207,11 @@ fill_from = Vector2(0.5, 0.5)
 fill_to = Vector2(1, 0.5)
 
 [sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_coffee_steam"]
-emission_shape = 0
 direction = Vector3(0, -1, 0)
 spread = 18.0
-gravity = Vector3(0, -8, 0)
 initial_velocity_min = 8.0
 initial_velocity_max = 13.0
+gravity = Vector3(0, -8, 0)
 scale_min = 0.35
 scale_max = 0.7
 
@@ -284,30 +283,30 @@ z_index = 1
 position = Vector2(1004, 436)
 emitting = false
 amount = 3
+texture = SubResource("GradientTexture2D_coffee_steam")
 lifetime = 1.6
 preprocess = 1.6
-texture = SubResource("GradientTexture2D_coffee_steam")
-process_material = SubResource("ParticleProcessMaterial_coffee_steam")
 visibility_rect = Rect2(-16, -64, 32, 72)
+process_material = SubResource("ParticleProcessMaterial_coffee_steam")
 
 [node name="CoffeeSteamLeft" type="GPUParticles2D" parent="." unique_id=100000005]
 z_index = 1
 position = Vector2(993, 438)
 emitting = false
 amount = 3
+texture = SubResource("GradientTexture2D_coffee_steam")
 lifetime = 1.35
 preprocess = 1.35
-texture = SubResource("GradientTexture2D_coffee_steam")
-process_material = SubResource("ParticleProcessMaterial_coffee_steam")
 visibility_rect = Rect2(-16, -64, 32, 72)
+process_material = SubResource("ParticleProcessMaterial_coffee_steam")
 
 [node name="CoffeeSteamRight" type="GPUParticles2D" parent="." unique_id=100000006]
 z_index = 1
 position = Vector2(1015, 438)
 emitting = false
 amount = 3
+texture = SubResource("GradientTexture2D_coffee_steam")
 lifetime = 1.8
 preprocess = 1.8
-texture = SubResource("GradientTexture2D_coffee_steam")
-process_material = SubResource("ParticleProcessMaterial_coffee_steam")
 visibility_rect = Rect2(-16, -64, 32, 72)
+process_material = SubResource("ParticleProcessMaterial_coffee_steam")
