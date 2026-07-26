@@ -4,5 +4,5 @@
 
 [resource]
 shader = ExtResource("1_1js24")
-shader_parameter/outline_color = Color(0, 0, 0, 1)
-shader_parameter/outline_width = 1.0
+shader_parameter/outline_color = Color(0, 0.654902, 0, 1)
+shader_parameter/outline_width = 0.0
